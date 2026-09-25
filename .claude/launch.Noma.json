@@ -1,0 +1,18 @@
+{
+  "$comment": "TEMPLATE for the Noma repo. Copy to .claude/launch.json to use it \u2014 that exact filename is what the preview tooling reads, so the live file cannot be renamed; this one is named per-project so the two repos' templates are tellable apart. .claude/launch.json is gitignored because sessions rewrite it with session-scoped /private/tmp paths, which left it permanently dirty and conflicting between sessions.",
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "magic-spells-demo",
+      "url": "http://localhost:4173"
+    },
+    {
+      "name": "design-elements-bottom-sheets",
+      "url": "http://localhost:4174"
+    },
+    {
+      "name": "noisefit-dashboard",
+      "url": "http://localhost:4175"
+    }
+  ]
+}

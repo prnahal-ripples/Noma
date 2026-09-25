@@ -1,0 +1,52 @@
+{
+  "$comment": [
+    "CANONICAL registry for the engraved icon set. Markdown mirrors defer to",
+    "this file, same convention as design-elements/3d-icons/manifest.json."
+  ],
+  "meta": {
+    "name": "Engraved icons",
+    "style": "Monochrome glyph, top-down light: a soft grey vertical gradient with a 4px drop shadow and a 2px inner shadow, so the shape reads as pressed into the surface rather than drawn on it.",
+    "source": "owner-supplied SVG, 2026-08-18",
+    "status": "ASSETS PRESENT, IN USE — not yet an Approved Component",
+    "$comment_status": "Four glyphs, all live in the first-run flow. They are NOT tier-1 3D icons (those are rendered objects) and NOT tier-2 flat monoline (those are strokes at row scale). This is a third register: a large engraved glyph that carries a page the way a 3D render does, without being a photograph of an object. That distinction is why they get their own folder rather than joining either tier — and it is also an unresolved question for .claude/rules/design-system.md, whose icon gate describes exactly two tiers.",
+    "usage": "One per page, in the visual half, at 96-104px. Never a row icon.",
+    "$comment_embedding": "Consumed as base64 data URIs rather than inlined markup: every file carries Figma-generated filter and gradient ids (filter0_di_*, paint0_linear_*), and two screens share the DOM during a transition, so inlining would collide those ids."
+  },
+  "icons": [
+    {
+      "id": "bluetooth",
+      "label": "Bluetooth",
+      "file": "bluetooth.svg",
+      "size": [96, 96],
+      "usedFor": ["Node 11 · looking for your purifier"],
+      "renderedAt": "docs/features/first-run/first-run-flow.html — node 11, 96px"
+    },
+    {
+      "id": "wifi",
+      "label": "Wi-Fi",
+      "file": "wifi.svg",
+      "size": [104, 96],
+      "usedFor": ["Node 13 · which network should it join?", "Node 12 · confirm the network"],
+      "renderedAt": "docs/features/first-run/first-run-flow.html — nodes 13 and 12, 104px"
+    },
+    {
+      "id": "check-circle",
+      "label": "Check",
+      "file": "check-circle.svg",
+      "size": [96, 96],
+      "usedFor": ["Node 16 · connected"],
+      "note": "Replaced a drawn ink disc with a white tick.",
+      "renderedAt": "docs/features/first-run/first-run-flow.html — node 16, 96px"
+    },
+    {
+      "id": "notifications-unread",
+      "label": "Notifications",
+      "file": "notifications-unread.svg",
+      "size": [96, 96],
+      "usedFor": ["Node 25 · shall I tell you when something changes?"],
+      "note": "Bell with an unread dot. Replaced a hand-drawn SVG bell; the concentric rings and the swing that surrounded it are kept and now animate this glyph instead.",
+      "conflict": "⚠ The unread dot is #FF4444 at 54% — a red that is NOT in the palette. `red.mid` (#D65151) is the token for exactly this and was what the drawn bell used. Left as supplied because the file is the owner's artwork and re-colouring it silently would hide the divergence; flagged so it can be decided rather than inherited.",
+      "renderedAt": "docs/features/first-run/first-run-flow.html — node 25, 104px"
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "$comment": [
+    "CANONICAL registry for the brand wordmark. Markdown mirrors defer to",
+    "this file, same convention as design-elements/3d-icons/manifest.json",
+    "and src/hardware/devices.json."
+  ],
+  "meta": {
+    "kind": "brand wordmark (not an icon, not a component)",
+    "source": "owner-supplied, 2026-08-17 — 'Noma Logo 2.png' (1500x1500, transparent)",
+    "status": "ASSET PRESENT, IN USE — no registry gate currently covers this asset class",
+    "$comment_status": "The owner pasted the mark into chat; no available tool extracts a pasted image's raw bytes to disk (same gap logged for the 3D icons on 2026-08-14), so it was located instead at the file the owner had already saved it to on this machine — Downloads/Noma/Noma Logo 2.png — verified pixel-identical to what was pasted before use. A second export, 'Noma Logo.png' (14000x8000, flattened to white, no alpha), was supplied alongside it and is NOT used: same mark, no transparency, print-resolution rather than a UI asset.",
+    "$comment_crop": "Source canvas is 1500x1500 with the mark occupying a 1061x192 region. Cropped to that content box plus 6% horizontal / 30% vertical padding (wordmarks want air around the x-height, not a tight box) — see build_wordmark_assets() note in build-auth.py for the exact numbers if this needs re-deriving from a replacement file."
+  },
+  "assets": [
+    {
+      "id": "wordmark",
+      "label": "NOMA wordmark",
+      "file": "noma-wordmark.png",
+      "usedFor": [
+        "Sign-in splash (full-bleed, before the sheet arrives)",
+        "Sign-in sheet header (small, above the tagline)"
+      ],
+      "note": "All-caps grotesque sans, black, no icon or symbol. Transparent background — safe on any ground from white through the sheet's own gradient to a photograph.",
+      "web": "web/noma-wordmark.webp",
+      "sourceSize": [
+        1189,
+        308
+      ],
+      "webSize": [
+        640,
+        166
+      ],
+      "bytes": {
+        "source": 48798,
+        "web": 13468
+      },
+      "renderedAt": [
+        "docs/features/first-run/auth-prototype.html — splash (96px wide) and login sheet (72px wide)"
+      ]
+    },
+    {
+      "id": "key-card",
+      "label": "Master key card",
+      "file": "key-card.png",
+      "usedFor": [
+        "Node 4 · Setup profile — the profile card and the home key"
+      ],
+      "note": "Owner-supplied artwork, used AS THE BASE and written over. The bevel, grain, rule and key glyph are all in the image; nothing in code redraws them. Only four things sit on top and all four are live: the avatar, the serif initial, the name and the email.",
+      "web": "web/key-card.webp",
+      "sourceSize": [
+        1384,
+        1907
+      ],
+      "webSize": [
+        640,
+        882
+      ],
+      "bytes": {
+        "source": 3301021,
+        "web": 141378
+      },
+      "renderedAt": [
+        "docs/features/first-run/first-run-flow.html — node 4, 244px wide"
+      ],
+      "$comment_web": "WebP quality 72 at 640px, not the usual 92. The artwork is a soft gradient plus film grain, and grain is the most expensive thing a lossy codec can encode — q92 came to 388 KB for an asset that renders at 244pt. 138 KB is still ~2.6x the rendered size."
+    },
+    {
+      "id": "resident-key",
+      "label": "Resident's key",
+      "file": "resident-key.png",
+      "usedFor": [
+        "Node 18a · the key sent to a household member"
+      ],
+      "note": "Owner-supplied artwork, used AS IS — no name, no initials, no avatar, nothing live on it. The master key (node 4) is personal; this one is deliberately generic, which is what makes it sendable. Replaced the composited member card.",
+      "web": "web/resident-key.webp",
+      "sourceSize": [
+        666,
+        918
+      ],
+      "webSize": [
+        440,
+        606
+      ],
+      "bytes": {
+        "source": 759911,
+        "web": 78102
+      },
+      "renderedAt": [
+        "docs/features/first-run/first-run-flow.html — nodes 18a (R3, R3C, R3E), 168px wide"
+      ]
+    }
+  ]
+}

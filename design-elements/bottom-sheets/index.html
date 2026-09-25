@@ -1,0 +1,849 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>10 bottom sheet types — NOMA</title>
+
+<!-- Package CSS FIRST, so the token overrides below win the cascade.
+     Both target :root at equal specificity — last one in source order wins. -->
+<link rel="stylesheet" href="./vendor/dialog-panel.css" />
+<link rel="stylesheet" href="./vendor/bottom-sheet.css" />
+
+<!--
+  Rebuilt 2026-08-11 against the rewritten token file. Copied by hand — this
+  scratch project has no build step to import the JS tokens. Canonical source:
+    Noma-main/src/tokens/design.tokens.js   (rebuilt from the Figma gallery)
+    Noma-main/src/tokens/motion.tokens.js   (unchanged)
+
+  THE FIVE LAWS, and where each one lands in this file:
+    1. The ground is a gradient  → --grad-canvas on .screen AND on the sheet
+    2. Green is never solid      → green only via --grad-ramp / --grad-bloom
+    3. White means raised        → .chip[aria-pressed=true] is white + lifted
+    4. The CTA is ink            → .btn-cta, full radius, 56pt
+    5. Insurance card is bespoke → deliberately not built here
+-->
+<style>
+  @font-face {
+    font-family: 'Google Sans Flex';
+    src: url('./fonts/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf') format('truetype-variations');
+    font-weight: 1 1000;
+    font-display: swap;
+  }
+
+  :root {
+    /* ---- neutral ramp: cool at the light end, warming as it darkens ---- */
+    --n-0: #FFFFFF;   --n-25: #FAFAF9;  --n-50: #F8F8F8;  --n-100: #F1F1EF;
+    --n-150: #E8E8E5; --n-200: #DDDCD8; --n-300: #CCCAC4; --n-400: #9E9E9C;
+    --n-500: #767674; --n-600: #5A5A58; --n-700: #3A3A38; --n-800: #2E2E2C;
+    --n-900: #0E0E0D;
+
+    /* ---- green: GRADIENT STOPS, never fills (LAW 2) ---- */
+    --g-deep: #1D6B27; --g-core: #2A8033; --g-mid: #3DBE4E;
+    --g-light: #A8D89A; --g-haze: #DCEEDA;
+    --g-on-light: #24762F;                      /* flat — TEXT/GLYPHS ONLY */
+    --g-glow: rgba(61, 190, 78, 0.55);
+    --g-glow-soft: rgba(61, 190, 78, 0.18);
+
+    /* ---- gradients: a first-class layer, not a garnish ---- */
+    --grad-canvas: linear-gradient(180deg, #FFFFFF 0%, #FDFDFC 38%, var(--n-200) 100%);
+    --grad-ink: linear-gradient(180deg, #3A3A38 0%, var(--n-800) 100%);
+    --grad-ramp: linear-gradient(90deg, var(--g-deep) 0%, var(--g-mid) 58%, var(--g-light) 100%);
+    --grad-bloom: radial-gradient(circle at 42% 38%, var(--g-light) 0%, var(--g-mid) 46%, var(--g-deep) 100%);
+    --grad-bloom-halo: 0 0 8px 2px var(--g-glow-soft);
+    --grad-wash: radial-gradient(140% 90% at 6% 0%, var(--g-glow) 0%, var(--g-glow-soft) 34%, rgba(61,190,78,0) 68%);
+    --grad-accent-text: linear-gradient(135deg, var(--g-mid) 0%, var(--g-deep) 100%);
+
+    /* ---- semantic ---- */
+    --c-canvas: #F4F3F1;          /* flat fallback for the ground */
+    --c-raised: var(--n-0);       /* LAW 3 — white == lifted */
+    --c-control: var(--n-50);     /* icon-button fill */
+    --c-sunken: var(--n-150);     /* unselected chips, inert tracks */
+    --c-muted: #B8B8B6;
+    --c-inverse: var(--n-800);    /* LAW 4 — the CTA */
+    --c-bevel: var(--n-0);        /* 1px INSIDE white stroke = "glass" */
+    --c-subtle: rgba(11, 11, 11, 0.05);
+    --c-hairline: rgba(11, 11, 11, 0.09);
+    --c-text: var(--n-800);
+    --c-text-2: var(--n-500);
+    --c-text-3: var(--n-400);
+    --c-text-inv: var(--n-0);
+    --c-text-accent: var(--g-on-light);
+
+    /* ---- radius ---- */
+    --r-sm: 10px; --r-md: 16px; --r-lg: 20px;
+    --r-xl: 24px; --r-xxl: 28px; --r-full: 999px;
+
+    /* ---- elevation ---- */
+    --e-control: 0 1px 3px 0 rgba(0,0,0,.04), 0 5px 14px 0 rgba(0,0,0,.07);
+    --e-card: 0 2px 8px 0 rgba(0,0,0,.03), 0 12px 32px 0 rgba(0,0,0,.06);
+    --e-dock: 0 4px 12px 0 rgba(0,0,0,.06), 0 14px 34px 0 rgba(0,0,0,.12);
+    --e-floating: 0 4px 12px 0 rgba(0,0,0,.05), 0 20px 48px 0 rgba(0,0,0,.10);
+
+    /* ---- spacing + layout ---- */
+    --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
+    --sp-5: 20px; --sp-6: 24px; --sp-7: 32px;
+    --screen-x: 20px;   /* layout.screenPaddingX */
+    --card-x: 24px;     /* layout.cardPaddingX  */
+    --card-y: 16px;     /* layout.cardPaddingY  */
+    --card-gap: 20px;
+    --h-cta: 56px; --h-input: 56px; --h-chip: 40px; --h-pill: 34px; --sz-control: 40px;
+
+    /* ---- motion (motion.tokens.js — unchanged this round) ---- */
+    --dur-fast: 140ms;
+    --dur-sheet: 480ms;
+    --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+    --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    /* ---- package skin → recipes.bottomSheet ----------------------------
+       NOTE: --bs-panel-background is consumed inside a box-shadow (the bleed
+       below the sheet). A gradient there makes the whole declaration invalid
+       and silently drops elevation.floating with it. So this stays a FLAT
+       colour — the gradient's own bottom stop, so the bleed continues the
+       ground exactly — and the gradient is painted via background-image
+       in the rule further down. */
+    --bs-panel-background: var(--n-200);
+    --bs-panel-border-radius: var(--r-xxl);      /* radius.xxl = 28 */
+    --bs-panel-box-shadow: var(--e-floating);
+    --bs-handle-color: var(--n-300);
+    --bs-content-padding: var(--screen-x);       /* 20 */
+    --bs-footer-padding: var(--screen-x);
+    --bs-transition-duration: var(--dur-sheet);  /* durations.sheet = 480ms */
+    --bs-overlay-background: rgba(0, 0, 0, 0.48);
+    --bs-overlay-blur: 6px;
+    --bs-panel-inset-x: var(--sp-3);
+    --bs-panel-inset-bottom: var(--sp-3);
+    /* Open/close easing left on the package's decelerate-only curve rather
+       than easings.springBold: one property drives BOTH directions, and
+       motion.md rule 3 says exits never bounce. */
+  }
+
+  * { box-sizing: border-box; }
+
+  /* LAW 1 — the ground is a gradient, never a flat fill, never grey. */
+  body {
+    margin: 0;
+    background: var(--c-canvas);
+    color: var(--c-text);
+    font-family: 'Google Sans Flex', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    font-optical-sizing: auto;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .screen {
+    max-width: 393px;
+    margin: 0 auto;
+    min-height: 100vh;
+    padding: var(--sp-7) var(--screen-x);
+    background: var(--grad-canvas);
+    background-attachment: fixed;
+  }
+
+  /* Keep the mobile illusion on a desktop viewport. */
+  dialog-panel > dialog { max-width: 393px; margin-inline: auto; }
+
+  /* LAW 1 again — the sheet carries the same ground. Painted as an image so
+     the flat --bs-panel-background above stays valid for the bleed shadow. */
+  dialog-panel:has(bottom-sheet) > dialog {
+    background-image: var(--grad-canvas);
+    background-repeat: no-repeat;
+  }
+
+  /* ---- type styles ---- */
+  .t-label {                    /* typography.scale.label — NEW */
+    font-size: 12px; line-height: 16px; font-weight: 600;
+    letter-spacing: 0.96px; text-transform: uppercase;
+    color: var(--c-text-2); margin: 0 0 var(--sp-3);
+  }
+  h1 {                          /* display — now 30/36/-0.6 */
+    font-size: 30px; line-height: 36px; font-weight: 700;
+    letter-spacing: -.6px; margin: 0 0 var(--sp-2);
+  }
+  .sub { font-size: 14px; line-height: 19px; color: var(--c-text-2); margin: 0 0 var(--sp-6); }
+
+  /* ---- trigger rows: recipes.card (24 radius, 24/16 padding) ---- */
+  .trigger {
+    display: flex; align-items: center; gap: var(--sp-3);
+    width: 100%; text-align: left; cursor: pointer;
+    background: var(--c-raised);
+    border: none; border-radius: var(--r-xl);
+    box-shadow: var(--e-card);
+    padding: var(--card-y) var(--card-x);
+    margin-bottom: var(--sp-4);
+    font-family: inherit;
+    transition: transform var(--dur-fast) var(--ease-spring),
+                box-shadow var(--dur-fast) var(--ease-standard);
+  }
+  .trigger:active { transform: scale(.96); box-shadow: var(--e-control); }
+  .trigger .idx {
+    flex-shrink: 0; width: 28px; height: 28px; border-radius: var(--r-full);
+    background: var(--c-sunken); color: var(--c-text-2);
+    font-size: 12px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .trigger .t-name { font-size: 16px; font-weight: 600; line-height: 22px; }
+  .trigger .t-desc { font-size: 14px; line-height: 19px; color: var(--c-text-2); }
+  .trigger .chev { margin-left: auto; color: var(--c-text-3); font-size: 18px; }
+
+  .note {
+    margin-top: var(--sp-6); padding: var(--card-y) var(--card-x);
+    background: var(--c-raised); border-radius: var(--r-xl);
+    box-shadow: var(--e-card);
+    font-size: 12px; line-height: 17px; color: var(--c-text-2);
+  }
+  .note strong { color: var(--c-text); font-weight: 600; }
+  .note + .note { margin-top: var(--sp-4); }
+
+  /* ---------------- shared sheet internals ---------------- */
+
+  /* The handle is an absolute ::before at top:8px and the header ships with
+     no top padding, so the title must be pushed clear of it. */
+  bottom-sheet-header {
+    display: flex; align-items: flex-start; gap: var(--sp-3);
+    padding-top: var(--sp-6); padding-bottom: var(--sp-4);
+  }
+  bottom-sheet-header .h-text { flex: 1; min-width: 0; }
+  bottom-sheet-header h2 {
+    font-size: 22px; line-height: 27px; font-weight: 600;   /* title2 */
+    letter-spacing: -.2px; margin: 0;
+  }
+  bottom-sheet-header .h-sub {
+    font-size: 14px; line-height: 19px; color: var(--c-text-2);
+    margin: var(--sp-1) 0 0;
+  }
+
+  /* recipes.buttonIcon — #F8F8F8 fill + 1px INSIDE white stroke + shadow.
+     The inside stroke is what makes controls read as glass. Keep it. */
+  .close {
+    flex-shrink: 0; appearance: none; cursor: pointer; font-family: inherit;
+    width: var(--sz-control); height: var(--sz-control);
+    border: none; border-radius: var(--r-full);
+    background: var(--c-control); color: var(--c-text);
+    font-size: 15px; line-height: 1;
+    box-shadow: inset 0 0 0 1px var(--c-bevel), var(--e-control);
+  }
+
+  bottom-sheet-content p { font-size: 16px; line-height: 22px; margin: 0 0 var(--sp-4); }
+  bottom-sheet-content p.muted { color: var(--c-text-2); font-size: 14px; line-height: 19px; }
+
+  /* ---- buttons ---- */
+  .btn {
+    appearance: none; border: none; cursor: pointer; font-family: inherit;
+    height: var(--h-cta); padding: 0 var(--sp-6);
+    border-radius: var(--r-full);           /* LAW 4 — fully round */
+    font-size: 16px; font-weight: 600;
+    transition: transform var(--dur-fast) var(--ease-spring);
+  }
+  .btn:active { transform: scale(.96); }
+
+  /* LAW 4 — the primary action is INK. There is no green button. */
+  .btn-cta {
+    background: var(--grad-ink); background-color: var(--c-inverse);
+    color: var(--c-text-inv); box-shadow: var(--e-dock);
+  }
+  /* recipes.buttonSecondary — white raised pill with the glass bevel.
+     The recipe specifies height 40 for standalone use; raised to 56 here so
+     it pairs with the CTA in a two-button footer. */
+  .btn-secondary {
+    background: var(--c-raised); color: var(--c-text);
+    box-shadow: inset 0 0 0 1px var(--c-bevel), var(--e-control);
+  }
+  .btn-ghost { background: transparent; color: var(--c-text-2); box-shadow: none; }
+  .btn-block { display: block; width: 100%; }
+
+  bottom-sheet-footer { display: flex; gap: var(--sp-3); }
+  /* The CTA takes the room; the secondary stays compact. A 56pt pill has no
+     vertical slack, so labels must not wrap. */
+  bottom-sheet-footer .btn { flex: 1; white-space: nowrap; }
+  bottom-sheet-footer .btn-secondary,
+  bottom-sheet-footer .btn-ghost { flex: 0 1 auto; }
+
+  /* ---- cards inside a sheet: recipes.card ---- */
+  .row-card {
+    display: flex; align-items: center; gap: var(--card-gap);
+    background: var(--c-raised); border-radius: var(--r-xl);
+    box-shadow: var(--e-card);
+    padding: var(--card-y) var(--card-x);
+    margin-bottom: var(--sp-4);
+  }
+  .swatch {
+    width: 40px; height: 40px; border-radius: var(--r-md);
+    flex-shrink: 0; background: var(--c-sunken);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .row-card .meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .row-card .name { font-size: 16px; font-weight: 600; line-height: 22px; }
+  .row-card .desc { font-size: 14px; color: var(--c-text-2); line-height: 19px; }
+  .row-card .trail { margin-left: auto; }
+
+  /* LAW 2 — even at 8pt, green is a bloom with a halo, never a flat disc. */
+  .dot {
+    width: 8px; height: 8px; border-radius: var(--r-full);
+    background: var(--grad-bloom); box-shadow: var(--grad-bloom-halo);
+    flex-shrink: 0;
+  }
+
+  /* recipes.pillStatus — ink pill, white label, bloom dot. */
+  .pill-status {
+    display: inline-flex; align-items: center; gap: var(--sp-2);
+    height: var(--h-pill); padding: 0 var(--sp-3);
+    border-radius: var(--r-full);
+    background: var(--c-inverse); color: var(--c-text-inv);
+    font-size: 12px; font-weight: 500; letter-spacing: .1px;
+  }
+
+  /* ---- menu rows ---- */
+  .menu-row {
+    display: flex; align-items: center; gap: var(--sp-3);
+    width: 100%; text-align: left; cursor: pointer;
+    background: transparent; border: none; font-family: inherit;
+    font-size: 16px; font-weight: 500; color: var(--c-text);
+    padding: var(--sp-3) 0; min-height: 48px;
+    border-bottom: 1px solid var(--c-subtle);
+  }
+  .menu-row:last-child { border-bottom: none; }
+  .menu-row .glyph {
+    width: var(--sz-control); height: var(--sz-control); flex-shrink: 0;
+    border-radius: var(--r-full); background: var(--c-control);
+    box-shadow: inset 0 0 0 1px var(--c-bevel), var(--e-control);
+    display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+
+  /* ---- chips — LAW 3: selection is LIFT, not colour ----
+     Selected  = white RAISED pill, bevel + shadow, primary text.
+     Unselected = flat SUNKEN grey pill, no shadow, tertiary text.
+     There is no green chip and no dark chip in this pattern. */
+  .chip-wrap { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-bottom: var(--sp-6); }
+  .chip {
+    appearance: none; border: none; cursor: pointer; font-family: inherit;
+    display: inline-flex; align-items: center;
+    height: var(--h-chip); padding: 0 var(--sp-4);
+    border-radius: var(--r-full);
+    background: var(--c-sunken); color: var(--c-text-3);
+    font-size: 14px; font-weight: 400; box-shadow: none;
+    transition: transform var(--dur-fast) var(--ease-spring),
+                box-shadow var(--dur-fast) var(--ease-standard),
+                background var(--dur-fast) var(--ease-standard);
+  }
+  .chip:active { transform: scale(.96); }
+  .chip[aria-pressed="true"] {
+    background: var(--c-raised); color: var(--c-text); font-weight: 500;
+    box-shadow: inset 0 0 0 1px var(--c-bevel), var(--e-control);
+  }
+
+  /* ---- input — recipes.input: white raised, radius 20, 56 tall ---- */
+  .field { margin-bottom: var(--sp-5); }
+  .field label {
+    display: block; font-size: 12px; line-height: 16px; font-weight: 600;
+    letter-spacing: .96px; text-transform: uppercase;
+    color: var(--c-text-2); margin-bottom: var(--sp-2);
+  }
+  .field input, .field select {
+    width: 100%; height: var(--h-input); padding: 0 var(--sp-4);
+    border: none; border-radius: var(--r-lg);
+    background: var(--c-raised); color: var(--c-text);
+    box-shadow: var(--e-control);
+    font-family: inherit; font-size: 16px;
+  }
+  .field input::placeholder { color: var(--c-text-3); }
+  .field input:focus, .field select:focus {
+    outline: none;
+    box-shadow: inset 0 0 0 1px var(--n-300), var(--e-control);
+  }
+
+  /* ---- activity log ---- */
+  .log-row {
+    display: flex; gap: var(--sp-3); align-items: baseline;
+    padding: var(--sp-3) 0; border-bottom: 1px solid var(--c-subtle);
+  }
+  .log-row .time {
+    font-size: 12px; color: var(--c-text-2); width: 56px;
+    flex-shrink: 0; font-variant-numeric: tabular-nums;
+  }
+  .log-row .what { font-size: 15px; line-height: 20px; }
+
+  /* ---- media hero ---- */
+  .hero {
+    height: 180px; margin: 0 calc(-1 * var(--bs-content-padding)) var(--sp-5);
+    background: var(--c-sunken);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--c-text-3); font-size: 12px; letter-spacing: .96px;
+    text-transform: uppercase; font-weight: 600;
+  }
+
+  /* ---- metric readout — typography.scale.metric (NEW, 72pt) ---- */
+  .metric { margin-bottom: var(--sp-5); }
+  .metric .big {
+    font-size: 72px; line-height: 72px; font-weight: 700;
+    letter-spacing: -2.4px;
+    /* gradients.accentText — DECORATIVE clip on a large numeric readout.
+       colors.text.accent is the accessible fallback if clipping is absent. */
+    color: var(--c-text-accent);
+    background: var(--grad-accent-text);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+  }
+  .metric .unit {
+    font-size: 18px; font-weight: 600; color: var(--c-text-2);
+    margin-left: var(--sp-2);
+  }
+  .metric .cap { font-size: 14px; color: var(--c-text-2); margin-top: var(--sp-1); }
+
+  /* ---- recipes.progressTrack — discrete ticks, ONE continuous ramp ----
+     The ramp must span the whole TRACK, not the filled portion, so the inner
+     element is widened to 10000%/--p (i.e. back to 100% of the track). */
+  .track {
+    position: relative; height: 14px; margin-top: var(--sp-5);
+    background: var(--c-sunken); border-radius: var(--r-sm); overflow: hidden;
+    -webkit-mask-image: repeating-linear-gradient(90deg, #000 0 4px, transparent 4px 6px);
+    mask-image: repeating-linear-gradient(90deg, #000 0 4px, transparent 4px 6px);
+  }
+  .track .clip { position: absolute; inset: 0 auto 0 0; width: calc(var(--p) * 1%); overflow: hidden; }
+  .track .ramp { position: absolute; inset: 0; width: calc(10000% / var(--p)); background: var(--grad-ramp); }
+  .track-end {
+    display: flex; justify-content: space-between;
+    font-size: 12px; font-weight: 500; color: var(--c-text-2); margin-top: var(--sp-2);
+  }
+
+  /* ---- live card: the wash is the ONLY green on a white card ---- */
+  .card-live { position: relative; overflow: hidden; }
+  .card-live::before {
+    content: ""; position: absolute; inset: 0;
+    background: var(--grad-wash); filter: blur(32px);
+    pointer-events: none;
+  }
+  .card-live > * { position: relative; }
+
+  .toggle-row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: var(--sp-3); padding: var(--sp-4) 0;
+    border-bottom: 1px solid var(--c-subtle);
+  }
+  .toggle-row:last-child { border-bottom: none; }
+  .toggle-row .lbl { font-size: 16px; font-weight: 500; }
+  .toggle-row .val { font-size: 14px; color: var(--c-text-2); }
+
+  /* ACCESSIBILITY GATE — motion.md rule 2, mandatory on every animating file.
+     This cannot reach the snap spring: that runs in JS on rAF and never sees
+     CSS. It is disabled separately in the script below. */
+  @media (prefers-reduced-motion: reduce) {
+    :root { --bs-transition-duration: 1ms; --bs-snap-duration: 1ms; }
+    *, *::before, *::after {
+      animation-duration: 1ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 1ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<main class="screen">
+  <p class="t-label">@magic-spells/bottom-sheet</p>
+  <h1>10 sheet types</h1>
+  <p class="sub">Every one is a real instance of the component, skinned with the rebuilt NOMA tokens. Drag a header down to dismiss, or flick it.</p>
+
+  <button class="trigger" data-sheet="#s1">
+    <span class="idx">1</span>
+    <span><span class="t-name">Basic</span><br><span class="t-desc">Title, copy, one ink CTA</span></span>
+    <span class="chev">›</span>
+  </button>
+
+  <button class="trigger" data-sheet="#s2">
+    <span class="idx">2</span>
+    <span><span class="t-name">Action menu</span><br><span class="t-desc">Glass control rows, no footer</span></span>
+    <span class="chev">›</span>
+  </button>
+
+  <button class="trigger" data-sheet="#s3">
+    <span class="idx">3</span>
+    <span><span class="t-name">Confirmation</span><br><span class="t-desc">Short, two buttons, destructive</span></span>
+    <span class="chev">›</span>
+  </button>
+
+  <button class="trigger" data-sheet="#s4">
+    <span class="idx">4</span>
+    <span><span class="t-name">Scrollable</span><br><span class="t-desc">Long content, gesture handoff</span></span>
+    <span class="chev">›</span>
+  </button>
+
+  <button class="trigger" data-sheet="#s5">
+    <span class="idx">5</span>
+    <span><span class="t-name">Snap points</span><br><span class="t-desc">Metric, ramp, three detents</span></span>
+    <span class="chev">›</span>
+  </button>
+
+  <button class="trigger" data-sheet="#s6">
+    <span class="idx">6</span>
+    <span><span class="t-name">Inset</span><br><span class="t-desc">Detached, all four corners</span></span>
+    <span class="chev">›</span>
+  </button>
+
+  <button class="trigger" data-sheet="#s7">
+    <span class="idx">7</span>
+    <span><span class="t-name">Form</span><br><span class="t-desc">Raised fields, pinned footer</span></span>
+    <span class="chev">›</span>
+  </button>
+
+  <button class="trigger" data-sheet="#s8">
+    <span class="idx">8</span>
+    <span><span class="t-name">Filter</span><br><span class="t-desc">Selection by lift, not colour</span></span>
+    <span class="chev">›</span>
+  </button>
+
+  <button class="trigger" data-sheet="#s9">
+    <span class="idx">9</span>
+    <span><span class="t-name">Detail</span><br><span class="t-desc">Cards, bloom dots, live wash</span></span>
+    <span class="chev">›</span>
+  </button>
+
+  <button class="trigger" data-sheet="#s10">
+    <span class="idx">10</span>
+    <span><span class="t-name">Media</span><br><span class="t-desc">Full-bleed hero at the top</span></span>
+    <span class="chev">›</span>
+  </button>
+
+  <p class="note">
+    <strong>Destructive actions have no treatment.</strong>
+    <code>colors.status</code> is still <code>null</code> (ADR-001 O-6), and LAW 4
+    now makes ink the <em>primary</em> CTA — so sheet 3's "Remove" looks exactly
+    like an ordinary confirm. Before the rebuild ink at least meant "emphasis
+    that is not primary"; that fallback is gone, and destructive is now
+    genuinely unexpressible rather than merely unstyled.
+  </p>
+
+  <p class="note">
+    <strong>The sheet's ground is painted twice.</strong>
+    <code>--bs-panel-background</code> is read inside a <code>box-shadow</code>
+    (the bleed under the sheet), where a gradient invalidates the whole
+    declaration and takes <code>elevation.floating</code> down with it. It is
+    held at the gradient's bottom stop, and the ground is applied as a separate
+    <code>background-image</code>.
+  </p>
+</main>
+
+
+<!-- 1 ─ BASIC ------------------------------------------------------------- -->
+<dialog-panel id="s1">
+  <dialog aria-labelledby="s1t">
+    <bottom-sheet>
+      <bottom-sheet-header>
+        <span class="h-text"><h2 id="s1t">Away Mode</h2></span>
+        <button class="close" data-action-hide-dialog aria-label="Close">✕</button>
+      </bottom-sheet-header>
+      <bottom-sheet-content>
+        <p>When everyone leaves, NOMA lowers the thermostat, arms the locks, and turns off the lights it knows you left on.</p>
+        <p class="muted">You can change what Away Mode touches at any time in settings.</p>
+      </bottom-sheet-content>
+      <bottom-sheet-footer>
+        <button class="btn btn-cta" data-action-hide-dialog>Got it</button>
+      </bottom-sheet-footer>
+    </bottom-sheet>
+  </dialog>
+</dialog-panel>
+
+<!-- 2 ─ ACTION MENU ------------------------------------------------------- -->
+<dialog-panel id="s2">
+  <dialog aria-labelledby="s2t">
+    <bottom-sheet>
+      <bottom-sheet-header>
+        <span class="h-text">
+          <h2 id="s2t">Living Room Lamp</h2>
+          <p class="h-sub">Philips Hue · On</p>
+        </span>
+        <button class="close" data-action-hide-dialog aria-label="Close">✕</button>
+      </bottom-sheet-header>
+      <bottom-sheet-content>
+        <button class="menu-row"><span class="glyph">✎</span> Rename device</button>
+        <button class="menu-row"><span class="glyph">⌂</span> Move to another room</button>
+        <button class="menu-row"><span class="glyph">⇄</span> Share access</button>
+        <button class="menu-row"><span class="glyph">◷</span> Set a schedule</button>
+        <button class="menu-row"><span class="glyph">ⓘ</span> Device info</button>
+        <button class="menu-row"><span class="glyph">⌫</span> Remove from home</button>
+      </bottom-sheet-content>
+    </bottom-sheet>
+  </dialog>
+</dialog-panel>
+
+<!-- 3 ─ CONFIRMATION ------------------------------------------------------ -->
+<dialog-panel id="s3">
+  <dialog aria-labelledby="s3t">
+    <bottom-sheet>
+      <bottom-sheet-header>
+        <span class="h-text"><h2 id="s3t">Remove Smart Lock?</h2></span>
+      </bottom-sheet-header>
+      <bottom-sheet-content>
+        <p>This unpairs the lock from your home. Its schedules and access history are deleted and cannot be restored.</p>
+      </bottom-sheet-content>
+      <bottom-sheet-footer>
+        <button class="btn btn-secondary" data-action-hide-dialog>Cancel</button>
+        <!-- Ink because it is the committing action. There is no danger
+             treatment available — see the note on the index screen. -->
+        <button class="btn btn-cta" data-action-hide-dialog>Remove</button>
+      </bottom-sheet-footer>
+    </bottom-sheet>
+  </dialog>
+</dialog-panel>
+
+<!-- 4 ─ SCROLLABLE -------------------------------------------------------- -->
+<dialog-panel id="s4">
+  <dialog aria-labelledby="s4t">
+    <bottom-sheet>
+      <bottom-sheet-header>
+        <span class="h-text">
+          <h2 id="s4t">Activity</h2>
+          <p class="h-sub">Front Door · last 24 hours</p>
+        </span>
+        <button class="close" data-action-hide-dialog aria-label="Close">✕</button>
+      </bottom-sheet-header>
+      <bottom-sheet-content>
+        <div class="log-row"><span class="time">09:42</span><span class="what">Unlocked by Priya</span></div>
+        <div class="log-row"><span class="time">09:15</span><span class="what">Auto-locked after 30s</span></div>
+        <div class="log-row"><span class="time">09:14</span><span class="what">Unlocked by Ravi</span></div>
+        <div class="log-row"><span class="time">08:50</span><span class="what">Doorbell pressed</span></div>
+        <div class="log-row"><span class="time">08:31</span><span class="what">Auto-locked after 30s</span></div>
+        <div class="log-row"><span class="time">08:30</span><span class="what">Unlocked by Priya</span></div>
+        <div class="log-row"><span class="time">07:58</span><span class="what">Motion detected outside</span></div>
+        <div class="log-row"><span class="time">07:20</span><span class="what">Battery reported 82%</span></div>
+        <div class="log-row"><span class="time">06:45</span><span class="what">Firmware check completed</span></div>
+        <div class="log-row"><span class="time">23:10</span><span class="what">Night mode armed</span></div>
+        <div class="log-row"><span class="time">22:47</span><span class="what">Auto-locked after 30s</span></div>
+        <div class="log-row"><span class="time">22:46</span><span class="what">Unlocked by Ravi</span></div>
+        <div class="log-row"><span class="time">21:03</span><span class="what">Guest code used</span></div>
+        <div class="log-row"><span class="time">19:22</span><span class="what">Motion detected outside</span></div>
+        <div class="log-row"><span class="time">18:40</span><span class="what">Auto-locked after 30s</span></div>
+        <div class="log-row"><span class="time">18:39</span><span class="what">Unlocked by Priya</span></div>
+      </bottom-sheet-content>
+    </bottom-sheet>
+  </dialog>
+</dialog-panel>
+
+<!-- 5 ─ SNAP POINTS ------------------------------------------------------- -->
+<dialog-panel id="s5">
+  <dialog aria-labelledby="s5t">
+    <bottom-sheet snap-points="38,64,92">
+      <bottom-sheet-header>
+        <span class="h-text">
+          <h2 id="s5t">Energy</h2>
+          <p class="h-sub">Drag up — three detents</p>
+        </span>
+        <button class="close" data-action-hide-dialog aria-label="Close">✕</button>
+      </bottom-sheet-header>
+      <bottom-sheet-content>
+        <div class="metric">
+          <span class="big">4.8</span><span class="unit">kWh</span>
+          <div class="cap">Today · 12% below your average</div>
+          <div class="track"><div class="clip" style="--p: 62"><div class="ramp"></div></div></div>
+          <div class="track-end"><span>Today</span><span>62% of budget</span></div>
+        </div>
+        <p class="t-label">By device</p>
+        <div class="row-card"><span class="swatch"></span><span class="meta"><span class="name">Thermostat</span><span class="desc">2.1 kWh · 44%</span></span></div>
+        <div class="row-card"><span class="swatch"></span><span class="meta"><span class="name">Water heater</span><span class="desc">1.4 kWh · 29%</span></span></div>
+        <div class="row-card"><span class="swatch"></span><span class="meta"><span class="name">Lighting</span><span class="desc">0.8 kWh · 17%</span></span></div>
+        <div class="row-card"><span class="swatch"></span><span class="meta"><span class="name">Everything else</span><span class="desc">0.5 kWh · 10%</span></span></div>
+      </bottom-sheet-content>
+    </bottom-sheet>
+  </dialog>
+</dialog-panel>
+
+<!-- 6 ─ INSET ------------------------------------------------------------- -->
+<dialog-panel id="s6">
+  <dialog aria-labelledby="s6t">
+    <bottom-sheet inset>
+      <bottom-sheet-header>
+        <span class="h-text"><h2 id="s6t">Quick controls</h2></span>
+        <button class="close" data-action-hide-dialog aria-label="Close">✕</button>
+      </bottom-sheet-header>
+      <bottom-sheet-content>
+        <div class="toggle-row"><span class="lbl">All lights</span><span class="val">4 on</span></div>
+        <div class="toggle-row"><span class="lbl">Front door</span><span class="val">Locked</span></div>
+        <div class="toggle-row"><span class="lbl">Thermostat</span><span class="val">72°F</span></div>
+        <div class="toggle-row"><span class="lbl">Air purifier</span><span class="val">Auto</span></div>
+      </bottom-sheet-content>
+    </bottom-sheet>
+  </dialog>
+</dialog-panel>
+
+<!-- 7 ─ FORM ------------------------------------------------------------- -->
+<dialog-panel id="s7">
+  <dialog aria-labelledby="s7t">
+    <bottom-sheet>
+      <bottom-sheet-header>
+        <span class="h-text">
+          <h2 id="s7t">Add a device</h2>
+          <p class="h-sub">Step 2 of 3</p>
+        </span>
+        <button class="close" data-action-hide-dialog aria-label="Close">✕</button>
+      </bottom-sheet-header>
+      <bottom-sheet-content>
+        <div class="field">
+          <label for="dv-name">Device name</label>
+          <input id="dv-name" type="text" placeholder="Hallway lamp" />
+        </div>
+        <div class="field">
+          <label for="dv-room">Room</label>
+          <select id="dv-room">
+            <option>Living room</option><option>Kitchen</option>
+            <option>Bedroom</option><option>Hallway</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="dv-code">Pairing code</label>
+          <input id="dv-code" type="text" inputmode="numeric" placeholder="8 digits on the base" />
+        </div>
+      </bottom-sheet-content>
+      <bottom-sheet-footer>
+        <button class="btn btn-secondary" data-action-hide-dialog>Back</button>
+        <button class="btn btn-cta" data-action-hide-dialog>Continue</button>
+      </bottom-sheet-footer>
+    </bottom-sheet>
+  </dialog>
+</dialog-panel>
+
+<!-- 8 ─ FILTER ----------------------------------------------------------- -->
+<dialog-panel id="s8">
+  <dialog aria-labelledby="s8t">
+    <bottom-sheet>
+      <bottom-sheet-header>
+        <span class="h-text">
+          <h2 id="s8t">Filter devices</h2>
+          <p class="h-sub">Selected chips are raised, not coloured</p>
+        </span>
+        <button class="close" data-action-hide-dialog aria-label="Close">✕</button>
+      </bottom-sheet-header>
+      <bottom-sheet-content>
+        <p class="t-label">Room</p>
+        <div class="chip-wrap">
+          <button class="chip" aria-pressed="true">Living room</button>
+          <button class="chip" aria-pressed="false">Kitchen</button>
+          <button class="chip" aria-pressed="false">Bedroom</button>
+          <button class="chip" aria-pressed="false">Hallway</button>
+          <button class="chip" aria-pressed="false">Garage</button>
+        </div>
+        <p class="t-label">Status</p>
+        <div class="chip-wrap">
+          <button class="chip" aria-pressed="true">Online</button>
+          <button class="chip" aria-pressed="false">Offline</button>
+          <button class="chip" aria-pressed="false">Needs setup</button>
+        </div>
+        <p class="t-label">Type</p>
+        <div class="chip-wrap">
+          <button class="chip" aria-pressed="false">Lights</button>
+          <button class="chip" aria-pressed="false">Climate</button>
+          <button class="chip" aria-pressed="false">Locks</button>
+          <button class="chip" aria-pressed="false">Sensors</button>
+        </div>
+      </bottom-sheet-content>
+      <bottom-sheet-footer>
+        <button class="btn btn-ghost" id="s8-clear">Clear</button>
+        <button class="btn btn-cta" data-action-hide-dialog>Show 6 devices</button>
+      </bottom-sheet-footer>
+    </bottom-sheet>
+  </dialog>
+</dialog-panel>
+
+<!-- 9 ─ DETAIL ----------------------------------------------------------- -->
+<dialog-panel id="s9">
+  <dialog aria-labelledby="s9t">
+    <bottom-sheet snap-points="58,92">
+      <bottom-sheet-header>
+        <span class="h-text">
+          <h2 id="s9t">Living Room Hub</h2>
+          <p class="h-sub">4 devices · all reachable</p>
+        </span>
+        <button class="close" data-action-hide-dialog aria-label="Close">✕</button>
+      </bottom-sheet-header>
+      <bottom-sheet-content>
+        <!-- recipes.cardLive — the blurred wash is the ONLY green here. -->
+        <div class="row-card card-live">
+          <span class="swatch"><span class="dot"></span></span>
+          <span class="meta"><span class="name">Air Quality</span><span class="desc">Good · AQI 24</span></span>
+          <span class="trail"><span class="pill-status"><span class="dot"></span>Improving</span></span>
+        </div>
+        <div class="row-card">
+          <span class="swatch"><span class="dot"></span></span>
+          <span class="meta"><span class="name">Smart Lock</span><span class="desc">Locked · 2m ago</span></span>
+        </div>
+        <div class="row-card">
+          <span class="swatch"></span>
+          <span class="meta"><span class="name">Thermostat</span><span class="desc">72°F · Auto schedule</span></span>
+        </div>
+        <div class="row-card">
+          <span class="swatch"></span>
+          <span class="meta"><span class="name">Lights</span><span class="desc">On · 80% brightness</span></span>
+        </div>
+      </bottom-sheet-content>
+      <bottom-sheet-footer>
+        <button class="btn btn-cta btn-block" data-action-hide-dialog>Done</button>
+      </bottom-sheet-footer>
+    </bottom-sheet>
+  </dialog>
+</dialog-panel>
+
+<!-- 10 ─ MEDIA ----------------------------------------------------------- -->
+<dialog-panel id="s10">
+  <dialog aria-labelledby="s10t">
+    <bottom-sheet>
+      <bottom-sheet-header>
+        <span class="h-text"><h2 id="s10t">Front Door</h2></span>
+        <button class="close" data-action-hide-dialog aria-label="Close">✕</button>
+      </bottom-sheet-header>
+      <bottom-sheet-content>
+        <div class="hero">Camera snapshot</div>
+        <p>Motion detected at 09:41. The clip is kept for 14 days, then deleted automatically.</p>
+        <div class="row-card">
+          <span class="swatch"><span class="dot"></span></span>
+          <span class="meta"><span class="name">Doorbell camera</span><span class="desc">Recording · 1080p</span></span>
+        </div>
+      </bottom-sheet-content>
+      <bottom-sheet-footer>
+        <button class="btn btn-secondary" data-action-hide-dialog>Dismiss</button>
+        <button class="btn btn-cta" data-action-hide-dialog>Watch clip</button>
+      </bottom-sheet-footer>
+    </bottom-sheet>
+  </dialog>
+</dialog-panel>
+
+
+<script type="module">
+  import './vendor/dialog-panel.esm.js';
+  import './vendor/bottom-sheet.esm.js';
+</script>
+
+<script>
+  // Triggers. Pass the button so the component returns focus to it on close.
+  document.querySelectorAll('[data-sheet]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelector(btn.dataset.sheet + ' bottom-sheet').show(btn);
+    });
+  });
+
+  // Chips toggle in place.
+  document.querySelectorAll('.chip').forEach((chip) => {
+    chip.addEventListener('click', () => {
+      chip.setAttribute('aria-pressed', chip.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+    });
+  });
+  document.getElementById('s8-clear').addEventListener('click', () => {
+    document.querySelectorAll('#s8 .chip').forEach((c) => c.setAttribute('aria-pressed', 'false'));
+  });
+
+  // ACCESSIBILITY GATE, part two — motion.md rule 2.
+  // The snap settle runs on a JS spring driven by rAF, so it never sees the
+  // CSS media query. spring="none" hands the settle back to CSS, where the
+  // reduced-motion block has already collapsed the duration.
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const applyReduce = () => {
+    document.querySelectorAll('bottom-sheet[snap-points]').forEach((s) => {
+      if (reduce.matches) s.setAttribute('spring', 'none');
+      else s.removeAttribute('spring');
+    });
+  };
+  applyReduce();
+  reduce.addEventListener('change', applyReduce);
+</script>
+</body>
+</html>

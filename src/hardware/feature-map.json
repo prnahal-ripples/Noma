@@ -1,0 +1,170 @@
+{
+  "$comment": [
+    "CANONICAL F-* feature registry: feature -> required capabilities -> per-device support.",
+    "",
+    "Extracted from the PM prototype set on 2026-08-04. Every feature here EXISTS AS A",
+    "BUILT SCREEN in at least one prototype — none is speculative. But 'built as a",
+    "prototype screen' is not 'specified': none of these has a PRD, acceptance criteria,",
+    "or an error/empty state defined. `prdStatus` says which.",
+    "",
+    "`support` values: yes | no | n/a | unknown."
+  ],
+
+  "meta": {
+    "extractedOn": "2026-08-04",
+    "prdCount": 0,
+    "$comment_prd": "Zero PRDs exist. docs/features/ is empty. Every F-* below needs one."
+  },
+
+  "features": {
+    "F-AQI-LIVE": {
+      "name": "Live air quality",
+      "why": "The #1 stated reason users reopen an air-purifier app. Everything else is built on this.",
+      "requires": ["indoor-particle-sensor", "outdoor-aqi-feed", "network"],
+      "surfaces": ["Home", "Purifier detail", "Room sheet", "Share card"],
+      "support": { "purifier": "yes", "camera": "n/a", "lock": "n/a", "vacuum": "n/a", "doorbell": "n/a" },
+      "prdStatus": "none",
+      "evidence": "PurAQIScreen, AQIDial, AQIChartCard, LWB_POLLUTANTS"
+    },
+
+    "F-FILTER-HEALTH": {
+      "name": "AQI-weighted filter health",
+      "why": "The product's central differentiator AND the consumable-revenue lever. Surfaced too late it becomes a 1-star 'it stopped working' review.",
+      "requires": ["indoor-particle-sensor", "outdoor-aqi-feed", "runtime-accounting", "load-model"],
+      "surfaces": ["Purifier detail", "Filter screen", "Score", "Shop reorder"],
+      "support": { "purifier": "yes", "vacuum": "yes", "camera": "n/a", "lock": "n/a", "doorbell": "n/a" },
+      "$comment_vacuum": "Vacuum consumables (main brush, side brush, filter, mop pad) use the same wear-percentage pattern but NOT the AQI weighting — that is purifier-only.",
+      "prdStatus": "none",
+      "blockedBy": "C-7 — the weighting model itself is unspecified."
+    },
+
+    "F-AGENT-PROPOSE": {
+      "name": "Agent proposals with graduated autonomy",
+      "why": "The architectural spine of the product. Determines what the app IS, not just what it shows.",
+      "requires": ["forecast-feed", "device-control", "standing-rules-engine", "audit-log"],
+      "surfaces": ["Home (three zones)", "Why this?", "Rehearse", "Automation tab", "Agent chat"],
+      "support": { "purifier": "yes", "vacuum": "yes", "camera": "unknown", "lock": "unknown", "doorbell": "unknown" },
+      "$comment_support": "Only purifier and vacuum proposals appear in any prototype. Whether the agent may ever act on a LOCK is a safety question nobody has answered — see C-8.",
+      "prdStatus": "none",
+      "detail": "memory/architecture/ai-integration.md"
+    },
+
+    "F-FACES": {
+      "name": "Faces You Trust",
+      "why": "Turns a camera feed into a household roster. Also the mechanism behind scoped access for household staff (persona P3).",
+      "requires": ["camera", "on-device-face-model", "explicit-consent", "local-storage"],
+      "surfaces": ["Camera live view", "Face tag sheet", "Event history"],
+      "support": { "camera": "yes", "doorbell": "yes", "purifier": "n/a", "lock": "n/a", "vacuum": "n/a" },
+      "prdStatus": "none",
+      "compliance": "Requires explicit consent under India's DPDP Act 2023. Face data is stated as on-device only, never uploaded. This is a hard legal constraint, not a preference.",
+      "badges": ["Known", "Verified", "Review"]
+    },
+
+    "F-HOME-SCORE": {
+      "name": "Home Score",
+      "why": "The one number that makes a multi-device home legible, and the hook that makes adding a device feel like progress.",
+      "requires": ["all-device-telemetry"],
+      "surfaces": ["Home hero", "Score detail"],
+      "support": { "purifier": "yes", "camera": "yes", "lock": "yes", "vacuum": "yes", "doorbell": "unknown" },
+      "prdStatus": "none",
+      "blockedBy": "C-5 — four incompatible score definitions exist across the source docs."
+    },
+
+    "F-AUTOMATIONS": {
+      "name": "Automations and routines",
+      "why": "'Better automations' is the second-strongest stated return-driver after AQI itself.",
+      "requires": ["device-control", "trigger-sources", "scheduler"],
+      "surfaces": ["Automation tab", "Create automation", "Suggested routines"],
+      "support": { "purifier": "yes", "vacuum": "yes", "camera": "yes", "lock": "yes", "doorbell": "unknown" },
+      "prdStatus": "none",
+      "triggerSources": ["schedule", "aqi-threshold", "geofence", "wearable-signal", "forecast", "device-event"],
+      "templates": ["Clean before I wake up", "Boost when cooking", "Pause when everyone is out"],
+      "$comment_trap": "The away-mode trap: automations that run silently make the app feel unnecessary. Every automation needs a narration surface, or it erodes the reason to open the app."
+    },
+
+    "F-SHARING": {
+      "name": "Household sharing and scoped access",
+      "why": "A home is multi-person. Persona P3 (household help) needs entry without account control.",
+      "requires": ["account", "role-model", "per-device-grants", "audit-log"],
+      "surfaces": ["Sharing flow", "Member list", "Transfer ownership"],
+      "support": { "camera": "yes", "lock": "yes", "purifier": "yes", "vacuum": "yes", "doorbell": "unknown" },
+      "prdStatus": "none",
+      "blockedBy": "C-3 — three incompatible role models exist.",
+      "grantGranularity": "Per device type. Camera has 7 distinct grants, lock 2, purifier 2, vacuum 2 — see memory/architecture/data-models.md."
+    },
+
+    "F-WEARABLE-BRIDGE": {
+      "name": "Wearable bridge",
+      "why": "Ties air quality to a body metric. The strongest available answer to 'why does clean air matter to me tonight?'",
+      "requires": ["companion-wearable", "signal-permissions"],
+      "surfaces": ["Wearable bridge screen", "Air Defended card"],
+      "support": { "purifier": "yes", "vacuum": "unknown", "camera": "n/a", "lock": "yes", "doorbell": "n/a" },
+      "prdStatus": "none",
+      "blockedBy": "C-8 — SpO2-driven actuation is health-adjacent and has no medical/legal position."
+    },
+
+    "F-SHOP": {
+      "name": "In-app shop and reorder",
+      "why": "Consumables are the recurring revenue. Contextual upsell (persona P4) is the one-device-to-ecosystem funnel.",
+      "requires": ["catalogue", "payments", "address", "device-context"],
+      "surfaces": ["Shop tab", "Reorder card", "Filter screen CTA", "Home air map"],
+      "support": { "purifier": "yes", "vacuum": "yes", "camera": "yes", "lock": "unknown", "doorbell": "unknown" },
+      "prdStatus": "none",
+      "$comment_payments": "No payment, address, tax, invoice, refund or order-tracking flow exists in any prototype. The shop is a catalogue and a price, nothing behind it."
+    },
+
+    "F-AIR-MAP": {
+      "name": "Home air map",
+      "why": "Shows what each room still breathes, making a second device the obvious next step rather than a pop-up.",
+      "requires": ["multi-room", "per-room-sensing-or-inference"],
+      "surfaces": ["Home air map", "Multi-view tab", "Spatial home"],
+      "support": { "purifier": "yes", "camera": "n/a", "lock": "n/a", "vacuum": "n/a", "doorbell": "n/a" },
+      "prdStatus": "none",
+      "openQuestion": "The map shows AQI for rooms with NO purifier in them (kitchen 112, living room 94). Those rooms have no sensor. Whether this is inference, interpolation, or invention is unstated — and it is load-bearing for an upsell. Tracked as C-9."
+    },
+
+    "F-WEEK-RECAP": {
+      "name": "Air Week recap and share card",
+      "why": "Day-7 to Week-2 is the canonical retention chokepoint. The recap is also the cheapest acquisition channel the product gets.",
+      "requires": ["7-day-history", "share-sheet", "score-model"],
+      "surfaces": ["Air Week", "Share card"],
+      "support": { "purifier": "yes", "camera": "n/a", "lock": "n/a", "vacuum": "n/a", "doorbell": "n/a" },
+      "prdStatus": "none",
+      "contentRule": "Emoji + the number travel; pre-filled brand captions kill shares. The caption must read as the user's, not the company's."
+    },
+
+    "F-NEIGHBOURHOOD": {
+      "name": "Neighbourhood comparison",
+      "why": "Converts a private utility into a daily check-in and an organic acquisition channel.",
+      "requires": ["geolocation", "aggregated-peer-data", "anonymisation"],
+      "surfaces": ["Compare card", "Share card"],
+      "support": { "purifier": "yes", "camera": "n/a", "lock": "n/a", "vacuum": "n/a", "doorbell": "n/a" },
+      "prdStatus": "none",
+      "compliance": "Shows a named neighbour's reading ('Mehta (2F) 54'). Stated as anonymised with the address never shown, but a floor number plus a surname in a small building is not anonymous. Needs a privacy review under DPDP — tracked as C-10."
+    },
+
+    "F-ENERGY": {
+      "name": "Energy and running cost",
+      "why": "'Is it spiking my electricity bill?' is a quiet usage-suppressor in Indian homes — people switch purifiers off and lose the benefit.",
+      "requires": ["power-model", "tariff-assumption"],
+      "surfaces": ["Energy card", "Score"],
+      "support": { "purifier": "yes", "vacuum": "unknown", "camera": "unknown", "lock": "n/a", "doorbell": "unknown" },
+      "prdStatus": "none",
+      "openQuestion": "Prototype quotes Rs 0.40/hour and Rs 164 saved vs always-Turbo. Both depend on an unstated electricity tariff, which varies by state and slab. Also converts to 'trees worth of clean air' — an equivalence with no cited basis."
+    }
+  },
+
+  "capabilityIndex": {
+    "$comment": "Reverse index: which platform capabilities must exist for the features above. None of these is built — this is the shape of the work.",
+    "indoor-particle-sensor": ["F-AQI-LIVE", "F-FILTER-HEALTH", "F-AIR-MAP"],
+    "outdoor-aqi-feed": ["F-AQI-LIVE", "F-FILTER-HEALTH", "F-NEIGHBOURHOOD"],
+    "forecast-feed": ["F-AGENT-PROPOSE"],
+    "standing-rules-engine": ["F-AGENT-PROPOSE"],
+    "audit-log": ["F-AGENT-PROPOSE", "F-SHARING"],
+    "on-device-face-model": ["F-FACES"],
+    "role-model": ["F-SHARING"],
+    "payments": ["F-SHOP"],
+    "scheduler": ["F-AUTOMATIONS"],
+    "anonymisation": ["F-NEIGHBOURHOOD"]
+  }
+}

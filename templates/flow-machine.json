@@ -1,0 +1,1 @@
+{ "$comment": "TEMPLATE - XState-compatible flow machine. States reference screen IDs (S-*). Hardware flows must include mandatory disconnect states.", "id": "TODO", "initial": "TODO", "states": {} }

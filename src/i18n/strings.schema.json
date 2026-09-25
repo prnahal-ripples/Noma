@@ -1,0 +1,5 @@
+{
+  "$comment": "Key structure definition for all locale files. TODO(owner): finalize.",
+  "keyFormat": "<screen-or-domain>.<element>.<variant?>",
+  "personaVariants": "Per-persona copy lives inside keys, e.g. { \"default\": \"...\", \"P1\": \"...\" }"
+}

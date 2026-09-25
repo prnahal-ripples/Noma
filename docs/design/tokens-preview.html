@@ -1,0 +1,194 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>NOMA — components from tokens</title>
+<style>
+@font-face{font-family:GSF;src:url("../../src/fonts/google-sans-flex/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf") format("truetype");font-weight:1 1000;font-display:swap}
+
+/* ============ TOKENS (mirrored from src/tokens/design.tokens.js) ========= */
+:root{
+  --n0:#FFFFFF; --n50:#F8F8F8; --n150:#E8E8E5; --n200:#DDDCD8; --n300:#CCCAC4;
+  --n400:#9E9E9C; --n500:#767674; --n800:#2E2E2C;
+  --muted:#B8B8B6;
+  --gDeep:#1E8A2E; --gCore:#2A8033; --gMid:#3DBE4E; --gLight:#A8D89A; --gText:#24762F;
+  --glow:rgba(61,190,78,.55); --glowSoft:rgba(61,190,78,.18);
+
+  --canvas:linear-gradient(180deg,#FFFFFF 0%,#FDFDFC 38%,var(--n200) 100%);
+  --ink:linear-gradient(180deg,#3A3A38 0%,var(--n800) 100%);
+  --ramp:linear-gradient(90deg,var(--gDeep) 0%,var(--gMid) 58%,var(--gLight) 100%);
+  --bloom:radial-gradient(circle at 42% 38%,var(--gLight) 0%,var(--gMid) 46%,var(--gDeep) 100%);
+  --wash:radial-gradient(140% 90% at 6% 0%,var(--glow) 0%,var(--glowSoft) 34%,rgba(61,190,78,0) 68%);
+
+  --rSm:10px; --rMd:16px; --rLg:20px; --rXl:24px; --rXxl:28px; --rFull:999px;
+  --eControl:0 1px 3px rgba(0,0,0,.04),0 5px 14px rgba(0,0,0,.07);
+  --eCard:0 2px 8px rgba(0,0,0,.03),0 12px 32px rgba(0,0,0,.06);
+  --eDock:0 4px 12px rgba(0,0,0,.06),0 14px 34px rgba(0,0,0,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:GSF,system-ui,sans-serif;background:#141413;color:#E8E8E5;padding:30px 26px 70px}
+h1{font-size:21px;font-weight:700;letter-spacing:-.3px}
+.sub{font-size:12.5px;color:#8A8A88;margin:5px 0 26px;line-height:1.6;max-width:760px}
+h2{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#767674;margin:30px 0 12px;font-weight:600}
+.note{font-size:11.5px;color:#8A8A88;line-height:1.65;margin-top:9px;max-width:340px}
+.note b{color:#9FE0A6}
+code{font-family:ui-monospace,Menlo,monospace;font-size:11px;background:#262625;padding:1px 5px;border-radius:4px;color:#C6C6C4}
+.grid{display:grid;grid-template-columns:390px 1fr;gap:26px;align-items:start}
+.stage{background:var(--canvas);border-radius:var(--rXl);padding:22px 20px;color:var(--n800)}
+.wide{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+
+/* ===================== COMPONENTS ===================== */
+.lbl{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--n500)}
+.helper{font-size:12px;font-weight:500;color:var(--n400);letter-spacing:.1px}
+
+.btnIcon{width:40px;height:40px;border-radius:var(--rFull);background:var(--n50);
+  box-shadow:var(--eControl),inset 0 0 0 1px #FFF;display:grid;place-items:center;font-size:15px;color:var(--n800)}
+.cta{height:56px;border-radius:var(--rFull);background:var(--ink);color:#fff;
+  display:grid;place-items:center;font-size:16px;font-weight:600;box-shadow:var(--eDock);width:100%}
+.input{height:56px;border-radius:var(--rLg);background:#fff;box-shadow:var(--eControl);
+  display:flex;align-items:center;padding:0 16px;font-size:16px;color:var(--n800)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{height:40px;border-radius:var(--rFull);padding:0 16px;display:grid;place-items:center;font-size:14px}
+.chipOn{background:#fff;color:var(--n800);box-shadow:var(--eControl),inset 0 0 0 1px #FFF}
+.chipOff{background:var(--n150);color:var(--n400)}
+
+.card{background:#fff;border-radius:var(--rXl);box-shadow:var(--eCard);padding:16px 24px;position:relative;overflow:hidden}
+.card+.card{margin-top:16px}
+.cardLive::before{content:"";position:absolute;inset:0;background:var(--wash);filter:blur(18px);pointer-events:none}
+.card>*{position:relative}
+.row{display:flex;align-items:center;justify-content:space-between}
+.tr{width:40px;height:40px;border-radius:var(--rFull);display:grid;place-items:center;color:#fff;font-size:11px}
+.trInk{background:var(--n800)} .trMuted{background:var(--muted)}
+.pillStatus{height:34px;border-radius:var(--rFull);background:var(--n800);color:#fff;
+  display:inline-flex;align-items:center;gap:8px;padding:0 12px;font-size:12px;font-weight:500}
+.dot{width:8px;height:8px;border-radius:var(--rFull);background:var(--bloom);box-shadow:0 0 8px 2px var(--glowSoft)}
+.trk{position:relative;height:14px;border-radius:var(--rSm);overflow:hidden;background:var(--n150);margin:9px 0 7px}
+.trk i{position:absolute;inset:0;background:var(--ramp);width:23%}
+.trk u{position:absolute;inset:0;display:flex;gap:2px;text-decoration:none}
+.trk u s{flex:0 0 4px;height:14px;background:transparent;box-shadow:2px 0 0 0 #141413;opacity:.001}
+.mask{position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 4px,var(--stageBg,#FDFDFC) 4px 6px)}
+.metric{font-size:72px;font-weight:700;letter-spacing:-2.4px;line-height:.92}
+.unit{font-size:14px;font-weight:600;color:var(--n500)}
+
+.ins{border-radius:var(--rXxl);padding:20px;color:#fff;box-shadow:var(--eCard);
+  background:linear-gradient(215deg,var(--gMid) 0%,var(--gCore) 46%,var(--gDeep) 100%);position:relative;overflow:hidden}
+.ins::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(115deg,rgba(255,255,255,0) 34%,rgba(255,255,255,.22) 50%,rgba(255,255,255,0) 66%)}
+.insTtl{font-size:17px;font-weight:700;margin-bottom:40px}
+.insSub{font-size:12px;color:rgba(255,255,255,.72);margin-top:2px}
+.tagX{position:absolute;top:12px;right:14px;font-size:9px;letter-spacing:.1em;text-transform:uppercase;
+  background:rgba(0,0,0,.28);padding:3px 8px;border-radius:99px;z-index:3;font-weight:700}
+
+.swatches{display:flex;gap:8px;flex-wrap:wrap}
+.s{width:96px}.s i{display:block;height:52px;border-radius:10px;border:1px solid rgba(255,255,255,.08)}
+.s b{display:block;font-size:9.5px;margin-top:5px;color:#C6C6C4}.s u{display:block;font-size:9px;color:#767674;text-decoration:none}
+.bad{background:#2A1D1B;border:1px solid #4A2E28;border-radius:12px;padding:13px 15px;font-size:12px;line-height:1.65;color:#E8C4BC;margin-top:12px}
+.bad b{color:#FF8A72}
+</style></head><body>
+
+<h1>NOMA — components rendered from the new tokens</h1>
+<div class="sub">Everything below is drawn from <code>src/tokens/design.tokens.js</code> only. Ground is the white→sand-dust gradient. No flat green anywhere — every green is a ramp, a bloom, or a blurred wash.</div>
+
+<h2>Ground — "white to warm sand dust"</h2>
+<div class="wide">
+  <div>
+    <div style="height:150px;border-radius:var(--rXl);background:var(--canvas);box-shadow:var(--eCard)"></div>
+    <div class="note"><b>#FFFFFF → #CCCAC4</b> linear, with a <b>#FFFFFF @34%</b> veil over it — composited to <code>#FFFFFF → #DDDCD8</code> for single-fill consumers. Both forms are kept in <code>gradients.canvas</code>.</div>
+  </div>
+  <div>
+    <div class="swatches">
+      <div class="s"><i style="background:#FFFFFF"></i><b>canvasTop</b><u>#FFFFFF</u></div>
+      <div class="s"><i style="background:#CCCAC4"></i><b>canvasBottom</b><u>#CCCAC4</u></div>
+      <div class="s"><i style="background:#F8F8F8"></i><b>control</b><u>#F8F8F8</u></div>
+      <div class="s"><i style="background:#E8E8E5"></i><b>sunken</b><u>#E8E8E5</u></div>
+      <div class="s"><i style="background:#2E2E2C"></i><b>inverse</b><u>#2E2E2C</u></div>
+    </div>
+    <div class="note" style="max-width:none">The warm ramp is back, but only as the <i>dark end of the ground gradient</i> — there are no flat beige sheet fills anywhere in the system.</div>
+  </div>
+</div>
+
+<h2>Green — ramp / bloom / wash. Never a fill.</h2>
+<div class="wide">
+  <div><div style="height:64px;border-radius:12px;background:var(--ramp)"></div>
+    <div class="note"><b>accentRamp</b> — progress and fills. #1E8A2E → #3DBE4E → #A8D89A.</div></div>
+  <div><div style="height:64px;border-radius:12px;background:#FDFDFC;display:grid;place-items:center">
+      <span style="width:22px;height:22px;border-radius:99px;background:var(--bloom);box-shadow:0 0 22px 8px var(--glowSoft)"></span></div>
+    <div class="note"><b>accentBloom</b> — status marks. Bright core, soft halo. Even the 8pt dot uses this.</div></div>
+  <div><div style="height:64px;border-radius:12px;background:#fff;position:relative;overflow:hidden">
+      <span style="position:absolute;inset:0;background:var(--wash);filter:blur(16px)"></span></div>
+    <div class="note"><b>accentWash</b> — ambient "all good", blurred, bleeding from a corner. Never sharp.</div></div>
+</div>
+<div class="bad"><b>The one flat green I kept.</b> <code>green.onLight #24762F</code> for green <i>text and monoline glyphs</i> — a gradient-clipped glyph can't hold a contrast ratio, and the reference's bright green as a link measures <b>2.5:1</b> (fails AA). <code>gradients.accentText</code> exists for decorative large numerals where it's safe.</div>
+
+<h2>CTA · Typing bar · Chips · Buttons</h2>
+<div class="grid">
+  <div class="stage" style="--stageBg:#FEFEFD">
+    <div class="btnIcon" style="margin-bottom:22px">←</div>
+    <div style="font-size:30px;font-weight:700;letter-spacing:-.6px">Create your home</div>
+    <div style="font-size:16px;color:var(--n500);line-height:1.4;margin:8px 0 26px">Everything you add lives here. Rename it or add more homes anytime.</div>
+
+    <div class="lbl" style="margin-bottom:8px">Home name</div>
+    <div class="input">Ruhaan's Home</div>
+
+    <div class="lbl" style="margin:26px 0 12px">Starter rooms</div>
+    <div class="chips">
+      <span class="chip chipOn">Living Room</span><span class="chip chipOn">Bedroom</span><span class="chip chipOn">Kitchen</span>
+      <span class="chip chipOff">Front Door</span><span class="chip chipOff">Study</span><span class="chip chipOff">Bathroom</span>
+    </div>
+    <div class="helper" style="margin-top:12px">You can add or rename rooms when you set up a device.</div>
+
+    <div style="margin-top:64px"><div class="cta">Get Started</div></div>
+  </div>
+  <div>
+    <div class="note" style="max-width:none">
+      <b>CTA</b> — <code>56pt</code>, full radius, ink gradient <code>#3A3A38 → #2E2E2C</code>. Green is never the button.<br><br>
+      <b>Typing bar</b> — white raised field, radius <code>20</code>, no border, <code>label</code> style above in secondary.<br><br>
+      <b>Chips</b> — selection is <b>lift, not colour</b>. Selected = white pill + bevel + shadow. Unselected = flat sunken grey, muted label, no shadow. There is no green chip and no dark chip in this pattern.<br><br>
+      <b>Icon button</b> — <code>#F8F8F8</code> fill with a <b>1px inside stroke of pure white</b> plus shadow. That bevel is what makes controls read as glass; it's in <code>colors.border.bevel</code>.
+    </div>
+    <div style="display:flex;gap:12px;margin-top:18px;padding:18px;border-radius:16px;background:var(--canvas)">
+      <div class="btnIcon">←</div><div class="btnIcon">⚙</div>
+      <div class="tr trInk">❚❚</div><div class="tr trMuted">■</div>
+    </div>
+    <div class="note">Transport pair: pause is ink, stop is <code>#B8B8B6</code> — a hierarchy, not two peers.</div>
+  </div>
+</div>
+
+<h2>Cards</h2>
+<div class="grid">
+  <div class="stage" style="--stageBg:#FDFDFC">
+    <div class="row" style="margin-bottom:14px">
+      <div><span class="metric">73</span> <span class="unit">AQI</span></div>
+      <span class="pillStatus"><i class="dot"></i>Improving</span>
+    </div>
+
+    <div class="card cardLive">
+      <div class="row"><b style="font-size:16px">Cleaning Air…</b>
+        <span style="display:flex;gap:8px"><i class="tr trInk">❚❚</i><i class="tr trMuted">■</i></span></div>
+      <div class="row" style="margin-top:14px"><span style="font-size:12px;color:var(--n500)">95 Aqi</span><span style="font-size:12px;color:var(--n500)">35 Aqi</span></div>
+      <div class="trk"><i></i><span class="mask"></span></div>
+      <div class="row"><span style="font-size:12px;color:var(--n500)">Time left : 1h 12m</span><b style="font-size:14px">23%</b></div>
+    </div>
+
+    <div class="card">
+      <div class="row"><b style="font-size:16px">Discover Clean Air</b>
+        <span class="pillStatus">Read more</span></div>
+      <div style="font-size:14px;color:var(--n500);line-height:1.45;margin-top:8px">Everything you add lives here. Rename it or add more homes anytime.</div>
+    </div>
+
+    <div style="margin-top:16px" class="ins">
+      <span class="tagX">exception · not a recipe</span>
+      <div class="insTtl">🛡 Insurance Card</div>
+      <div style="font-size:16px;font-weight:700">Air Pro 500</div>
+      <div class="insSub">Insured since Jan 2026 till <b style="color:#fff">Jan 2027</b></div>
+    </div>
+  </div>
+  <div>
+    <div class="note" style="max-width:none">
+      <b>Card</b> — radius <code>24</code>, <code>#FFFFFF</code>, padding <code>24×16</code>, gap <code>20</code>, no stroke, wide faint shadow. All inspector-exact.<br><br>
+      <b>cardLive</b> — the top card carries <code>accentWash</code> blurred out of its top-left corner. That's the only green permitted on a white card.<br><br>
+      <b>Progress</b> — the ramp runs as <i>one continuous gradient across the whole track</i>, then gets masked into segments. Per-segment gradients look wrong.<br><br>
+      <b>Metric</b> — new type style, <code>72 / 700 / -2.4</code>. It had no style before.<br><br>
+      <b>Insurance card</b> — lives outside <code>recipes</code> entirely, as <code>insuranceCard</code> with an <code>__exception</code> flag and a "do not generalise" note. Gyro params (max tilt 6°, sheen travel, parallax) are stubbed there; the motion pattern itself still needs registering in <code>memory/motion/patterns.md</code>.
+    </div>
+  </div>
+</div>
+
+</body></html>

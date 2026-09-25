@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>@magic-spells demo — NOMA skin</title>
+
+<!-- Package CSS FIRST so the token overrides below win the cascade. -->
+<link rel="stylesheet" href="./vendor/dialog-panel.css" />
+<link rel="stylesheet" href="./vendor/bottom-sheet.css" />
+
+<!--
+  Rebuilt 2026-08-11 against the rewritten token file.
+  Canonical source: Noma-main/src/tokens/design.tokens.js
+  See sheets.html for all 10 sheet types.
+-->
+<style>
+  @font-face {
+    font-family: 'Google Sans Flex';
+    src: url('./fonts/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf') format('truetype-variations');
+    font-weight: 1 1000;
+    font-display: swap;
+  }
+
+  :root {
+    --n-0: #FFFFFF;   --n-50: #F8F8F8;  --n-100: #F1F1EF; --n-150: #E8E8E5;
+    --n-200: #DDDCD8; --n-300: #CCCAC4; --n-400: #9E9E9C; --n-500: #767674;
+    --n-700: #3A3A38; --n-800: #2E2E2C;
+
+    --g-deep: #1D6B27; --g-mid: #3DBE4E; --g-light: #A8D89A;
+    --g-on-light: #24762F;
+    --g-glow: rgba(61, 190, 78, 0.55);
+    --g-glow-soft: rgba(61, 190, 78, 0.18);
+
+    --grad-canvas: linear-gradient(180deg, #FFFFFF 0%, #FDFDFC 38%, var(--n-200) 100%);
+    --grad-ink: linear-gradient(180deg, #3A3A38 0%, var(--n-800) 100%);
+    --grad-ramp: linear-gradient(90deg, var(--g-deep) 0%, var(--g-mid) 58%, var(--g-light) 100%);
+    --grad-bloom: radial-gradient(circle at 42% 38%, var(--g-light) 0%, var(--g-mid) 46%, var(--g-deep) 100%);
+    --grad-bloom-halo: 0 0 8px 2px var(--g-glow-soft);
+
+    --c-canvas: #F4F3F1;
+    --c-raised: var(--n-0);
+    --c-control: var(--n-50);
+    --c-sunken: var(--n-150);
+    --c-inverse: var(--n-800);
+    --c-bevel: var(--n-0);
+    --c-subtle: rgba(11, 11, 11, 0.05);
+    --c-text: var(--n-800);
+    --c-text-2: var(--n-500);
+    --c-text-3: var(--n-400);
+    --c-text-inv: var(--n-0);
+
+    --r-sm: 10px; --r-md: 16px; --r-lg: 20px;
+    --r-xl: 24px; --r-xxl: 28px; --r-full: 999px;
+
+    --e-control: 0 1px 3px 0 rgba(0,0,0,.04), 0 5px 14px 0 rgba(0,0,0,.07);
+    --e-card: 0 2px 8px 0 rgba(0,0,0,.03), 0 12px 32px 0 rgba(0,0,0,.06);
+    --e-dock: 0 4px 12px 0 rgba(0,0,0,.06), 0 14px 34px 0 rgba(0,0,0,.12);
+    --e-floating: 0 4px 12px 0 rgba(0,0,0,.05), 0 20px 48px 0 rgba(0,0,0,.10);
+
+    --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
+    --sp-5: 20px; --sp-6: 24px; --sp-7: 32px;
+    --screen-x: 20px; --card-x: 24px; --card-y: 16px; --card-gap: 20px;
+    --h-cta: 56px; --h-chip: 40px; --h-pill: 34px; --sz-control: 40px;
+
+    --dur-fast: 140ms;
+    --dur-sheet: 480ms;
+    --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    /* --bs-panel-background is read inside a box-shadow (the bleed), so it
+       must stay a flat colour or elevation.floating is dropped with it. */
+    --bs-panel-background: var(--n-200);
+    --bs-panel-border-radius: var(--r-xxl);      /* radius.xxl = 28 */
+    --bs-panel-box-shadow: var(--e-floating);
+    --bs-handle-color: var(--n-300);
+    --bs-content-padding: var(--screen-x);
+    --bs-footer-padding: var(--screen-x);
+    --bs-transition-duration: var(--dur-sheet);
+    --bs-overlay-background: rgba(0, 0, 0, 0.48);
+    --bs-overlay-blur: 6px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0; min-height: 100vh;
+    background: var(--grad-canvas); background-attachment: fixed;
+    color: var(--c-text);
+    font-family: 'Google Sans Flex', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    font-optical-sizing: auto; -webkit-font-smoothing: antialiased;
+    display: flex; flex-direction: column; align-items: center;
+    gap: var(--sp-5); padding: var(--sp-7) var(--screen-x);
+  }
+
+  dialog-panel > dialog { max-width: 393px; margin-inline: auto; }
+  dialog-panel:has(bottom-sheet) > dialog {
+    background-image: var(--grad-canvas); background-repeat: no-repeat;
+  }
+
+  .t-label {
+    font-size: 12px; line-height: 16px; font-weight: 600;
+    letter-spacing: .96px; text-transform: uppercase;
+    color: var(--c-text-2); margin: 0;
+  }
+  h1 {
+    font-size: 30px; line-height: 36px; font-weight: 700;
+    letter-spacing: -.6px; margin: 0; text-align: center;
+  }
+  p.sub {
+    font-size: 16px; line-height: 22px; color: var(--c-text-2);
+    text-align: center; max-width: 420px; margin: 0;
+  }
+
+  .card {
+    width: 100%; max-width: 393px;
+    background: var(--c-raised); border-radius: var(--r-xl);
+    box-shadow: var(--e-card);
+    padding: var(--card-y) var(--card-x);
+    display: flex; flex-direction: column; gap: var(--card-gap);
+  }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); }
+
+  /* LAW 2 — green is a bloom with a halo, never a flat disc. */
+  .dot {
+    width: 8px; height: 8px; border-radius: var(--r-full);
+    background: var(--grad-bloom); box-shadow: var(--grad-bloom-halo);
+    flex-shrink: 0;
+  }
+  .status-row { display: flex; align-items: center; gap: var(--sp-2); font-size: 14px; color: var(--c-text-2); }
+
+  /* recipes.pillStatus — ink pill, white label, bloom dot. */
+  .pill-status {
+    display: inline-flex; align-items: center; gap: var(--sp-2);
+    height: var(--h-pill); padding: 0 var(--sp-3);
+    border-radius: var(--r-full);
+    background: var(--c-inverse); color: var(--c-text-inv);
+    font-size: 12px; font-weight: 500;
+  }
+
+  /* LAW 3 — selection is LIFT. Selected = white raised; unselected = sunken. */
+  .chip-row { display: flex; gap: var(--sp-2); flex-wrap: wrap; }
+  .chip {
+    display: inline-flex; align-items: center; height: var(--h-chip);
+    padding: 0 var(--sp-4); border-radius: var(--r-full);
+    background: var(--c-sunken); color: var(--c-text-3); font-size: 14px;
+  }
+  .chip.sel {
+    background: var(--c-raised); color: var(--c-text); font-weight: 500;
+    box-shadow: inset 0 0 0 1px var(--c-bevel), var(--e-control);
+  }
+
+  /* LAW 4 — the primary action is INK, fully round, 56pt. */
+  .btn {
+    appearance: none; border: none; cursor: pointer; font-family: inherit;
+    height: var(--h-cta); padding: 0 var(--sp-6);
+    border-radius: var(--r-full); font-size: 16px; font-weight: 600;
+    transition: transform var(--dur-fast) var(--ease-spring);
+  }
+  .btn:active { transform: scale(.96); }
+  .btn-cta {
+    background: var(--grad-ink); background-color: var(--c-inverse);
+    color: var(--c-text-inv); box-shadow: var(--e-dock);
+  }
+  .btn-secondary {
+    background: var(--c-raised); color: var(--c-text);
+    box-shadow: inset 0 0 0 1px var(--c-bevel), var(--e-control);
+  }
+
+  .footer-note { font-size: 12px; color: var(--c-text-2); text-align: center; max-width: 393px; }
+
+  bottom-sheet-header {
+    display: flex; align-items: flex-start; gap: var(--sp-3);
+    padding-top: var(--sp-6); padding-bottom: var(--sp-4);
+  }
+  bottom-sheet-header .h-text { flex: 1; min-width: 0; }
+  bottom-sheet-header h2 {
+    font-size: 22px; line-height: 27px; font-weight: 600;
+    letter-spacing: -.2px; margin: 0;
+  }
+  /* recipes.buttonIcon — fill + 1px INSIDE white stroke + shadow = glass. */
+  .close {
+    flex-shrink: 0; appearance: none; cursor: pointer; font-family: inherit;
+    width: var(--sz-control); height: var(--sz-control);
+    border: none; border-radius: var(--r-full);
+    background: var(--c-control); color: var(--c-text); font-size: 15px;
+    box-shadow: inset 0 0 0 1px var(--c-bevel), var(--e-control);
+  }
+
+  bottom-sheet-content p { font-size: 16px; line-height: 22px; margin: 0 0 var(--sp-4); }
+
+  .row-card {
+    display: flex; align-items: center; gap: var(--card-gap);
+    background: var(--c-raised); border-radius: var(--r-xl);
+    box-shadow: var(--e-card);
+    padding: var(--card-y) var(--card-x); margin-bottom: var(--sp-4);
+  }
+  .swatch {
+    width: 40px; height: 40px; border-radius: var(--r-md); flex-shrink: 0;
+    background: var(--c-sunken);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .row-card .meta { display: flex; flex-direction: column; gap: 2px; }
+  .row-card .name { font-size: 16px; font-weight: 600; }
+  .row-card .desc { font-size: 14px; color: var(--c-text-2); }
+
+  bottom-sheet-footer { display: flex; gap: var(--sp-3); }
+  bottom-sheet-footer .btn { flex: 1; white-space: nowrap; }
+  bottom-sheet-footer .btn-secondary { flex: 0 1 auto; }
+
+  /* motion.md rule 2 — mandatory. The JS snap spring is handled in script. */
+  @media (prefers-reduced-motion: reduce) {
+    :root { --bs-transition-duration: 1ms; --bs-snap-duration: 1ms; }
+    *, *::before, *::after {
+      animation-duration: 1ms !important;
+      transition-duration: 1ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <span class="t-label">@magic-spells/bottom-sheet + dialog-panel</span>
+  <h1>Skinned with the NOMA design system</h1>
+  <p class="sub">
+    Gradient ground, ink CTA, selection by lift. Green appears only as a bloom —
+    there is no flat green fill anywhere on this page.
+  </p>
+
+  <div class="card">
+    <div class="row">
+      <div class="status-row"><span class="dot"></span> Device online</div>
+      <span class="pill-status"><span class="dot"></span>Improving</span>
+    </div>
+    <div class="chip-row">
+      <span class="chip sel">Living room</span>
+      <span class="chip">72°F</span>
+      <span class="chip">Locked</span>
+    </div>
+    <button id="open-sheet" class="btn btn-cta">Open device settings</button>
+  </div>
+
+  <p class="footer-note">
+    Drag the sheet's header down to dismiss, or flick it — the physics engine
+    drives the release velocity.
+  </p>
+
+  <dialog-panel id="sheet-panel">
+    <dialog aria-labelledby="sheet-title">
+      <bottom-sheet snap-points="48,88">
+        <bottom-sheet-header>
+          <span class="h-text"><h2 id="sheet-title">Living Room Hub</h2></span>
+          <button class="close" data-action-hide-dialog aria-label="Close">✕</button>
+        </bottom-sheet-header>
+
+        <bottom-sheet-content>
+          <p>Drag up for more devices, or flick down to dismiss.</p>
+
+          <div class="row-card">
+            <span class="swatch"><span class="dot"></span></span>
+            <span class="meta"><span class="name">Smart Lock</span><span class="desc">Locked · last activity 2m ago</span></span>
+          </div>
+          <div class="row-card">
+            <span class="swatch"><span class="dot"></span></span>
+            <span class="meta"><span class="name">Air Quality</span><span class="desc">Good · AQI 24</span></span>
+          </div>
+          <div class="row-card">
+            <span class="swatch"></span>
+            <span class="meta"><span class="name">Thermostat</span><span class="desc">72°F · Auto schedule</span></span>
+          </div>
+          <div class="row-card">
+            <span class="swatch"></span>
+            <span class="meta"><span class="name">Living Room Lights</span><span class="desc">On · 80% brightness</span></span>
+          </div>
+        </bottom-sheet-content>
+
+        <bottom-sheet-footer>
+          <button class="btn btn-secondary" data-action-hide-dialog>Cancel</button>
+          <button class="btn btn-cta" data-action-hide-dialog>Done</button>
+        </bottom-sheet-footer>
+      </bottom-sheet>
+    </dialog>
+  </dialog-panel>
+
+  <script type="module">
+    import './vendor/dialog-panel.esm.js';
+    import './vendor/bottom-sheet.esm.js';
+  </script>
+
+  <script>
+    const trigger = document.querySelector('#open-sheet');
+    trigger.addEventListener('click', () => {
+      document.querySelector('#sheet-panel bottom-sheet').show(trigger);
+    });
+
+    // motion.md rule 2, part two — the rAF spring never sees CSS.
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const applyReduce = () => {
+      document.querySelectorAll('bottom-sheet[snap-points]').forEach((s) => {
+        if (reduce.matches) s.setAttribute('spring', 'none');
+        else s.removeAttribute('spring');
+      });
+    };
+    applyReduce();
+    reduce.addEventListener('change', applyReduce);
+  </script>
+</body>
+</html>

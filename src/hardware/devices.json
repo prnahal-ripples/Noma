@@ -1,0 +1,221 @@
+{
+  "$comment": [
+    "CANONICAL device registry. memory/ markdown mirrors defer to this file.",
+    "",
+    "PROVENANCE: every value here was extracted from PM-supplied HTML prototypes",
+    "on 2026-08-04 (see docs/index.md, 'PM prototype set'). These are DESIGN",
+    "prototypes, not engineering specs. Treat model names, coverage areas, CADR",
+    "and prices as INDICATIVE and unratified. Nothing here has been checked",
+    "against a datasheet or a BOM.",
+    "",
+    "HW-* ids are stable. Do not renumber; retire instead."
+  ],
+
+  "meta": {
+    "extractedOn": "2026-08-04",
+    "sources": [
+      "Ding App - White & Blue Launch V2 (Fixed, Standalone).html",
+      "Ding_Air_Purifier_Week_One.html",
+      "air-agent-app.html",
+      "noise_sanctuary_final (1).html"
+    ],
+    "brandNameUnresolved": true,
+    "brandNameConflict": "C-2",
+    "$comment_brand": "Model strings below carry the 'Ding' brand from the prototypes. The product is currently named NOMA. Renaming every SKU is blocked on C-2."
+  },
+
+  "deviceTypes": [
+    { "id": "purifier", "label": "Air purifier", "anchorProduct": true },
+    { "id": "camera",   "label": "Camera" },
+    { "id": "lock",     "label": "Smart lock" },
+    { "id": "vacuum",   "label": "Robot vacuum" },
+    { "id": "doorbell", "label": "Video doorbell" },
+    { "id": "light",    "label": "Smart light",  "status": "roadmap" },
+    { "id": "speaker",  "label": "Music system", "status": "roadmap" },
+    { "id": "sensor",   "label": "Water / door / smoke sensor", "status": "roadmap" }
+  ],
+
+  "firstRunDeviceTypes": ["camera", "lock", "purifier", "vacuum"],
+  "$comment_firstRun": "Only these four are offered during first-device setup in the prototype. Lights, speakers and sensors appear in strategy material only.",
+
+  "devices": [
+    {
+      "id": "HW-PUR-200",
+      "type": "purifier",
+      "model": "Ding Air Pro 200",
+      "coverage": { "value": 280, "unit": "ft2", "qualifier": "up to" },
+      "cadr": { "value": 240, "unit": "m3/hr" },
+      "filtration": ["HEPA H13"],
+      "confidence": "prototype-only"
+    },
+    {
+      "id": "HW-PUR-500",
+      "type": "purifier",
+      "model": "Ding Air Pro 500",
+      "coverage": { "value": 550, "unit": "ft2", "qualifier": "up to" },
+      "cadr": { "value": 400, "unit": "m3/hr" },
+      "filtration": ["HEPA H13", "Activated carbon"],
+      "confidence": "prototype-only"
+    },
+    {
+      "id": "HW-PUR-MAX",
+      "type": "purifier",
+      "model": "Ding Air Pro Max",
+      "coverage": { "value": 900, "unit": "ft2", "qualifier": "up to" },
+      "cadr": { "value": 600, "unit": "m3/hr" },
+      "filtration": ["Dual HEPA H13"],
+      "confidence": "prototype-only"
+    },
+    {
+      "id": "HW-VAC-R1",
+      "type": "vacuum",
+      "model": "Ding Clean Bot R1",
+      "navigation": "LiDAR",
+      "suctionPa": 5000,
+      "capabilities": ["sweep", "mop"],
+      "dock": "auto-empty",
+      "confidence": "prototype-only"
+    },
+    {
+      "id": "HW-VAC-R1P",
+      "type": "vacuum",
+      "model": "Ding Clean Bot R1 Pro",
+      "navigation": "LiDAR",
+      "suctionPa": 8000,
+      "capabilities": ["sweep", "mop", "hot-water-mop"],
+      "dock": "self-wash + auto-empty",
+      "confidence": "prototype-only"
+    },
+    {
+      "id": "HW-CAM-360",
+      "type": "camera",
+      "model": "Ding Cam 360 2K",
+      "resolution": "2K",
+      "features": ["night vision", "pan-tilt-zoom", "two-way audio", "privacy mode", "person detection", "pet detection"],
+      "storage": ["cloud", "sd-card"],
+      "confidence": "prototype-only"
+    },
+    {
+      "id": "HW-BELL-PRO",
+      "type": "doorbell",
+      "model": "Ding Bell Pro",
+      "confidence": "prototype-only"
+    },
+    {
+      "id": "HW-LOCK-X1",
+      "type": "lock",
+      "model": "Ding Smart Lock X1",
+      "features": ["remote unlock", "access log"],
+      "confidence": "prototype-only"
+    },
+    {
+      "id": "HW-LOCK-X2",
+      "type": "lock",
+      "model": "Ding Smart Lock X2",
+      "features": ["remote unlock", "access log"],
+      "confidence": "prototype-only",
+      "$comment": "Appears in the seeded device list only. No spec, no price, and no stated difference from X1."
+    }
+  ],
+
+  "wearables": {
+    "$comment": [
+      "Not NOMA devices — companion hardware from the parent brand's existing line.",
+      "They are SIGNAL SOURCES, not controllable devices. The integration is a real",
+      "differentiator: it ties air quality to a body metric, which is what stops air",
+      "quality feeling abstract."
+    ],
+    "devices": [
+      { "id": "HW-WEAR-RING2", "model": "Noise Luna Ring 2", "signals": ["spo2", "sleep", "hr"], "confidence": "prototype-only" },
+      { "id": "HW-WEAR-WATCH", "model": "Noise smartwatch (model unspecified)", "signals": ["sleep", "wake", "spo2", "steps", "gps"], "confidence": "prototype-only" }
+    ],
+    "triggers": [
+      { "id": "WEARABLE_SLEEP",      "label": "Sleep detected",    "source": "low activity + HR in sleep range",   "defaultAction": "Night mode" },
+      { "id": "WEARABLE_WAKE",       "label": "Wake detected",     "source": "movement spike after sleep period",  "defaultAction": "Morning mode" },
+      { "id": "WEARABLE_SPO2",       "label": "SpO2 below 94%",    "source": "blood oxygen threshold",             "defaultAction": "Purifier to Turbo" },
+      { "id": "WEARABLE_STEPS",      "label": "Step goal reached", "source": "daily steps >= 8000",                "defaultAction": "user-defined" },
+      { "id": "WEARABLE_GPS_LEAVE",  "label": "Leaving home",      "source": "GPS outside 200m of home",           "defaultAction": "Away mode" },
+      { "id": "WEARABLE_GPS_ARRIVE", "label": "Arriving home",     "source": "GPS within 150m of home",            "defaultAction": "Home mode" }
+    ],
+    "openQuestion": "C-8 — an SpO2-triggered purifier boost is a health-adjacent inference. The prototype presents it as an ordinary automation. Needs a medical and legal position before it ships."
+  },
+
+  "sensing": {
+    "$comment": "How air data is actually produced. This is the substance behind the product's central claim.",
+    "indoor": {
+      "sensor": "QSensAI laser particle sensor",
+      "placement": "on-device",
+      "measures": [
+        { "key": "PM2.5",       "unit": "ug/m3",       "note": "Fine particles — the headline number" },
+        { "key": "PM10",        "unit": "ug/m3",       "note": "Coarse dust" },
+        { "key": "NO2",         "unit": "ppb",         "note": "Traffic" },
+        { "key": "O3",          "unit": "ppb",         "note": "Ozone" },
+        { "key": "VOC",         "unit": "qualitative", "note": "Shown as Low/Med/High, never a number" },
+        { "key": "humidity",    "unit": "%" },
+        { "key": "temperature", "unit": "C" },
+        { "key": "CO2",         "unit": "ppm",         "note": "Appears in Score factors only. Which SKU carries a CO2 sensor is unstated — see C-9." }
+      ],
+      "confidence": "prototype-only"
+    },
+    "outdoor": {
+      "source": "CPCB (Central Pollution Control Board) — nearest station",
+      "method": "blended with the on-device reading",
+      "$comment": "Verbatim from the prototype: 'Outdoor values blended from the nearest CPCB station.' The blend is specified nowhere. That matters, because the indoor-vs-outdoor comparison is the product's core emotional beat and every number in it depends on this.",
+      "confidence": "prototype-only"
+    }
+  },
+
+  "connectivity": {
+    "pairing": "Bluetooth LE — device powered on, phone held close",
+    "network": "Wi-Fi 2.4 GHz only",
+    "notableBehaviour": "Setup deliberately HIDES 5 GHz SSIDs the device cannot join, rather than listing them and failing. Worth preserving: it removes the single most common smart-home setup failure.",
+    "firmware": "OTA; version shown in device settings (prototype: v2.4.1)"
+  },
+
+  "modes": {
+    "conflictId": "C-4",
+    "$comment": "CONFLICT C-4 — three incompatible fan-mode vocabularies across the source docs. NOT reconciled. Do not build mode UI until this is ruled.",
+    "candidates": {
+      "weekOneDoc": ["Auto", "Turbo", "Silent", "Eco"],
+      "agentDoc":   ["Auto", "Sleep", "Turbo", "Manual"],
+      "launchApp":  ["Quiet", "Standard", "Turbo", "Max"]
+    },
+    "onlyValuePresentInAllThree": "Turbo",
+    "homeScenes": {
+      "$comment": "A distinct concept from fan modes — whole-home scenes. Consistent across all docs.",
+      "values": ["Home", "Away", "Night"]
+    },
+    "vacuum": {
+      "cleanModes": ["Sweep", "Sweep & Mop", "Mop"],
+      "suction":    ["Eco", "Standard", "Max", "Turbo Max"],
+      "targeting":  ["Whole Home", "Select Room", "Custom Area", "Point Clean"]
+    }
+  },
+
+  "consumables": [
+    { "id": "HW-CONS-HEPA",       "label": "HEPA H13 filter", "forType": "purifier", "priceINR": null, "priceConflict": "C-6", "priceCandidates": [1299, 1499] },
+    { "id": "HW-CONS-MOP",        "label": "Mop pads (x4)",   "forType": "vacuum",   "priceINR": 499 },
+    { "id": "HW-CONS-MOUNT",      "label": "Cam wall mount",  "forType": "camera",   "priceINR": 299 },
+    { "id": "HW-CONS-BRUSH-MAIN", "label": "Main brush",      "forType": "vacuum",   "priceINR": null },
+    { "id": "HW-CONS-BRUSH-SIDE", "label": "Side brush",      "forType": "vacuum",   "priceINR": null }
+  ],
+
+  "filterModel": {
+    "$comment": [
+      "THE CORE DIFFERENTIATOR. Competitors count runtime hours; NOMA weights each",
+      "hour by the particulate load actually absorbed. Same filter, same hours, in",
+      "Delhi versus Mumbai, yields materially different remaining life.",
+      "This is the one claim the whole product is built on, and it is currently",
+      "specified nowhere in engineering terms."
+    ],
+    "method": "AQI-weighted particulate load, computed hourly",
+    "inputs": ["live outdoor AQI", "indoor particle sensor", "fan runtime"],
+    "claimedEffect": "Above AQI 200 a filter absorbs 3-5x more particulate per hour than on clean-air days.",
+    "workedExample": {
+      "delhiWinter":   { "avgAqi": 287, "competitorReading": "72%", "nomaReading": "38%" },
+      "mumbaiMonsoon": { "avgAqi": 94,  "competitorReading": "72%", "nomaReading": "64%" }
+    },
+    "alerting": "Predictive — surfaces before failure, with reorder timed to arrive before exhaustion.",
+    "specStatus": "UNSPECIFIED — no formula, no coefficients, no validation data supplied. Tracked as C-7."
+  }
+}

@@ -1,0 +1,862 @@
+{
+ "$comment": [
+  "Where each reference tile's capture comes from.",
+  "To use real Mobbin captures: save each as docs/research/refs/<slug>.png and re-run",
+  "build-refs.py. Any slug with a real file present replaces its wireframe automatically.",
+  "Generated from the tile definitions, so it cannot drift from the document."
+ ],
+ "have": 69,
+ "total": 85,
+ "refs": [
+  {
+   "slug": "ikea-splash",
+   "app": "IKEA Home smart",
+   "flow": "Onboarding",
+   "screen": "Splash",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "A",
+   "stageName": "The first screen"
+  },
+  {
+   "slug": "ghome-welcome",
+   "app": "Google Home",
+   "flow": "Onboarding",
+   "screen": "Welcome home",
+   "verdict": "ok",
+   "haveCapture": false,
+   "stage": "A",
+   "stageName": "The first screen"
+  },
+  {
+   "slug": "st-slide1",
+   "app": "SmartThings",
+   "flow": "Onboarding",
+   "screen": "Control your devices",
+   "verdict": "bad",
+   "haveCapture": true,
+   "stage": "A",
+   "stageName": "The first screen"
+  },
+  {
+   "slug": "alexa-signin",
+   "app": "Amazon Alexa",
+   "flow": "Onboarding",
+   "screen": "Sign in",
+   "verdict": "bad",
+   "haveCapture": false,
+   "stage": "A",
+   "stageName": "The first screen"
+  },
+  {
+   "slug": "ikea-region",
+   "app": "IKEA Home smart",
+   "flow": "Onboarding",
+   "screen": "Let’s start with your region",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "A",
+   "stageName": "The first screen"
+  },
+  {
+   "slug": "st-slide2",
+   "app": "SmartThings",
+   "flow": "Onboarding",
+   "screen": "Slide 2 of 4",
+   "verdict": "bad",
+   "haveCapture": true,
+   "stage": "B",
+   "stageName": "Value slides"
+  },
+  {
+   "slug": "ghome-whatsnew",
+   "app": "Google Home",
+   "flow": "Creating home",
+   "screen": "Welcome to the new Google Home",
+   "verdict": "ok",
+   "haveCapture": true,
+   "stage": "B",
+   "stageName": "Value slides"
+  },
+  {
+   "slug": "ikea-whatcan",
+   "app": "IKEA Home smart",
+   "flow": "Connecting to a hub",
+   "screen": "What can a smart home do?",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "B",
+   "stageName": "Value slides"
+  },
+  {
+   "slug": "ikea-harmony",
+   "app": "IKEA Home smart",
+   "flow": "Connecting to a hub",
+   "screen": "A smart home in harmony",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "B",
+   "stageName": "Value slides"
+  },
+  {
+   "slug": "st-perm",
+   "app": "SmartThings",
+   "flow": "Onboarding",
+   "screen": "Slide 1 + OS permission",
+   "verdict": "bad",
+   "haveCapture": true,
+   "stage": "B",
+   "stageName": "Value slides"
+  },
+  {
+   "slug": "ghome-signin",
+   "app": "Google Home",
+   "flow": "Onboarding",
+   "screen": "Sign in",
+   "verdict": "ok",
+   "haveCapture": false,
+   "stage": "C",
+   "stageName": "Account"
+  },
+  {
+   "slug": "st-account",
+   "app": "SmartThings",
+   "flow": "Creating an account",
+   "screen": "Create your Samsung account",
+   "verdict": "bad",
+   "haveCapture": false,
+   "stage": "C",
+   "stageName": "Account"
+  },
+  {
+   "slug": "st-oneaccount",
+   "app": "SmartThings",
+   "flow": "Onboarding",
+   "screen": "One account. Any device.",
+   "verdict": "ok",
+   "haveCapture": false,
+   "stage": "C",
+   "stageName": "Account"
+  },
+  {
+   "slug": "alexa-welcome-sam",
+   "app": "Amazon Alexa",
+   "flow": "Adding a family member",
+   "screen": "Welcome, Sam",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "C",
+   "stageName": "Account"
+  },
+  {
+   "slug": "apple-homesettings",
+   "app": "Apple Home",
+   "flow": "Home settings",
+   "screen": "No account step at all",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "C",
+   "stageName": "Account"
+  },
+  {
+   "slug": "ikea-privacy",
+   "app": "IKEA Home smart",
+   "flow": "Onboarding",
+   "screen": "Privacy Statement",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "D",
+   "stageName": "Consent"
+  },
+  {
+   "slug": "ikea-analytics",
+   "app": "IKEA Home smart",
+   "flow": "Onboarding",
+   "screen": "Consent for Analytics",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "D",
+   "stageName": "Consent"
+  },
+  {
+   "slug": "ikea-analytics2",
+   "app": "IKEA Home smart",
+   "flow": "Onboarding",
+   "screen": "Consent — chosen",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "D",
+   "stageName": "Consent"
+  },
+  {
+   "slug": "st-optins",
+   "app": "SmartThings",
+   "flow": "Creating an account",
+   "screen": "Optional opt-ins",
+   "verdict": "bad",
+   "haveCapture": false,
+   "stage": "D",
+   "stageName": "Consent"
+  },
+  {
+   "slug": "ghome-privacy",
+   "app": "Google Home",
+   "flow": "Privacy",
+   "screen": "Removing saved WiFi and home address",
+   "verdict": "good",
+   "haveCapture": false,
+   "stage": "D",
+   "stageName": "Consent"
+  },
+  {
+   "slug": "ikea-name",
+   "app": "IKEA Home smart",
+   "flow": "Connecting to a hub",
+   "screen": "Give your home a name",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "E",
+   "stageName": "Naming the home"
+  },
+  {
+   "slug": "ghome-name",
+   "app": "Google Home",
+   "flow": "Creating home",
+   "screen": "Name your home",
+   "verdict": "ok",
+   "haveCapture": true,
+   "stage": "E",
+   "stageName": "Naming the home"
+  },
+  {
+   "slug": "ghome-address",
+   "app": "Google Home",
+   "flow": "Creating home",
+   "screen": "Home address",
+   "verdict": "bad",
+   "haveCapture": true,
+   "stage": "E",
+   "stageName": "Naming the home"
+  },
+  {
+   "slug": "st-location",
+   "app": "SmartThings",
+   "flow": "Adding a device",
+   "screen": "Set the location name and geolocation",
+   "verdict": "bad",
+   "haveCapture": true,
+   "stage": "E",
+   "stageName": "Naming the home"
+  },
+  {
+   "slug": "apple-addhome",
+   "app": "Apple Home",
+   "flow": "Changing Home name",
+   "screen": "Add Home",
+   "verdict": "ok",
+   "haveCapture": true,
+   "stage": "E",
+   "stageName": "Naming the home"
+  },
+  {
+   "slug": "ghome-empty",
+   "app": "Google Home",
+   "flow": "Adding a device",
+   "screen": "Devices — empty",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "F",
+   "stageName": "Choosing what to set up"
+  },
+  {
+   "slug": "ghome-choose",
+   "app": "Google Home",
+   "flow": "Adding a device",
+   "screen": "Choose a device",
+   "verdict": "bad",
+   "haveCapture": false,
+   "stage": "F",
+   "stageName": "Choosing what to set up"
+  },
+  {
+   "slug": "alexa-which",
+   "app": "Amazon Alexa",
+   "flow": "Adding a device (speaker)",
+   "screen": "Which device would you like to set up?",
+   "verdict": "ok",
+   "haveCapture": true,
+   "stage": "F",
+   "stageName": "Choosing what to set up"
+  },
+  {
+   "slug": "apple-addacc",
+   "app": "Apple Home",
+   "flow": "Adding an accessory (Bridge)",
+   "screen": "Add Accessory",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "F",
+   "stageName": "Choosing what to set up"
+  },
+  {
+   "slug": "apple-plusmenu",
+   "app": "Apple Home",
+   "flow": "Home",
+   "screen": "The + menu",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "F",
+   "stageName": "Choosing what to set up"
+  },
+  {
+   "slug": "ikea-parts",
+   "app": "IKEA Home smart",
+   "flow": "Connecting to a hub",
+   "screen": "Let’s get started!",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "G",
+   "stageName": "Before the first instruction"
+  },
+  {
+   "slug": "alexa-orange",
+   "app": "Amazon Alexa",
+   "flow": "Adding a device (speaker)",
+   "screen": "Is your Echo Dot plugged in and displaying an orange light?",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "G",
+   "stageName": "Before the first instruction"
+  },
+  {
+   "slug": "st-adddevices",
+   "app": "SmartThings",
+   "flow": "Adding a device",
+   "screen": "Add devices to use at this location",
+   "verdict": "ok",
+   "haveCapture": true,
+   "stage": "G",
+   "stageName": "Before the first instruction"
+  },
+  {
+   "slug": "st-ready",
+   "app": "SmartThings",
+   "flow": "Adding a device",
+   "screen": "Getting everything ready",
+   "verdict": "ok",
+   "haveCapture": true,
+   "stage": "G",
+   "stageName": "Before the first instruction"
+  },
+  {
+   "slug": "ikea-welcomehome",
+   "app": "IKEA Home smart",
+   "flow": "Connecting to a hub",
+   "screen": "Welcome home — empty",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "G",
+   "stageName": "Before the first instruction"
+  },
+  {
+   "slug": "ikea-ethernet",
+   "app": "IKEA Home smart",
+   "flow": "Connecting to a hub",
+   "screen": "Connect the ethernet cable to the hub and your router",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "H",
+   "stageName": "The physical steps"
+  },
+  {
+   "slug": "ikea-power",
+   "app": "IKEA Home smart",
+   "flow": "Connecting to a hub",
+   "screen": "Connect the power cable to the hub and plug it in",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "H",
+   "stageName": "The physical steps"
+  },
+  {
+   "slug": "ikea-ring",
+   "app": "IKEA Home smart",
+   "flow": "Connecting to a hub",
+   "screen": "Wait for the ring light to make a full circle",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "H",
+   "stageName": "The physical steps"
+  },
+  {
+   "slug": "ikea-pulse",
+   "app": "IKEA Home smart",
+   "flow": "Connecting to a hub",
+   "screen": "The ring light will pulse when the hub is ready",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "H",
+   "stageName": "The physical steps"
+  },
+  {
+   "slug": "ikea-confirm",
+   "app": "IKEA Home smart",
+   "flow": "Connecting to a hub",
+   "screen": "Time to confirm your hub!",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "H",
+   "stageName": "The physical steps"
+  },
+  {
+   "slug": "ikea-looking",
+   "app": "IKEA Home smart",
+   "flow": "Connecting to a hub",
+   "screen": "Looking for nearby hubs…",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "I",
+   "stageName": "Discovery and the permission"
+  },
+  {
+   "slug": "alexa-searching",
+   "app": "Amazon Alexa",
+   "flow": "Adding a device (speaker)",
+   "screen": "Searching for device…",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "I",
+   "stageName": "Discovery and the permission"
+  },
+  {
+   "slug": "apple-bridge",
+   "app": "Apple Home",
+   "flow": "Adding an accessory (Bridge)",
+   "screen": "Bridge — found",
+   "verdict": "ok",
+   "haveCapture": true,
+   "stage": "I",
+   "stageName": "Discovery and the permission"
+  },
+  {
+   "slug": "apple-identify",
+   "app": "Apple Home",
+   "flow": "Adding an accessory (Bridge)",
+   "screen": "Bridge Location + Identify",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "I",
+   "stageName": "Discovery and the permission"
+  },
+  {
+   "slug": "st-connecting",
+   "app": "SmartThings",
+   "flow": "Adding a device",
+   "screen": "Connecting to device",
+   "verdict": "bad",
+   "haveCapture": true,
+   "stage": "I",
+   "stageName": "Discovery and the permission"
+  },
+  {
+   "slug": "alexa-wifi",
+   "app": "Amazon Alexa",
+   "flow": "Setting up Wi-Fi",
+   "screen": "Select your wifi network",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "J",
+   "stageName": "Wi-Fi"
+  },
+  {
+   "slug": "alexa-wifipass",
+   "app": "Amazon Alexa",
+   "flow": "Setting up Wi-Fi",
+   "screen": "Enter wifi password",
+   "verdict": "bad",
+   "haveCapture": true,
+   "stage": "J",
+   "stageName": "Wi-Fi"
+  },
+  {
+   "slug": "alexa-wificonn",
+   "app": "Amazon Alexa",
+   "flow": "Setting up Wi-Fi",
+   "screen": "Connecting to wifi → Connected",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "J",
+   "stageName": "Wi-Fi"
+  },
+  {
+   "slug": "st-pin",
+   "app": "SmartThings",
+   "flow": "Adding a device",
+   "screen": "Verify your device — PIN",
+   "verdict": "ok",
+   "haveCapture": true,
+   "stage": "J",
+   "stageName": "Wi-Fi"
+  },
+  {
+   "slug": "ghome-savedwifi",
+   "app": "Google Home",
+   "flow": "Privacy",
+   "screen": "Saved WiFi",
+   "verdict": "good",
+   "haveCapture": false,
+   "stage": "J",
+   "stageName": "Wi-Fi"
+  },
+  {
+   "slug": "apple-room",
+   "app": "Apple Home",
+   "flow": "Adding an accessory (Bridge)",
+   "screen": "Bridge Location",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "K",
+   "stageName": "Where it lives"
+  },
+  {
+   "slug": "ghome-rooms",
+   "app": "Google Home",
+   "flow": "Adding new devices to room",
+   "screen": "Devices, groups and rooms",
+   "verdict": "ok",
+   "haveCapture": false,
+   "stage": "K",
+   "stageName": "Where it lives"
+  },
+  {
+   "slug": "ikea-room",
+   "app": "IKEA Home smart",
+   "flow": "Creating a room",
+   "screen": "Create a room",
+   "verdict": "bad",
+   "haveCapture": false,
+   "stage": "K",
+   "stageName": "Where it lives"
+  },
+  {
+   "slug": "apple-icon",
+   "app": "Apple Home",
+   "flow": "Adding a new scene (custom)",
+   "screen": "Choose Icon",
+   "verdict": "bad",
+   "haveCapture": false,
+   "stage": "K",
+   "stageName": "Where it lives"
+  },
+  {
+   "slug": "ghome-choosehome",
+   "app": "Google Home",
+   "flow": "Creating home",
+   "screen": "Choose a home",
+   "verdict": "ok",
+   "haveCapture": true,
+   "stage": "K",
+   "stageName": "Where it lives"
+  },
+  {
+   "slug": "ikea-found",
+   "app": "IKEA Home smart",
+   "flow": "Connecting to a hub",
+   "screen": "We found your hub!",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "L",
+   "stageName": "Waiting, and the update"
+  },
+  {
+   "slug": "ikea-reboot",
+   "app": "IKEA Home smart",
+   "flow": "Connecting to a hub",
+   "screen": "Rebooting",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "L",
+   "stageName": "Waiting, and the update"
+  },
+  {
+   "slug": "ikea-updated",
+   "app": "IKEA Home smart",
+   "flow": "Connecting to a hub",
+   "screen": "Update complete",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "L",
+   "stageName": "Waiting, and the update"
+  },
+  {
+   "slug": "st-registering",
+   "app": "SmartThings",
+   "flow": "Adding a device",
+   "screen": "Registering your device",
+   "verdict": "ok",
+   "haveCapture": true,
+   "stage": "L",
+   "stageName": "Waiting, and the update"
+  },
+  {
+   "slug": "st-processing",
+   "app": "SmartThings",
+   "flow": "Adding a device",
+   "screen": "Processing…",
+   "verdict": "bad",
+   "haveCapture": true,
+   "stage": "L",
+   "stageName": "Waiting, and the update"
+  },
+  {
+   "slug": "ghome-favs",
+   "app": "Google Home",
+   "flow": "Creating home",
+   "screen": "Choose your favourites",
+   "verdict": "bad",
+   "haveCapture": true,
+   "stage": "M",
+   "stageName": "The reveal"
+  },
+  {
+   "slug": "apple-home",
+   "app": "Apple Home",
+   "flow": "Home",
+   "screen": "My Home — after adding",
+   "verdict": "ok",
+   "haveCapture": true,
+   "stage": "M",
+   "stageName": "The reveal"
+  },
+  {
+   "slug": "ikea-added",
+   "app": "IKEA Home smart",
+   "flow": "Connecting to a hub",
+   "screen": "Welcome home — hub added",
+   "verdict": "ok",
+   "haveCapture": true,
+   "stage": "M",
+   "stageName": "The reveal"
+  },
+  {
+   "slug": "st-added",
+   "app": "SmartThings",
+   "flow": "Adding a device",
+   "screen": "Favorites — where setup begins and ends",
+   "verdict": "ok",
+   "haveCapture": true,
+   "stage": "M",
+   "stageName": "The reveal"
+  },
+  {
+   "slug": "noma-reveal",
+   "app": "NOMA — proposed",
+   "flow": "F-SETUP · 2.12",
+   "screen": "First reading",
+   "verdict": "noma",
+   "haveCapture": false,
+   "stage": "M",
+   "stageName": "The reveal"
+  },
+  {
+   "slug": "ikea-notfound",
+   "app": "IKEA Home smart",
+   "flow": "Connecting to a hub",
+   "screen": "We didn’t find any hubs",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "N",
+   "stageName": "When it breaks"
+  },
+  {
+   "slug": "ikea-issues",
+   "app": "IKEA Home smart",
+   "flow": "View help",
+   "screen": "Common issues and solutions",
+   "verdict": "good",
+   "haveCapture": false,
+   "stage": "N",
+   "stageName": "When it breaks"
+  },
+  {
+   "slug": "alexa-notfound",
+   "app": "Amazon Alexa",
+   "flow": "Adding a device (speaker)",
+   "screen": "Device not discovered",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "N",
+   "stageName": "When it breaks"
+  },
+  {
+   "slug": "alexa-noorange",
+   "app": "Amazon Alexa",
+   "flow": "Adding a device (speaker)",
+   "screen": "No orange light? Try this",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "N",
+   "stageName": "When it breaks"
+  },
+  {
+   "slug": "st-already",
+   "app": "SmartThings",
+   "flow": "Adding a device",
+   "screen": "Device already registered",
+   "verdict": "bad",
+   "haveCapture": true,
+   "stage": "N",
+   "stageName": "When it breaks"
+  },
+  {
+   "slug": "alexa-handphone",
+   "app": "Amazon Alexa",
+   "flow": "Adding a family member",
+   "screen": "Hand your phone to Sam",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "O",
+   "stageName": "Offering the household"
+  },
+  {
+   "slug": "ghome-invite",
+   "app": "Google Home",
+   "flow": "Inviting a person",
+   "screen": "Invite person",
+   "verdict": "ok",
+   "haveCapture": true,
+   "stage": "O",
+   "stageName": "Offering the household"
+  },
+  {
+   "slug": "apple-people",
+   "app": "Apple Home",
+   "flow": "Home settings",
+   "screen": "People — Invite People…",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "O",
+   "stageName": "Offering the household"
+  },
+  {
+   "slug": "alexa-family",
+   "app": "Amazon Alexa",
+   "flow": "Adding a family member",
+   "screen": "Your Family + Add Someone Else",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "O",
+   "stageName": "Offering the household"
+  },
+  {
+   "slug": "ikea-request",
+   "app": "IKEA Home smart",
+   "flow": "Requesting for Control Anywhere",
+   "screen": "Guest requests access from a host",
+   "verdict": "ok",
+   "haveCapture": false,
+   "stage": "O",
+   "stageName": "Offering the household"
+  },
+  {
+   "slug": "ghome-shared1",
+   "app": "Google Home",
+   "flow": "Inviting a person",
+   "screen": "What’s shared — 1 of 3",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "P",
+   "stageName": "Saying what will be shared"
+  },
+  {
+   "slug": "ghome-shared2",
+   "app": "Google Home",
+   "flow": "Inviting a person",
+   "screen": "What’s shared — 2 of 3",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "P",
+   "stageName": "Saying what will be shared"
+  },
+  {
+   "slug": "ghome-shared3",
+   "app": "Google Home",
+   "flow": "Inviting a person",
+   "screen": "What’s shared — 3 of 3",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "P",
+   "stageName": "Saying what will be shared"
+  },
+  {
+   "slug": "alexa-role",
+   "app": "Amazon Alexa",
+   "flow": "Adding a family member",
+   "screen": "Who is this profile for?",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "P",
+   "stageName": "Saying what will be shared"
+  },
+  {
+   "slug": "alexa-shares",
+   "app": "Amazon Alexa",
+   "flow": "Adding a family member",
+   "screen": "Here’s some things you share as part of the family",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "P",
+   "stageName": "Saying what will be shared"
+  },
+  {
+   "slug": "ghome-review",
+   "app": "Google Home",
+   "flow": "Inviting a person",
+   "screen": "Send an invite to “Home”?",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "Q",
+   "stageName": "Send, and afterwards"
+  },
+  {
+   "slug": "ghome-access",
+   "app": "Google Home",
+   "flow": "Inviting a person",
+   "screen": "Invite sent",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "Q",
+   "stageName": "Send, and afterwards"
+  },
+  {
+   "slug": "apple-roster",
+   "app": "Apple Home",
+   "flow": "Home settings",
+   "screen": "People roster",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "Q",
+   "stageName": "Send, and afterwards"
+  },
+  {
+   "slug": "alexa-roster",
+   "app": "Amazon Alexa",
+   "flow": "Adding a family member",
+   "screen": "Your Family — after",
+   "verdict": "good",
+   "haveCapture": true,
+   "stage": "Q",
+   "stageName": "Send, and afterwards"
+  },
+  {
+   "slug": "ghome-delete",
+   "app": "Google Home",
+   "flow": "Support",
+   "screen": "Deleting Home",
+   "verdict": "ok",
+   "haveCapture": false,
+   "stage": "Q",
+   "stageName": "Send, and afterwards"
+  }
+ ]
+}

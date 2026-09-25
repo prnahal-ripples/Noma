@@ -1,0 +1,9 @@
+{
+  "$comment": "English common strings. Keys per strings.schema.json. TODO(owner).",
+
+  "$comment.nav": "Bottom navigation labels. Icon-only in the UI, so these are what VoiceOver reads — they are the tab's only name for anyone not using the glyph. PROVISIONAL SET: the owner's instruction was to keep home/device/automation/profile pending a real IA. Consumed by design-elements/bottom-nav (NomaTab.nomaDefault).",
+  "nav.home.label": "Home",
+  "nav.device.label": "Device",
+  "nav.automation.label": "Automation",
+  "nav.profile.label": "Profile"
+}

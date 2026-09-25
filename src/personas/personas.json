@@ -1,0 +1,7 @@
+{
+  "$comment": "CANONICAL persona registry. memory/product/personas.md mirrors this. TODO(owner): add real personas.",
+  "personas": [
+    { "id": "P1", "name": "TODO", "attributes": {} },
+    { "id": "P2", "name": "TODO", "attributes": {} }
+  ]
+}

@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NOMA bottom navigation — three versions</title>
+<!--
+  Three versions side by side, each a real running instance of demo.html —
+  not a screenshot, and not three copies of the code. One implementation,
+  three renderings.
+
+  The Expanded/Contracted control drives all three at once, which is the
+  point: v2's label collapse is only legible next to v1 and v3 doing their
+  uniform 0.8x shrink at the same moment.
+-->
+<style>
+  * { box-sizing: border-box; }
+  :root {
+    --ink: #2E2E2C; --sec: #767674; --ter: #9E9E9C;
+    --line: #DDDCD8; --stage: #E9E8E5; --raised: #fff;
+  }
+  body {
+    margin: 0; background: var(--stage); color: var(--ink);
+    font-family: 'Google Sans Flex', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    padding: 30px 24px 56px;
+  }
+  @font-face {
+    font-family: 'Google Sans Flex';
+    src: url('../../src/fonts/google-sans-flex/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf') format('truetype');
+    font-weight: 1 1000; font-display: swap;
+  }
+
+  header { text-align: center; max-width: 760px; margin: 0 auto 22px; }
+  .kicker {
+    font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--ter); font-weight: 600;
+  }
+  h1 { font-size: 26px; line-height: 32px; letter-spacing: -.4px; margin: 7px 0 0; }
+  header p { font-size: 14px; line-height: 20px; color: var(--sec); margin: 9px 0 0; }
+
+  .controls { display: flex; justify-content: center; gap: 8px; margin: 18px 0 26px; }
+  .seg { display: inline-flex; gap: 2px; background: var(--line); border-radius: 999px; padding: 3px; }
+  .seg button {
+    font: inherit; font-size: 13px; font-weight: 500;
+    color: var(--sec); background: none; border: 0; cursor: pointer;
+    padding: 8px 18px; border-radius: 999px;
+  }
+  .seg button[aria-pressed="true"] {
+    background: #fff; color: var(--ink);
+    box-shadow: 0 1px 3px rgba(0,0,0,.04), 0 5px 14px rgba(0,0,0,.07);
+  }
+
+  .row {
+    display: flex; gap: 26px; justify-content: center;
+    align-items: flex-start; flex-wrap: wrap;
+  }
+  .col { width: 393px; flex: none; }
+
+  /* Fixed, so a caption that runs one line longer than its neighbours cannot
+     push its phone out of alignment with them — the whole point of this page
+     is comparing the three bars at the same eye level. */
+  .cap { margin-bottom: 14px; height: 122px; }
+  .vnum {
+    display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--ter);
+    border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px;
+  }
+  .cap h2 { font-size: 17px; letter-spacing: -.2px; margin: 9px 0 0; }
+  .cap p { font-size: 13px; line-height: 19px; color: var(--sec); margin: 6px 0 0; }
+
+  .phone {
+    width: 393px; height: 600px; position: relative; flex: none;
+    border-radius: 46px; padding: 10px; background: #1A1A19;
+    box-shadow: 0 30px 70px rgba(0,0,0,.22), 0 4px 12px rgba(0,0,0,.10);
+  }
+  .phone__screen {
+    width: 100%; height: 100%; border-radius: 37px;
+    overflow: hidden; background: #F4F3F1; position: relative;
+  }
+  .phone__notch {
+    position: absolute; top: 9px; left: 50%; transform: translateX(-50%);
+    width: 112px; height: 28px; background: #1A1A19; border-radius: 18px;
+    z-index: 5; pointer-events: none;
+  }
+  iframe { width: 100%; height: 100%; border: 0; display: block; }
+
+  .foot {
+    max-width: 760px; margin: 34px auto 0; font-size: 12.5px; line-height: 19px;
+    color: var(--ter); text-align: center;
+  }
+  .foot b { color: var(--sec); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">NOMA · design system</div>
+  <h1>Bottom navigation — three versions</h1>
+  <p>All three share the same geometry: 16px inset on left, right and bottom, and a
+     0.8× shrink floor. Scroll inside any phone to contract its bar, or use the control
+     below to contract all three at once.</p>
+</header>
+
+<div class="controls">
+  <div class="seg" role="group" aria-label="Bar state">
+    <button id="bExp" aria-pressed="true">Expanded</button>
+    <button id="bMin" aria-pressed="false">Contracted</button>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <div class="cap">
+      <span class="vnum">Version 1</span>
+      <h2>Icon only</h2>
+      <p>The baseline, with the pill spacing corrected — the selected pill now sits
+         8px from every edge of the bar instead of 8px top/bottom and 15px left/right.</p>
+    </div>
+    <div class="phone"><div class="phone__screen">
+      <span class="phone__notch"></span>
+      <iframe id="f1" src="./demo.html?v=1" title="Version 1 — icon only"></iframe>
+    </div></div>
+  </div>
+
+  <div class="col">
+    <div class="cap">
+      <span class="vnum">Version 2</span>
+      <h2>Icon + label</h2>
+      <p>Each tab carries its name. On contract the labels <b>both</b> scale down and
+         fade out, and their row collapses — so the bar genuinely gets shorter rather
+         than keeping empty space.</p>
+    </div>
+    <div class="phone"><div class="phone__screen">
+      <span class="phone__notch"></span>
+      <iframe id="f2" src="./demo.html?v=2" title="Version 2 — icon plus label"></iframe>
+    </div></div>
+  </div>
+
+  <div class="col">
+    <div class="cap">
+      <span class="vnum">Version 3</span>
+      <h2>Icon only + AI button</h2>
+      <p>A fifth action sits outside the bar on the right. The bar gives up that width,
+         so its four tabs sit closer together. Green here is a mint→lime ramp with an
+         ink glyph — never a flat fill, never white on green.</p>
+    </div>
+    <div class="phone"><div class="phone__screen">
+      <span class="phone__notch"></span>
+      <iframe id="f3" src="./demo.html?v=3" title="Version 3 — icon only plus AI button"></iframe>
+    </div></div>
+  </div>
+</div>
+
+<p class="foot">
+  393 × 600 frames — iPhone 15 logical width, shortened so three fit on one screen.
+  Each phone runs the same <b>demo.html</b>; only its <b>?v=</b> differs.
+  <br>All three contract to the same silhouette: <b>51.2px</b> tall at 80% width.
+</p>
+
+<script>
+  const frames = ['f1', 'f2', 'f3'].map((id) => document.getElementById(id));
+  const bExp = document.getElementById('bExp');
+  const bMin = document.getElementById('bMin');
+
+  function setAll(minimized) {
+    frames.forEach((f) => {
+      const api = f.contentWindow && f.contentWindow.__nav;
+      if (api) api.setMinimized(minimized);
+    });
+    bExp.setAttribute('aria-pressed', String(!minimized));
+    bMin.setAttribute('aria-pressed', String(minimized));
+  }
+
+  bExp.addEventListener('click', () => setAll(false));
+  bMin.addEventListener('click', () => setAll(true));
+</script>
+</body>
+</html>

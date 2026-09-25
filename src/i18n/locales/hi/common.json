@@ -1,0 +1,5 @@
+{
+  "$comment": "Hindi common strings. TODO(owner).",
+
+  "$comment.nav": "DELIBERATELY UNTRANSLATED. Four nav keys exist in en/common.json (nav.home.label, nav.device.label, nav.automation.label, nav.profile.label) and are NOT mirrored here on purpose. Two reasons, both already tracked: (1) session-handoff records that the conversational rewrite raised the Hindi bar — this copy needs transcreation, not translation, and nav labels are the most-seen strings in the app; (2) ADR-001 O-5 — Google Sans Flex has no Devanagari glyphs, so the typeface cannot render these even once written. Guessing four transliterations here would look like the work was done. Assign a Hindi writer."
+}

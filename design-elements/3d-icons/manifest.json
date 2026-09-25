@@ -1,0 +1,118 @@
+{
+  "$comment": [
+    "CANONICAL registry for the 3D (tier-1) icon set. Markdown mirrors defer",
+    "to this file, same convention as src/hardware/devices.json.",
+    "",
+    "This is TIER 1 of the two-tier icon system (see README.md in this folder).",
+    "Tier 2 is the flat monoline set already live in code —",
+    "docs/features/settings/_kit.py's ICONS dict and the equivalent in",
+    "docs/features/first-run/build-onboarding.py."
+  ],
+  "meta": {
+    "tier": 1,
+    "style": "3D render, soft studio lighting, transparent background",
+    "source": "owner-supplied, 2026-08-14",
+    "status": "ASSETS PRESENT, IN USE — not yet an Approved Component",
+    "$comment_status": "The owner pasted the four PNGs into this folder by hand on 2026-08-14. They were opened, checked, normalised to lowercase filenames, and re-encoded to 288px WebP under web/ for embedding. All four are live as page headers in the two settings prototypes and were verified in-browser. They still do NOT have a row in .claude/rules/design-system.md Approved Components: that gate is the owner's to clear, and the palette conflicts flagged on appearance and notifications below are still open.",
+    "renderedSizePx": 62,
+    "$comment_size": "Owner calls 2026-08-14: 96 -> 77 -> 62, two 0.8x steps on the same day. At 96 and again at 77 the render read as too heavy against a 29px title. Assets stay 288px, so 62 is still well over 3x and loses no sharpness. The number lives once, in design.tokens.js layout.iconHeaderSize, which _kit.py's ICON_PX and the Vercel dashboard's 3D-icons folder both read.",
+    "$comment_usage": "One per L2 inner page, in the page header, and essentially nowhere else. Never a row icon — tier 2 (flat monoline) owns everything inside a list."
+  },
+  "icons": [
+    {
+      "id": "info",
+      "label": "Info",
+      "file": "info.png",
+      "usedFor": [
+        "About NOMA row",
+        "device info",
+        "general info affordance"
+      ],
+      "note": "Brushed-steel bezel, white face, metallic lowercase i.",
+      "web": "web/info.webp",
+      "bytes": {
+        "source": 468939,
+        "web": 16334
+      },
+      "renderedAt": "docs/features/settings/device-settings-prototype.html — Device info page header"
+    },
+    {
+      "id": "appearance",
+      "label": "Appearance",
+      "file": "appearance.png",
+      "usedFor": [
+        "Appearance settings row (theme, text size)"
+      ],
+      "note": "Wooden painter's palette with loaded colours, brush and knife.",
+      "conflict": "⚠ Palette imagery pulls in blue, red, yellow, brown paint colours that are outside the 2026-08-12 palette rule (white, grey, the two greens only). That rule governs the PRODUCT's own surfaces, not necessarily a photographic/3D icon rendering a real-world object — but flagging rather than assuming, since it's the kind of thing that's been an explicit owner call every other time it came up (see design.tokens.js LAW 2 and the device-thumbnail/avatar compromises in build-profile-settings.py).",
+      "web": "web/appearance.webp",
+      "bytes": {
+        "source": 521881,
+        "web": 23412
+      },
+      "renderedAt": "docs/features/settings/profile-settings-prototype.html — Appearance page header"
+    },
+    {
+      "id": "notifications",
+      "label": "Notifications",
+      "file": "notifications.png",
+      "usedFor": [
+        "Notifications settings row",
+        "notification bell replacement",
+        "bottom-nav or hero notification moments"
+      ],
+      "note": "White rounded-square tile with a red badge showing '1'.",
+      "conflict": "⚠ Same palette flag as appearance — the red badge is outside the two-green rule. Also worth noting: this is a badge/counter render, not a bell — a different metaphor than the flat bell glyph already in _kit.py. Confirm this is the intended replacement, not an addition, before both ship side by side.",
+      "web": "web/notifications.webp",
+      "bytes": {
+        "source": 437485,
+        "web": 12222
+      },
+      "renderedAt": "docs/features/settings/profile-settings-prototype.html — Notifications page header"
+    },
+    {
+      "id": "family",
+      "label": "Family",
+      "file": "family.png",
+      "usedFor": [
+        "Family & access settings row",
+        "household identity",
+        "member/invite flows"
+      ],
+      "note": "Three stylised 3D figures (adult, adult, child) walking, holding hands.",
+      "web": "web/family.webp",
+      "bytes": {
+        "source": 593591,
+        "web": 20732
+      },
+      "renderedAt": "docs/features/settings/profile-settings-prototype.html — Family page header"
+    },
+    {
+      "id": "rooms",
+      "label": "Rooms & devices",
+      "file": "rooms.png",
+      "usedFor": [
+        "Rooms & devices page header"
+      ],
+      "renderedAt": "docs/features/settings/profile-settings-prototype.html — Rooms & devices page header",
+      "note": "Isometric diorama room — open-front box, wood floor, window, armchair with throw, floor lamp, round side table.",
+      "web": "web/rooms.webp",
+      "bytes": {
+        "source": 418734,
+        "web": 12956
+      }
+    },
+    {
+      "id": "filter",
+      "label": "Filter management",
+      "file": "filter.png",
+      "status": "PLACEHOLDER — not drawn yet",
+      "usedFor": [
+        "Filter management page header"
+      ],
+      "renderedAt": "docs/features/settings/device-settings-prototype.html — Filter management page header",
+      "note": "Needs a render. Subject is the HEPA/carbon cartridge itself.",
+      "$howToReplace": "Drop filter.png here, run the resize snippet in README.md. No code change: icon3d() checks disk before falling back."
+    }
+  ]
+}

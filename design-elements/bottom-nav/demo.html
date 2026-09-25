@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bottom navigation — NOMA</title>
+
+<!--
+  THE COMPONENT. Bare on purpose — no device chrome, no notes panel. Whatever
+  embeds this supplies the phone frame (index.html, compare.html, or the
+  noiseFit dashboard's own .phone-stage).
+
+  THREE VERSIONS, one implementation. ?v=1 | 2 | 3, default 1.
+    v1  icon-only                          — the baseline
+    v2  icon + label, label scales+fades away on contract
+    v3  icon-only + an AI button OUTSIDE the bar, to its right
+
+  Tokens hand-copied from Noma-main/src/tokens/{design,motion}.tokens.js.
+  No build step here, so they cannot be imported. If tokens drift, the JS
+  files win — re-sync by hand.
+
+  THE FIVE (NOW SIX) LAWS, where each lands:
+    1. Ground is a gradient   → body background
+    2. GREEN IS NEVER SOLID   → v3's AI button is gradients.accentRamp, NOT a
+                                flat fill. See the note on .ai-btn.
+    3. White means raised     → the selected pill is white and lifted
+    4. The CTA is ink         → no CTA on this surface
+    5. Insurance card bespoke → not built here
+    6. The 10% rule           → v3's AI button is the ONLY green on the
+                                screen, and it is roughly a fortieth of it
+-->
+<style>
+  /* Relative, so this file works when opened directly from this folder. The
+     noiseFit copy of this component points at that repo's own subset instead
+     (/src/noma/fonts/...woff2) — that is the one difference between them. */
+  @font-face {
+    font-family: 'Google Sans Flex';
+    src: url('../../src/fonts/google-sans-flex/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf') format('truetype');
+    font-weight: 1 1000;
+    font-display: swap;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    /* ---- colour (design.tokens.js) ---- */
+    --surface-raised: #FFFFFF;
+    --surface-control: #F8F8F8;
+    --surface-sunken: #E8E8E5;
+    --ink-primary: #2E2E2C;
+    --ink-secondary: #767674;
+    --ink-tertiary: #9E9E9C;
+    --stroke-bevel: #FFFFFF;
+    --stroke-hairline: rgba(11, 11, 11, 0.09);
+
+    --shadow-control: 0 1px 3px rgba(0,0,0,0.04), 0 5px 14px rgba(0,0,0,0.07);
+    --shadow-card:    0 2px 8px rgba(0,0,0,0.03), 0 12px 32px rgba(0,0,0,0.06);
+    --shadow-floating:0 4px 12px rgba(0,0,0,0.05), 0 20px 48px rgba(0,0,0,0.10);
+
+    /* green — LAW 2, only ever a ramp. Anchors: mint #6CCC7C, lime #AECC2A.
+       `-x` is the horizontal variant (gradients.accentRamp.cssX), for tracks
+       that read left-to-right like a toggle. */
+    --accent-ramp: linear-gradient(180deg, #6CCC7C 0%, #AECC2A 100%);
+    --accent-ramp-x: linear-gradient(90deg, #6CCC7C 0%, #AECC2A 100%);
+    --accent-on-fill: #2E2E2C;   /* accent.onFill — NEAR-BLACK, never white */
+    --accent-glow-soft: rgba(108, 204, 124, 0.20);
+
+    /* ---- motion (motion.tokens.js) ---- */
+    --duration-fast: 140ms;
+    --duration-base: 240ms;
+    --easing-standard: cubic-bezier(0.2, 0, 0, 1);
+    --easing-spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
+    --scale-pop: 1.04;
+    --scale-press: 0.96;
+
+    /* Owner-specified icon colour. NOT a NOMA token — sits between
+       neutral[700] #3A3A38 and neutral[800] #2E2E2C. Flagged as drift. */
+    --icon-flat: #343434;
+
+    /* ---- geometry (owner spec) ---- */
+    --nav-inset: 16px;   /* left · right · bottom, all equal */
+    --nav-pad: 8px;      /* bar edge → slot. ALSO the pill's gap on all four
+                            sides, now that the pill fills its slot exactly. */
+    --bar-h: 64px;
+    --icon: 25px;
+    --min-scale: 0.8;    /* the shrink floor — never smaller */
+    --ai-size: 56px;     /* v3 only */
+    --ai-gap: 10px;      /* v3 only — bar → AI button */
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :root { --duration-fast: 0ms; --duration-base: 0ms; }
+  }
+
+  html, body { height: 100%; }
+  body {
+    font-family: 'Google Sans Flex', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    color: var(--ink-primary);
+    background: linear-gradient(180deg, #FFFFFF 0%, #FDFDFC 38%, #DDDCD8 100%);
+    overflow: hidden;
+  }
+
+  /* ---------- scrolling app content ---------- */
+
+  .scroll { position: absolute; inset: 0; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; }
+  .scroll::-webkit-scrollbar { display: none; }
+  .content { padding: 22px 20px calc(var(--bar-h) + var(--nav-inset) * 2 + 24px); }
+
+  .eyebrow {
+    font-size: 12px; font-weight: 600; letter-spacing: .96px;
+    text-transform: uppercase; color: var(--ink-secondary); margin-bottom: 6px;
+  }
+  .title { font-size: 28px; font-weight: 700; letter-spacing: -.6px; margin-bottom: 16px; }
+
+  .metric-card {
+    background: var(--surface-raised); border-radius: 24px;
+    padding: 20px 22px 22px; box-shadow: var(--shadow-card); margin-bottom: 14px;
+  }
+  .metric-label {
+    font-size: 12px; font-weight: 600; letter-spacing: .96px;
+    text-transform: uppercase; color: var(--ink-secondary);
+  }
+  .metric-value { font-size: 60px; line-height: 60px; font-weight: 700; letter-spacing: -2px; margin: 8px 0 2px; }
+  .metric-caption { font-size: 13.5px; color: var(--ink-secondary); }
+
+  .device-row {
+    display: flex; align-items: center; gap: 13px;
+    background: var(--surface-raised); border-radius: 18px;
+    padding: 14px 16px; box-shadow: var(--shadow-card); margin-bottom: 10px;
+  }
+  .device-icon {
+    width: 38px; height: 38px; flex: none; border-radius: 999px;
+    background: var(--surface-control); border: 1px solid var(--stroke-bevel);
+    box-shadow: var(--shadow-control); display: grid; place-items: center;
+  }
+  .device-icon svg { width: 18px; height: 18px; fill: var(--icon-flat); }
+  .device-name { font-size: 15px; font-weight: 600; }
+  .device-state { font-size: 13px; color: var(--ink-secondary); margin-top: 1px; }
+  /* recipes.toggle, synced 2026-08-13 to the owner's Figma spec: 56x24 track,
+     30x18 PILL knob, mint->lime ramp when on.
+
+     This is a hand-rolled copy of the canonical toggle (the real one is
+     recipes.toggle, consumed by docs/features/settings/_kit.py). It used to be
+     40x24 with an 18x18 CIRCLE knob and a flat ink on-state — the circular
+     knob is precisely what the owner's reference marks with a red X, so it was
+     showing the rejected shape. Kept in sync by hand; if the token changes,
+     change this too. */
+  .device-toggle {
+    width: 56px; height: 24px; border-radius: 999px; flex: none; margin-left: auto;
+    background: var(--surface-sunken); position: relative;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.06);
+  }
+  /* LAW 2 — a ramp, never a flat green. */
+  .device-toggle.on { background: var(--accent-ramp-x); box-shadow: none; }
+  .device-toggle::after {
+    content: ''; position: absolute; top: 3px; left: 3px; width: 30px; height: 18px;
+    border-radius: 999px; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.18);
+    transition: transform var(--duration-fast) var(--easing-standard);
+  }
+  .device-toggle.on::after { transform: translateX(20px); }
+
+  .section-label {
+    font-size: 12px; font-weight: 600; letter-spacing: .96px;
+    text-transform: uppercase; color: var(--ink-secondary); margin: 20px 0 10px 2px;
+  }
+
+  /* ======================================================================
+     THE NAV ROW — carries the fixed position and the shrink transform.
+     Used by ALL three versions, so the 16px inset and the 0.8x floor are
+     defined once and cannot drift between them. In v1/v2 it holds only the
+     bar; in v3 it also holds the AI button.
+     ====================================================================== */
+
+  .nav-row {
+    position: fixed;
+    left: var(--nav-inset); right: var(--nav-inset); bottom: var(--nav-inset);
+    display: flex; align-items: center; gap: var(--ai-gap);
+    z-index: 20;
+    transform-origin: bottom center;
+    transform: scale(1);
+    transition: transform var(--duration-base) var(--easing-standard);
+  }
+  .nav-row.minimized { transform: scale(var(--min-scale)); }
+
+  /* ---------- the bar ---------- */
+
+  .noma-tab-bar {
+    --count: 4; --index: 0; --pill-scale: 1;
+    position: relative;
+    flex: 1;
+    display: flex; align-items: stretch;
+    height: var(--bar-h);
+    padding: var(--nav-pad);
+    background: rgba(232, 232, 229, 0.72);
+    backdrop-filter: blur(14px) saturate(170%);
+    -webkit-backdrop-filter: blur(14px) saturate(170%);
+    border: 1px solid var(--stroke-hairline);
+    border-radius: 999px;
+    box-shadow: var(--shadow-floating);
+    transition: height var(--duration-base) var(--easing-standard);
+  }
+
+  /* ---------- selection pill ----------
+     THE FIX. This used to be `inset: 0 7px`, which left the pill 8px from
+     the bar's top/bottom but 15px from its left/right — visibly lopsided on
+     the first and last tab, which is exactly what the owner caught. The pill
+     now fills its slot exactly, so the only gap is --nav-pad and it is
+     identical on all four sides. */
+  .noma-pill-slot {
+    position: absolute;
+    left: var(--nav-pad); top: var(--nav-pad);
+    width: calc((100% - var(--nav-pad) * 2) / var(--count));
+    height: calc(100% - var(--nav-pad) * 2);
+    transform: translateX(calc(var(--index) * 100%));
+    pointer-events: none; z-index: 1;
+    transition:
+      transform var(--duration-base) var(--easing-standard),
+      height var(--duration-base) var(--easing-standard);
+  }
+  .nav-row.travelling .noma-pill-slot { transition-timing-function: var(--easing-spring); }
+
+  .noma-pill-fill {
+    position: absolute;
+    inset: 0;                       /* ← equal on all four sides */
+    background: var(--surface-raised);
+    border: 1px solid var(--stroke-bevel);
+    border-radius: 999px;
+    box-shadow: var(--shadow-control);
+    transform: scale(var(--pill-scale));
+    transition:
+      transform var(--duration-fast) var(--easing-standard),
+      box-shadow var(--duration-fast) var(--easing-standard);
+  }
+  .nav-row.lifting .noma-pill-fill { --pill-scale: var(--scale-pop); box-shadow: var(--shadow-floating); }
+  @media (prefers-reduced-motion: reduce) {
+    .nav-row.lifting .noma-pill-fill { --pill-scale: 1; box-shadow: var(--shadow-control); }
+  }
+
+  /* ---------- tabs ---------- */
+
+  .noma-tab {
+    flex: 1;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 0;
+    border: none; background: none; cursor: pointer;
+    border-radius: 999px; z-index: 2;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform var(--duration-fast) var(--easing-spring);
+  }
+  .noma-tab:active { transform: scale(var(--scale-press)); }
+  .noma-tab svg {
+    width: var(--icon); height: var(--icon); display: block; flex: none;
+    fill: var(--icon-flat); opacity: .38;
+    transition: opacity var(--duration-fast) var(--easing-standard);
+  }
+  .noma-tab.active svg { opacity: 1; }
+  .noma-tab:focus-visible { outline: 2px solid var(--icon-flat); outline-offset: 2px; }
+
+  /* ---------- v2: the label ----------
+     Mirrors the nav.*.label i18n keys in
+     Noma-main/src/i18n/locales/en/common.json. Hidden entirely in v1/v3
+     rather than styled away, so it is not read by assistive tech there. */
+  .noma-tab-label {
+    display: none;
+    font-size: 11px; line-height: 13px; font-weight: 500; letter-spacing: .1px;
+    color: var(--icon-flat); opacity: .5;
+    height: 13px; margin-top: 4px;
+    transform-origin: center top;
+    white-space: nowrap;
+    transition:
+      opacity var(--duration-fast) var(--easing-standard),
+      transform var(--duration-base) var(--easing-standard),
+      height var(--duration-base) var(--easing-standard),
+      margin-top var(--duration-base) var(--easing-standard);
+  }
+  [data-version="2"] .noma-tab-label { display: block; }
+  [data-version="2"] .noma-tab.active .noma-tab-label { opacity: 1; }
+
+  /* v2 is taller when expanded, to carry the label row. */
+  [data-version="2"] { --bar-h: 72px; }
+
+  /* Contracted: the label BOTH scales and fades, and its row collapses to
+     zero so the bar genuinely gets shorter rather than keeping dead space.
+     72 -> 64, then the row's own scale(0.8) lands it at 51.2px visual —
+     within a pixel of v1/v3's contracted height. The three versions agree
+     on the contracted silhouette; only the expanded state differs. */
+  .nav-row.minimized [data-version="2"] { --bar-h: 64px; }
+  .nav-row.minimized [data-version="2"] .noma-tab-label {
+    opacity: 0; transform: scale(.6); height: 0; margin-top: 0;
+  }
+
+  /* ---------- v3: the AI button ----------
+     LAW 2 — green is NEVER a flat fill, so this is gradients.accentRamp
+     (mint -> lime), not a solid. The owner's reference showed a flat green
+     circle; this is the same intent expressed legally.
+
+     The glyph is NEAR-BLACK (accent.onFill), not white. Both anchors are
+     light: white measures 1.83:1 on lime and 1.99:1 on mint — unreadable.
+     This is the single most counter-intuitive rule in the new palette.
+
+     LAW 6 — this is the only green on the whole screen. */
+  .ai-btn {
+    display: none;
+    flex: none;
+    width: var(--ai-size); height: var(--ai-size);
+    border-radius: 999px; border: none; cursor: pointer;
+    background: var(--accent-ramp);
+    box-shadow: var(--shadow-floating), 0 0 12px 2px var(--accent-glow-soft);
+    place-items: center;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform var(--duration-fast) var(--easing-spring);
+  }
+  [data-nav-version="3"] .ai-btn { display: grid; }
+  .ai-btn:active { transform: scale(var(--scale-press)); }
+  .ai-btn svg { width: 26px; height: 26px; fill: var(--accent-on-fill); display: block; }
+  .ai-btn:focus-visible { outline: 2px solid var(--ink-primary); outline-offset: 3px; }
+
+  /* v1/v2 have no AI button, so no gap should be reserved beside the bar. */
+  .nav-row:not([data-nav-version="3"]) { gap: 0; }
+</style>
+</head>
+<body>
+
+<div class="scroll" id="scroller">
+  <div class="content">
+    <div class="eyebrow">Bengaluru · Indiranagar</div>
+    <div class="title">Home</div>
+
+    <div class="metric-card">
+      <div class="metric-label">Air quality indoors</div>
+      <div class="metric-value">42</div>
+      <div class="metric-caption">Good. I cleaned the living room air an hour ago.</div>
+    </div>
+
+    <div class="section-label">Devices</div>
+
+    <div class="device-row">
+      <div class="device-icon"><svg viewBox="0 0 24 24"><path d="M14.5 17c0 1.65-1.35 3-3 3s-3-1.35-3-3h2c0 .55.45 1 1 1s1-.45 1-1-.45-1-1-1H2v-2h9.5c1.65 0 3 1.35 3 3zM19 6.5C19 4.57 17.43 3 15.5 3S12 4.57 12 6.5h2c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5S16.33 8 15.5 8H2v2h13.5c1.93 0 3.5-1.57 3.5-3.5zm-.5 4.5H2v2h16.5c.83 0 1.5.67 1.5 1.5S19.33 16 18.5 16v2c1.93 0 3.5-1.57 3.5-3.5S20.43 11 18.5 11z"/></svg></div>
+      <div>
+        <div class="device-name">Living room purifier</div>
+        <div class="device-state">Auto · filter 68%</div>
+      </div>
+      <div class="device-toggle on"></div>
+    </div>
+
+    <div class="device-row">
+      <div class="device-icon"><svg viewBox="0 0 24 24"><path d="M14.5 17c0 1.65-1.35 3-3 3s-3-1.35-3-3h2c0 .55.45 1 1 1s1-.45 1-1-.45-1-1-1H2v-2h9.5c1.65 0 3 1.35 3 3zM19 6.5C19 4.57 17.43 3 15.5 3S12 4.57 12 6.5h2c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5S16.33 8 15.5 8H2v2h13.5c1.93 0 3.5-1.57 3.5-3.5zm-.5 4.5H2v2h16.5c.83 0 1.5.67 1.5 1.5S19.33 16 18.5 16v2c1.93 0 3.5-1.57 3.5-3.5S20.43 11 18.5 11z"/></svg></div>
+      <div>
+        <div class="device-name">Bedroom purifier</div>
+        <div class="device-state">Sleep · quiet</div>
+      </div>
+      <div class="device-toggle on"></div>
+    </div>
+
+    <div class="device-row">
+      <div class="device-icon"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg></div>
+      <div>
+        <div class="device-name">Front door lock</div>
+        <div class="device-state">Locked</div>
+      </div>
+      <div class="device-toggle"></div>
+    </div>
+
+    <div class="section-label">Today</div>
+
+    <div class="metric-card">
+      <div class="metric-label">Outdoor</div>
+      <div class="metric-value" style="font-size:40px;line-height:44px">156</div>
+      <div class="metric-caption">Unhealthy outside. Keep the windows shut this evening.</div>
+    </div>
+
+    <div class="device-row">
+      <div class="device-icon"><svg viewBox="0 0 24 24"><path d="M19 9l1.25-2.75L23 5l-2.75-1.25L19 1l-1.25 2.75L15 5l2.75 1.25L19 9zm-7.5.5L9 4 6.5 9.5 1 12l5.5 2.5L9 20l2.5-5.5L17 12l-5.5-2.5zM19 15l-1.25 2.75L15 19l2.75 1.25L19 23l1.25-2.75L23 19l-2.75-1.25L19 15z"/></svg></div>
+      <div>
+        <div class="device-name">Pre-clean before you're home</div>
+        <div class="device-state">Runs at 6:30 pm</div>
+      </div>
+      <div class="device-toggle on"></div>
+    </div>
+
+    <div class="device-row">
+      <div class="device-icon"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+      <div>
+        <div class="device-name">Household</div>
+        <div class="device-state">3 people</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-row" id="navRow">
+  <div class="noma-tab-bar" id="tabBar" role="tablist" aria-label="Main navigation">
+    <div class="noma-pill-slot" aria-hidden="true"><div class="noma-pill-fill"></div></div>
+
+    <button class="noma-tab active" data-tab-id="home" role="tab" aria-selected="true">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      <span class="noma-tab-label">Home</span>
+    </button>
+    <button class="noma-tab" data-tab-id="device" role="tab" aria-selected="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 17c0 1.65-1.35 3-3 3s-3-1.35-3-3h2c0 .55.45 1 1 1s1-.45 1-1-.45-1-1-1H2v-2h9.5c1.65 0 3 1.35 3 3zM19 6.5C19 4.57 17.43 3 15.5 3S12 4.57 12 6.5h2c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5S16.33 8 15.5 8H2v2h13.5c1.93 0 3.5-1.57 3.5-3.5zm-.5 4.5H2v2h16.5c.83 0 1.5.67 1.5 1.5S19.33 16 18.5 16v2c1.93 0 3.5-1.57 3.5-3.5S20.43 11 18.5 11z"/></svg>
+      <span class="noma-tab-label">Device</span>
+    </button>
+    <button class="noma-tab" data-tab-id="automation" role="tab" aria-selected="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 9l1.25-2.75L23 5l-2.75-1.25L19 1l-1.25 2.75L15 5l2.75 1.25L19 9zm-7.5.5L9 4 6.5 9.5 1 12l5.5 2.5L9 20l2.5-5.5L17 12l-5.5-2.5zM19 15l-1.25 2.75L15 19l2.75 1.25L19 23l1.25-2.75L23 19l-2.75-1.25L19 15z"/></svg>
+      <span class="noma-tab-label">Automation</span>
+    </button>
+    <button class="noma-tab" data-tab-id="profile" role="tab" aria-selected="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      <span class="noma-tab-label">Profile</span>
+    </button>
+  </div>
+
+  <!-- v3 only. Not a tab — a separate action, so it is outside the tablist. -->
+  <button class="ai-btn" id="aiBtn" aria-label="Ask NOMA">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.35 7.15L21.5 11l-7.15 2.35L12 20.5l-2.35-7.15L2.5 11l7.15-2.35L12 1.5z"/></svg>
+  </button>
+</div>
+
+<script>
+  const navRow  = document.getElementById('navRow');
+  const bar     = document.getElementById('tabBar');
+  const tabs    = Array.from(document.querySelectorAll('.noma-tab'));
+  const scroller = document.getElementById('scroller');
+
+  /* ---- version ---- */
+  const raw = new URLSearchParams(location.search).get('v');
+  const version = ['1', '2', '3'].includes(raw) ? raw : '1';
+  bar.setAttribute('data-version', version);
+  navRow.setAttribute('data-nav-version', version);
+  document.title = `Bottom navigation — v${version}`;
+
+  const DIRECTION_THRESHOLD = 6;   // pt before a direction is believed
+  const TOP_REST_ZONE       = 12;  // always expanded above this offset
+  const MIN_OVERFLOW        = 80;  // content must exceed the container by this
+
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const BASE_MS = reduced ? 0
+    : parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--duration-base'));
+
+  bar.style.setProperty('--count', tabs.length);
+
+  let selectedIndex = 0;
+  let isMinimized = false;
+  let lastTop = 0;
+  let travelTimer, liftTimer;
+
+  function select(index) {
+    if (index === selectedIndex) return;
+    selectedIndex = index;
+    tabs.forEach((t, i) => {
+      t.classList.toggle('active', i === index);
+      t.setAttribute('aria-selected', i === index ? 'true' : 'false');
+    });
+    // Spring for this move only — a discrete, user-caused arrival.
+    navRow.classList.add('travelling', 'lifting');
+    clearTimeout(travelTimer); clearTimeout(liftTimer);
+    liftTimer   = setTimeout(() => navRow.classList.remove('lifting'),    BASE_MS * 0.55);
+    travelTimer = setTimeout(() => navRow.classList.remove('travelling'), BASE_MS);
+    bar.style.setProperty('--index', index);
+  }
+  tabs.forEach((tab, i) => tab.addEventListener('click', () => select(i)));
+
+  function setMinimized(next) {
+    if (next === isMinimized) return;
+    isMinimized = next;
+    // No 'travelling' class — a resize is a layout shift and must not bounce
+    // (motion gate 3). Only the tab travel above may overshoot.
+    navRow.classList.toggle('minimized', next);
+  }
+
+  scroller.addEventListener('scroll', () => {
+    const y = scroller.scrollTop;
+    const delta = y - lastTop;
+    if (y <= TOP_REST_ZONE) { setMinimized(false); lastTop = y; return; }
+    const scrollable = scroller.scrollHeight > scroller.clientHeight + MIN_OVERFLOW;
+    if (scrollable && Math.abs(delta) > DIRECTION_THRESHOLD) setMinimized(delta > 0);
+    lastTop = y;
+  }, { passive: true });
+
+  /* Exposed so the wrapper pages can drive/measure without reaching into
+     internals. Keeps index.html's readout honest — it reads the same state
+     the component uses rather than re-deriving it. */
+  window.__nav = {
+    version,
+    setMinimized,
+    select,
+    get isMinimized() { return isMinimized; },
+    get selectedIndex() { return selectedIndex; },
+  };
+</script>
+</body>
+</html>

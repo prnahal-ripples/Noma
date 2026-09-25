@@ -1,0 +1,50 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Dependencies & build output
+node_modules/
+dist/
+build/
+.next/
+.turbo/
+out/
+
+# Swift / SwiftPM build output. Note `build/` above does NOT match `.build/`.
+.build/
+.swiftpm/
+*.xcuserstate
+xcuserdata/
+DerivedData/
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local scratch / previews (generated, not source)
+.noma-*-preview.html
+
+# Mobbin capture cache — every downloaded screen per flow, kept locally so
+# fetch-refs.py never re-downloads. Not source; docs/research/refs/*.png
+# (the bound, in-use captures) are still tracked.
+docs/research/refs/_raw/
+
+# Machine-local preview servers. Sessions rewrite this with session-scoped
+# /private/tmp paths; see .claude/launch.Noma.json for the shared baseline.
+.claude/launch.json

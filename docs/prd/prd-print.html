@@ -1,0 +1,1375 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- Print source for docs/prd/NOMA-v1-PRD.pdf.
+     Regenerate:  Google Chrome --headless --no-pdf-header-footer --print-to-pdf=NOMA-v1-PRD.pdf prd-print.html
+     The @font-face path is relative; point it at any Google Sans Flex woff2. -->
+<title>NOMA v1 — Product Requirements</title>
+<style>
+  @font-face {
+    font-family: "Google Sans Flex";
+    src: url('../../src/noma-fonts/google-sans-flex-subset.woff2') format("woff2-variations"),
+         url('../../src/noma-fonts/google-sans-flex-subset.woff2') format("woff2");
+    font-weight: 1 1000; font-style: normal;
+  }
+
+  :root {
+    --ink:#222222; --sec:#5E5E5E; --ter:#8A8A8A;
+    --line:#E4E1DA; --hair:#D3CFC6;
+    --warm:#F5F3EF; --warm2:#EFEDE6; --raised:#FFFFFF;
+    --moss:#4D6747; --moss-tint:#EEF2ED;
+    --neon:#AEC799; --neon-tint:#F2F5F0;
+    --crit:#8C2F2F; --crit-bg:#FBF0EF;
+    --warn:#8A5A16; --warn-bg:#FBF5EA;
+    --ok:#3B5F36; --ok-bg:#F0F5EE;
+  }
+
+  @page { size: A4; margin: 17mm 15mm 16mm; }
+
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body {
+    margin: 0;
+    font-family: "Google Sans Flex", system-ui, sans-serif;
+    font-optical-sizing: auto;
+    font-size: 9.6pt; line-height: 1.52;
+    color: var(--ink);
+    background: #fff;
+  }
+
+  h1,h2,h3,h4 { margin: 0; text-wrap: balance; }
+
+  /* ---------- cover ---------- */
+  .cover { height: 262mm; display: flex; flex-direction: column; page-break-after: always; }
+  .cover-mark { font-size: 8pt; letter-spacing: .28em; text-transform: uppercase; color: var(--sec); }
+  .cover-rule { height: 3px; background: var(--moss); width: 46mm; margin: 5mm 0 0; }
+  .cover-title { font-size: 40pt; line-height: 1.02; font-variation-settings: "opsz" 40, "wght" 700; letter-spacing: -1.4pt; margin-top: 14mm; }
+  .cover-sub { font-size: 13pt; line-height: 1.4; color: var(--sec); margin-top: 6mm; max-width: 128mm; font-variation-settings: "opsz" 13, "wght" 400; }
+  .cover-spacer { flex: 1; }
+  .cover-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm 10mm; border-top: 1px solid var(--hair); padding-top: 6mm; }
+  .cover-meta div span { display: block; font-size: 7.4pt; letter-spacing: .12em; text-transform: uppercase; color: var(--ter); }
+  .cover-meta div b { font-size: 10pt; font-variation-settings: "opsz" 10, "wght" 600; }
+  .cover-status {
+    margin-top: 8mm; background: var(--crit-bg); border-left: 3px solid var(--crit);
+    padding: 4mm 5mm; font-size: 9.4pt; line-height: 1.5;
+  }
+  .cover-status b { color: var(--crit); font-variation-settings: "opsz" 10, "wght" 700; }
+
+  /* ---------- contents ---------- */
+  .toc { page-break-after: always; }
+  .toc ol { list-style: none; counter-reset: t; padding: 0; margin: 6mm 0 0; column-count: 2; column-gap: 10mm; }
+  .toc li { counter-increment: t; font-size: 9.4pt; padding: 1.6mm 0; border-bottom: 1px dotted var(--line); break-inside: avoid; }
+  .toc li::before { content: counter(t) ". "; color: var(--ter); font-variation-settings: "opsz" 9, "wght" 600; }
+
+  /* ---------- sections ---------- */
+  section { page-break-inside: auto; }
+  h2 {
+    font-size: 17pt; line-height: 1.15; font-variation-settings: "opsz" 17, "wght" 700;
+    letter-spacing: -.4pt; margin-top: 11mm; padding-bottom: 2.4mm;
+    border-bottom: 2px solid var(--ink);
+    page-break-after: avoid;
+  }
+  h2 .num { color: var(--moss); margin-right: 3mm; }
+  h3 {
+    font-size: 11.4pt; font-variation-settings: "opsz" 11, "wght" 700;
+    margin-top: 6.5mm; page-break-after: avoid;
+  }
+  h4 {
+    font-size: 9.6pt; font-variation-settings: "opsz" 10, "wght" 700;
+    margin-top: 4.5mm; page-break-after: avoid;
+  }
+  p { margin: 2.4mm 0 0; }
+  .lede { font-size: 11pt; line-height: 1.5; color: var(--sec); margin-top: 3mm; }
+  ul, ol { margin: 2.4mm 0 0; padding-left: 5.5mm; }
+  li { margin: 1.1mm 0; }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .88em; background: var(--warm2); padding: .3mm 1.1mm; border-radius: 1mm; }
+  strong { font-variation-settings: "opsz" 10, "wght" 700; }
+  em { font-style: italic; }
+
+  /* ---------- tables ---------- */
+  table { width: 100%; border-collapse: collapse; margin-top: 3.5mm; font-size: 8.8pt; page-break-inside: auto; }
+  thead { display: table-header-group; }
+  tr { page-break-inside: avoid; }
+  th {
+    text-align: left; font-size: 7.4pt; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--sec); font-variation-settings: "opsz" 8, "wght" 700;
+    border-bottom: 1.4px solid var(--ink); padding: 1.8mm 2.2mm 1.8mm 0; vertical-align: bottom;
+  }
+  td { padding: 2mm 2.2mm 2mm 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+  td:last-child, th:last-child { padding-right: 0; }
+  tbody tr:nth-child(even) { background: #FBFAF8; }
+  .num-col { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .tight td, .tight th { padding-top: 1.4mm; padding-bottom: 1.4mm; }
+
+  /* ---------- callouts ---------- */
+  .box { margin-top: 4mm; padding: 3.6mm 4.2mm; border-radius: 2mm; page-break-inside: avoid; font-size: 9.2pt; }
+  .box p:first-child { margin-top: 0; }
+  .box .bt { font-size: 7.4pt; letter-spacing: .14em; text-transform: uppercase; font-variation-settings: "opsz" 8, "wght" 700; display: block; margin-bottom: 1.6mm; }
+  .box.crit { background: var(--crit-bg); border-left: 3px solid var(--crit); }
+  .box.crit .bt { color: var(--crit); }
+  .box.warn { background: var(--warn-bg); border-left: 3px solid var(--warn); }
+  .box.warn .bt { color: var(--warn); }
+  .box.ok { background: var(--ok-bg); border-left: 3px solid var(--ok); }
+  .box.ok .bt { color: var(--ok); }
+  .box.quiet { background: var(--warm); border-left: 3px solid var(--hair); }
+  .box.quiet .bt { color: var(--sec); }
+
+  blockquote {
+    margin: 4mm 0 0; padding: 0 0 0 5mm; border-left: 2px solid var(--moss);
+    font-size: 11pt; line-height: 1.44; color: var(--ink);
+    font-variation-settings: "opsz" 11, "wght" 500;
+  }
+  blockquote cite { display: block; font-style: normal; font-size: 8.4pt; color: var(--ter); margin-top: 1.8mm; }
+
+  .chip {
+    display: inline-block; font-size: 7.2pt; letter-spacing: .06em; text-transform: uppercase;
+    font-variation-settings: "opsz" 8, "wght" 700;
+    padding: .5mm 1.6mm; border-radius: 1mm; white-space: nowrap;
+  }
+  .chip.c { background: var(--crit); color: #fff; }
+  .chip.h { background: var(--warn); color: #fff; }
+  .chip.m { background: #B9AE96; color: #fff; }
+  .chip.l { background: var(--warm2); color: var(--sec); }
+  .chip.ok { background: var(--moss); color: #fff; }
+  .chip.b { background: var(--warm2); color: var(--sec); }
+
+  .kv { display: grid; grid-template-columns: 38mm 1fr; gap: 1.6mm 4mm; margin-top: 3mm; font-size: 9.2pt; }
+  .kv dt { color: var(--sec); }
+  .kv dd { margin: 0; }
+
+  .swatches { display: flex; flex-wrap: wrap; gap: 2mm; margin-top: 3mm; }
+  .sw { width: 26mm; }
+  .sw i { display: block; height: 11mm; border-radius: 1.4mm; border: .4px solid rgba(0,0,0,.14); }
+  .sw b { display: block; font-size: 7.4pt; font-family: ui-monospace, Menlo, monospace; margin-top: 1.2mm; font-weight: 400; }
+  .sw span { display: block; font-size: 7pt; color: var(--ter); }
+
+  .pagebreak { page-break-before: always; }
+  .avoid { page-break-inside: avoid; }
+  footer.doc { margin-top: 12mm; padding-top: 4mm; border-top: 1px solid var(--hair); font-size: 8.2pt; color: var(--ter); }
+
+  /* print hygiene */
+  @media print {
+    section { orphans: 3; widows: 3; }
+    h2, h3, h4 { break-after: avoid-page; }
+    table, .box, blockquote, .swatches { break-inside: auto; }
+    tr, .sw { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================ COVER ============================ -->
+<div class="cover">
+  <div class="cover-mark">Noise Design · Product Requirements Document</div>
+  <div class="cover-rule"></div>
+  <h1 class="cover-title">NOMA v1</h1>
+  <p class="cover-sub">An agent-first connected-home app for Indian homes, anchored on an air purifier. Compiled from every source supplied to date.</p>
+
+  <div class="cover-status">
+    <b>Status: DRAFT — not approvable yet.</b><br>
+    One scope decision (§3) and four critical blockers (§4) sit upstream of everything
+    in this document. Thirteen conflicts are open; none has been resolved here, because
+    the sources genuinely disagree and silently picking a winner would hide that.
+  </div>
+
+  <div class="cover-spacer"></div>
+
+  <div class="cover-meta">
+    <div><span>Version</span><b>0.2 · 2026-08-04</b></div>
+    <div><span>Canonical values</span><b>src/tokens · src/hardware</b></div>
+    <div><span>Decision log</span><b>memory/decisions.md · ADR-001…005</b></div>
+    <div><span>Open conflicts</span><b>13 (4 critical)</b></div>
+    <div><span>Features registered</span><b>13 · per-feature PRDs: 0</b></div>
+    <div><span>Analytics events</span><b>0</b></div>
+  </div>
+</div>
+
+<!-- ============================ CONTENTS ============================ -->
+<div class="toc">
+  <h2 style="margin-top:0"><span class="num">§</span>Contents</h2>
+  <ol>
+    <li>Sources and provenance</li>
+    <li>Problem and insight</li>
+    <li>The scope decision</li>
+    <li>Critical blockers</li>
+    <li>Users</li>
+    <li>Jobs to be done</li>
+    <li>Product principles</li>
+    <li>The agent model</li>
+    <li>The Week One arc</li>
+    <li>Journeys</li>
+    <li>Feature scope</li>
+    <li>The differentiator</li>
+    <li>Hardware and sensing</li>
+    <li>Data model</li>
+    <li>Permissions and sharing</li>
+    <li>Privacy and compliance</li>
+    <li>Competitive position</li>
+    <li>Monetization</li>
+    <li>Voice and content</li>
+    <li>Design system</li>
+    <li>Motion</li>
+    <li>Analytics and success metrics</li>
+    <li>Risks</li>
+    <li>Open conflicts</li>
+    <li>Sequencing</li>
+    <li>Declares</li>
+  </ol>
+</div>
+
+<!-- ============================ 1 ============================ -->
+<section>
+<h2><span class="num">1</span>Sources and provenance</h2>
+<p class="lede">Everything in this document traces to something supplied. Where sources disagree, the disagreement is stated. Gaps are marked <strong>GAP</strong> rather than filled.</p>
+
+<table>
+  <thead><tr><th style="width:46mm">Source</th><th>What it is</th><th style="width:34mm">Fed into</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Air Agent — agent-first sample UI (C2)</strong><br><span style="color:var(--ter)">216KB · 2 versions</span></td>
+        <td><strong>The most valuable document.</strong> The graduated-autonomy agent model: three home zones, per-capability autonomy tiers, the four-slot explanation contract, inert editable rehearsal, standing rules. The only document describing an <em>architecture</em> rather than screens.</td>
+        <td>Tech · User flows · Content</td></tr>
+    <tr><td><strong>Ding Air Pro · Air Week One</strong><br><span style="color:var(--ter)">60KB</span></td>
+        <td>A day-by-day first-week retention arc. Each day states its emotional target, the research finding behind it, and the screen that delivers it. <strong>The only document that argues rather than asserts.</strong></td>
+        <td>Product · Journeys · Content · Metrics</td></tr>
+    <tr><td><strong>Ding — Smart Home App (V2)</strong><br><span style="color:var(--ter)">13MB · ~60 screens</span></td>
+        <td>The broadest build: onboarding, purifier, vacuum, camera, sharing, shop, score, wearable bridge. Zero static text — all content lives inside 739KB of JSX, extracted from ~45 data constants. <strong>Treat its naming as unreliable; it is the source of most conflicts.</strong></td>
+        <td>Hardware · Data · Product</td></tr>
+    <tr><td><strong>Noise Sanctuary — India's most trustworthy purifier</strong><br><span style="color:var(--ter)">360KB</span></td>
+        <td>Positioning and commercial strategy: the AQI-weighted filter argument, a five-way competitor teardown, three subscription tiers, the whole-home ecosystem pitch.</td>
+        <td>Product · Monetization · Hardware</td></tr>
+    <tr><td><strong>Airbnb iOS</strong><br><span style="color:var(--ter)">observed at 393×852pt</span></td>
+        <td>Visual reference for surface, radius and elevation only. Its warmth was taken; its density and its red were not.</td>
+        <td>Design (ADR-001)</td></tr>
+    <tr><td><strong>Google Sans Flex</strong> · <strong>two green revisions</strong> · <strong>a motion ruling</strong> · <strong>a product render</strong></td>
+        <td>Owner-supplied directly, not derived.</td>
+        <td>Design (ADR-002…005)</td></tr>
+  </tbody>
+</table>
+
+<div class="box warn">
+  <span class="bt">Provenance risk</span>
+  The four prototype files still live in the owner's <code>~/Downloads</code>. The provenance
+  of this entire knowledge base is currently a local folder. They should be vendored into
+  <code>docs/prototypes/</code>.
+</div>
+
+<div class="box quiet">
+  <span class="bt">What these sources are not</span>
+  <strong>Design prototypes, not specifications.</strong> Seeded data, happy paths only, and
+  <strong>no empty, loading, error or offline state anywhere across all four files.</strong> That
+  absence is systematic, not incidental — it is why the PRD template now mandates those states.
+  Device specs (CADR, coverage, price) are marked <code>prototype-only</code> and have not been
+  checked against a datasheet or BOM.
+</div>
+</section>
+
+<!-- ============================ 2 ============================ -->
+<section>
+<h2><span class="num">2</span>Problem and insight</h2>
+
+<blockquote>You can't see what you breathe.<cite>Air Week One</cite></blockquote>
+
+<p>An air purifier is a box that hums. When it works, nothing visibly happens. The source material is blunt about the consequence:</p>
+
+<blockquote>Invisible protection that runs silently is, to the user, indistinguishable from a switched-off box.<cite>Air Week One — the "away-mode trap"</cite></blockquote>
+
+<p>In Indian homes this compounds. People switch purifiers <em>off</em> to save electricity — losing the benefit they paid for — because the cost is visible and the protection is not. 82% of Indians cannot see indoor air without a device.</p>
+
+<h3>The insight the product is built on</h3>
+<p><strong>Air is invisible, so perceived value is whatever the app makes visible.</strong></p>
+<p>Perceived value is therefore a <em>design output</em>, not a hardware output. That single sentence justifies the entire seven-day arc in §9, the narration requirement in §8, and the existence of the energy card in §11. It is the most load-bearing line in the source material.</p>
+</section>
+
+<!-- ============================ 3 ============================ -->
+<section>
+<h2><span class="num">3</span>The scope decision</h2>
+<p class="lede">The supplied material describes two different products. Nothing says which ships first. This is the decision everything else waits on.</p>
+
+<table>
+  <thead><tr><th style="width:32mm"></th><th>A · Air companion</th><th>B · Whole-home platform</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Anchor</strong></td><td>One air purifier</td><td>Purifier + cameras + locks + vacuums + doorbells (+ lights, music on roadmap)</td></tr>
+    <tr><td><strong>Evidence quality</strong></td><td><strong>Deep.</strong> A day-by-day retention arc with stated research findings, named behavioural mechanisms, and an identified chokepoint. An articulated agent architecture.</td><td><strong>Broad but asserted.</strong> ~60 screens and a subscription deck, with no research behind the claims.</td></tr>
+    <tr><td><strong>Revenue</strong></td><td>Hardware + filters</td><td>Hardware + filters + ₹699/₹1,199 subscription</td></tr>
+    <tr><td><strong>Open conflicts</strong></td><td>6</td><td>13</td></tr>
+    <tr><td><strong>Personas served</strong></td><td>P1, P2, P4</td><td>All four — P3 (household help) only exists if there are locks and cameras</td></tr>
+  </tbody>
+</table>
+
+<div class="box ok">
+  <span class="bt">Recommendation</span>
+  <strong>Ship A, architected for B.</strong> The purifier story is the only part of the material
+  that argues rather than asserts. The platform story has more screens but less conviction, and
+  carries most of the unresolved conflicts (roles, score, subscription, pricing). Build A's data
+  model as a strict subset of B's so nothing is thrown away when the ecosystem lands.
+  <br><br>
+  <strong>This is the owner's call.</strong> Everything below is scoped to A unless marked
+  <span class="chip b">B</span>. Until it is ruled, teams will build against different assumptions.
+</div>
+</section>
+
+<!-- ============================ 4 ============================ -->
+<section class="pagebreak">
+<h2><span class="num">4</span>Critical blockers</h2>
+<p class="lede">Thirteen conflicts are open. These four are different in kind: each one stops work rather than slowing it. Full list in §24.</p>
+
+<div class="box crit">
+  <span class="bt">C-7 · The differentiator has no engineering model</span>
+  <p><strong>AQI-weighted filter life is the single claim the product is built on</strong>, and it exists only as a worked example. The material states the effect ("above AQI 200 a filter absorbs 3–5× more particulate per hour") and shows Delhi at 38% vs Mumbai at 64% on identical runtime — but supplies <strong>no formula, no coefficients, and no validation data.</strong></p>
+  <p>It gates <code>F-FILTER-HEALTH</code>, which is simultaneously the differentiator <em>and</em> the recurring-revenue lever. <strong>Nothing else in v1 is worth as much as closing this.</strong></p>
+</div>
+
+<div class="box crit">
+  <span class="bt">C-11 · "Data never leaves home" vs three networked features</span>
+  <p>The product claims on-device AI and DPDP compliance, then ships three features that cannot work locally: CPCB outdoor blending, forecast-driven pre-clean, and neighbourhood comparison. <strong>"Never leaves home" and "uses tomorrow's forecast" cannot both be literally true.</strong></p>
+  <p>The claim most likely means <em>personal and biometric data stays local; ambient public data is fetched</em> — which is defensible and still a strong position. It must be narrowed to that before it reaches store copy or a privacy policy. It also blocks the analytics taxonomy, because an analytics SDK is by definition exfiltration.</p>
+</div>
+
+<div class="box crit">
+  <span class="bt">C-8 · No safety class for agent autonomy</span>
+  <p>"Act silently" is offered per capability, but every example is comfort-grade (fan speed, pre-clean, reorder). Nothing prevents it applying to a <strong>lock</strong>, and <code>Reorder filters</code> at that level is an <strong>unattended purchase</strong>. Separately, the SpO₂-below-94% → purifier-Turbo trigger is a health-adjacent inference presented as an ordinary automation, with no medical or legal position.</p>
+  <p><strong>v1 ships "Ask me" only</strong> until capabilities carry a safety class.</p>
+</div>
+
+<div class="box crit">
+  <span class="bt">C-2 · The product and assistant have five names between them</span>
+  <p>Product: <strong>NOMA</strong> · Ding · Noise Home · Noise Air · Noise Sanctuary.<br>
+  Assistant: Ding · Noise AI Agent · Sanctuary Assistant · unnamed first person.<br>
+  Score: Home Score · Sanctuary Score · Air Score.</p>
+  <p>All user-facing copy, every i18n key, all persona prompts, the glossary and every SKU string are downstream. <strong>Highest-leverage single decision on the list.</strong></p>
+</div>
+</section>
+
+<!-- ============================ 5 ============================ -->
+<section>
+<h2><span class="num">5</span>Users</h2>
+
+<div class="box warn">
+  <span class="bt">C-1 · Personas unresolved</span>
+  Two incompatible sets were supplied. <code>src/personas/personas.json</code> is deliberately empty.
+  Set B is used throughout this PRD because the prototypes corroborate it four ways —
+  <strong>Ravi and Lakshmi appear as real named people in the camera event feed</strong>, all four
+  product surfaces Set B names are built (Home Score, Faces You Trust, Shop, AQI), P3's household
+  help maps exactly onto the <code>staff</code> role, and <strong>Set A's names appear nowhere in any
+  of the four documents.</strong> Strong evidence — still the owner's ruling.
+</div>
+
+<h3>Set B — role-based, used here</h3>
+<table>
+  <thead><tr><th style="width:14mm">ID</th><th style="width:44mm">Persona</th><th>Needs</th><th style="width:56mm">Design consequence</th></tr></thead>
+  <tbody>
+    <tr><td><strong>P1</strong></td>
+        <td><strong>Asha</strong>, 32<br>PM in Bangalore<br><span class="chip l">Primary · buyer · power user</span></td>
+        <td>Manages her parents' separate home remotely. AQI-anxious, security-conscious, time-poor. Knows her family is safe without checking six apps; acts instantly when something is wrong.</td>
+        <td>She is the buyer <em>and</em> the power user, so she absorbs depth — but she is time-poor, so <strong>depth must be opt-in, never the default view.</strong></td></tr>
+    <tr><td><strong>P2</strong></td>
+        <td><strong>Ravi &amp; Lakshmi</strong>, early 60s<br>Living in the home Asha manages<br><span class="chip l">Secondary · resident</span></td>
+        <td>Lower app fluency. Want things to just work — door locks itself, air stays clean — with minimal interaction and large, legible controls.</td>
+        <td><strong>Sets a hard floor on type size and touch targets.</strong> Any flow that <em>requires</em> app fluency to stay safe is a defect, not an edge case. A calm, sparse layout serves them directly.</td></tr>
+    <tr><td><strong>P3</strong></td>
+        <td><strong>The Household Help</strong><br>Maid, cook, delivery agent<br><span class="chip l">Tertiary · time-boxed</span></td>
+        <td>Scoped, temporary entry. Should be recognised or granted limited access — never full account control.</td>
+        <td>Access is <strong>scoped and expiring by default.</strong> A permissions-model requirement, not a UI preference. Only exists under scope <span class="chip b">B</span>.</td></tr>
+    <tr><td><strong>P4</strong></td>
+        <td><strong>Priya</strong><br>Owns one device, considering more<br><span class="chip l">Acquisition</span></td>
+        <td>To understand what each device adds; to buy confidently inside an app she already trusts.</td>
+        <td>Monetisation is contextual and data-triggered. It <strong>competes with the primary action for the 10% accent budget</strong> — see §20.</td></tr>
+  </tbody>
+</table>
+
+<h3>Set A — demographic, not used</h3>
+<p><strong>A1 · Kartik</strong>, 26 — tech-savvy, early adopter, automation-friendly.
+<strong>A2 · Siddharth</strong>, 35 — practical, security-minded, family-first. Neither name appears in any prototype.</p>
+
+<div class="box quiet">
+  <span class="bt">A third naming set exists</span>
+  The prototypes also introduce <strong>Kaustubh</strong> (homeowner), <strong>Arjun</strong> (child)
+  and <strong>Maa</strong> (elder, in agent dialogue). Consistent with Set B's household framing, but
+  the names differ again. If Set B is ratified its names must be reconciled with these, not assumed
+  identical.
+</div>
+
+<div class="box ok">
+  <span class="bt">The binding constraint</span>
+  <strong>P2 is the accessibility floor for the whole design.</strong> A low-fluency resident who
+  cannot confirm the air is clean is a product failure. This yields, non-negotiably: body text
+  ≥16pt, touch targets ≥44pt, and no safety-critical state conveyed by colour alone.
+</div>
+</section>
+
+<!-- ============================ 6 ============================ -->
+<section>
+<h2><span class="num">6</span>Jobs to be done</h2>
+<p class="lede">The research names three return-drivers, in this priority order. Everything in v1 serves one of them; a feature that serves none is out of scope.</p>
+
+<table class="tight">
+  <thead><tr><th style="width:10mm">#</th><th style="width:44mm">Driver</th><th>What the material says</th></tr></thead>
+  <tbody>
+    <tr><td class="num-col"><strong>1</strong></td><td><strong>Checking live AQI</strong></td><td>"The #1 stated reason users reopen an air-purifier app — but only if the first number lands as a gut-punch, not a spec."</td></tr>
+    <tr><td class="num-col"><strong>2</strong></td><td><strong>Controlling it remotely</strong></td><td>Gives a reason to open the app before you are home. "Start it from the office."</td></tr>
+    <tr><td class="num-col"><strong>3</strong></td><td><strong>Trusting the automations</strong></td><td>"Better automations" is the strongest stated driver after AQI itself — and carries the away-mode trap.</td></tr>
+  </tbody>
+</table>
+</section>
+
+<!-- ============================ 7 ============================ -->
+<section>
+<h2><span class="num">7</span>Product principles</h2>
+<p class="lede">From the name: <em>ma</em> (間), the intentional space between things, and <em>no</em> (野), nature and openness. The empty space is doing work — it is composed, not left over.</p>
+
+<table class="tight">
+  <thead><tr><th style="width:52mm">Principle</th><th>Test</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Whitespace is a feature</strong></td><td>If a screen looks sparse that is likely correct. Density is the failure mode here, not a virtue.</td></tr>
+    <tr><td><strong>One idea per screen</strong></td><td>The primary action is findable in one glance.</td></tr>
+    <tr><td><strong>Calm over informative</strong></td><td>Show the state of things, not every metric that produced it. Detail on demand, never volunteered.</td></tr>
+    <tr><td><strong>Never volunteer alarm</strong></td><td>Urgency is earned by real events, not by styling.</td></tr>
+    <tr><td><strong>Relief, not delight</strong></td><td>The emotional target is a glance that confirms everything is fine. Personality lives in small moments, never in the chrome.</td></tr>
+  </tbody>
+</table>
+
+<h4>Deliberately not</h4>
+<p>Dashboard-dense · blue-lit · alarm-forward · gamified. And never: make the accent green the ground; require app fluency for basic safety; use a raw metric as a headline; hide a trade-off.</p>
+</section>
+
+<!-- ============================ 8 ============================ -->
+<section class="pagebreak">
+<h2><span class="num">8</span>The agent model</h2>
+<p class="lede">This is not a feature bolted onto the app — it determines what the app <em>is</em>. Home is not a grid of devices; it is a list of what the agent has decided, is proposing, or has already done.</p>
+
+<h3>8.1 Three zones, in this order</h3>
+<table class="tight">
+  <thead><tr><th style="width:10mm">#</th><th style="width:38mm">Zone</th><th>Contains</th></tr></thead>
+  <tbody>
+    <tr><td class="num-col">1</td><td><strong>Settled now</strong></td><td>What is already fine. Per-room readings.</td></tr>
+    <tr><td class="num-col">2</td><td><strong>Needs your call</strong></td><td>Proposals awaiting a decision, badged with a count.</td></tr>
+    <tr><td class="num-col">3</td><td><strong>Done today</strong></td><td>Completed actions, each still undoable.</td></tr>
+  </tbody>
+</table>
+<p>The ordering is load-bearing: <strong>reassurance, then the ask, then the receipt.</strong> Someone opening the app anxious gets "air is clean in 2 rooms" before they are handed a decision.</p>
+
+<h3>8.2 Graduated autonomy — per capability, three levels</h3>
+<p>The single most important mechanic. Autonomy is <strong>not global and not binary.</strong> It is granted one capability at a time and starts at the bottom.</p>
+<table class="tight">
+  <thead><tr><th style="width:34mm">Level</th><th>Behaviour</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Ask me</strong> <span class="chip ok">default</span></td><td>Agent proposes. Nothing runs without a tap.</td></tr>
+    <tr><td><strong>Act &amp; tell me</strong></td><td>Agent acts, then reports. Undo remains available.</td></tr>
+    <tr><td><strong>Act silently</strong></td><td>Agent acts without notifying.</td></tr>
+  </tbody>
+</table>
+<p>Capabilities, each with an independent level: <code>Adjust fan speed</code> · <code>Pre-clean before forecasts</code> · <code>Reorder filters</code>.</p>
+
+<blockquote>Right now, I only ever propose. Nothing runs without your tap. As you approve things, you can let me act on my own — one capability at a time.<cite>the agent, in the prototype</cite></blockquote>
+
+<div class="box ok">
+  <span class="bt">Trust is promoted on evidence</span>
+  <em>"You've accepted 7 fan suggestions in a row — ready to let this run itself?"</em><br>
+  A consecutive-accept count, offered back as the reason. This makes a
+  <strong>per-capability accept/reject tally application state</strong>, not analytics — a real
+  data requirement falling out of a trust decision.
+</div>
+
+<h3>8.3 The explanation contract — four fixed slots</h3>
+<p>Every proposal exposes "Why this?" with the same four slots, always in the same order. This is a contract, not a copy template.</p>
+<table>
+  <thead><tr><th style="width:26mm">Slot</th><th style="width:30mm">Job</th><th>Example from the prototype</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Sensed</strong></td><td>The evidence</td><td>"Outdoor AQI at 118 and climbing, forecast 182 by 10pm; bedroom holding at AQI 38 (PM2.5 9 µg/m³)"</td></tr>
+    <tr><td><strong>Decided</strong></td><td>The action</td><td>"Pre-clean 8:30–9:00 at medium, then hold windows-closed mode"</td></tr>
+    <tr><td><strong>Instead of</strong></td><td>The counterfactual</td><td>"Reacting at 11pm — which would run loud while you sleep"</td></tr>
+    <tr><td><strong>Obeys rule</strong></td><td>The constraint respected</td><td>"Quiet hours 11pm–7am stays intact"</td></tr>
+  </tbody>
+</table>
+<div class="box ok">
+  <span class="bt">Why this matters</span>
+  <strong>"Instead of" is the differentiating slot.</strong> Explaining what the agent chose
+  <em>not</em> to do is what makes a decision read as considered rather than arbitrary — most
+  assistant UIs ship the first two slots and stop. <strong>"Obeys rule" is a promise:</strong>
+  naming the constraint it respected is how the agent proves it is bounded. Ship the disclosure
+  without that slot and standing rules become unverifiable — the user has no way to know their
+  rule held.
+</div>
+
+<h3>8.4 Rehearsal before execution</h3>
+<p>A proposal previews as a step-by-step timeline, each step individually editable. <strong>Nothing happens until you tap Run.</strong></p>
+<table class="tight">
+  <thead><tr><th style="width:22mm">Time</th><th style="width:52mm">Step</th><th>Detail</th><th style="width:20mm">Action</th></tr></thead>
+  <tbody>
+    <tr><td class="num-col">8:30pm</td><td>start pre-clean</td><td>Bedroom only · medium speed · ~30 min</td><td>Edit</td></tr>
+    <tr><td class="num-col">9:00pm</td><td>windows-closed mode</td><td>Recirculate · hold until AQI drops</td><td>Edit</td></tr>
+    <tr><td class="num-col">11:00pm</td><td>respect quiet hours</td><td>Fan capped at 28 dB · your standing rule</td><td><strong>Locked</strong></td></tr>
+  </tbody>
+</table>
+<p><strong>Rule-derived steps render <code>Locked</code>, not <code>Edit</code>.</strong> A user cannot casually edit away their own constraint from inside a one-off plan. Rules change where rules live.</p>
+
+<h3>8.5 Standing rules — goals, not one-time actions</h3>
+<table class="tight">
+  <thead><tr><th style="width:48mm">Rule</th><th style="width:24mm">Value</th><th>Copy shown</th></tr></thead>
+  <tbody>
+    <tr><td>Quiet hours</td><td class="num-col">11pm–7am</td><td>referenced by name in "Obeys rule"</td></tr>
+    <tr><td>Noise ceiling while asleep</td><td class="num-col">28 dB</td><td>"Lower is quieter but cleans slower. 28 dB is about a whisper."</td></tr>
+    <tr><td>Target overnight PM2.5</td><td class="num-col">under 12</td><td>"The goal I'll hold the room to, not a one-time action."</td></tr>
+  </tbody>
+</table>
+<p>Note the copy discipline: each rule states its <strong>trade-off</strong> and anchors its unit to something human. That is part of the model, not decoration.</p>
+
+<h3>8.6 Promotion, reversal, isolation</h3>
+<ul>
+  <li><strong>"Do this always"</strong> promotes an accepted one-off into a standing automation — and appears on <em>completed</em> items too, because the moment someone appreciates what it did is the moment to offer the upgrade. The Automation tab then separates <em>Created by your agent</em> from <em>Created by you</em>.</li>
+  <li><strong>Undo</strong> stays on completed actions, including autonomous ones.</li>
+  <li>Recurrence is offered contextually: <em>"Smog nights repeat this season — do this automatically."</em></li>
+  <li>The <strong>chat thread is deliberately context-free</strong>: <em>"Starting fresh — this thread does not carry over anything from Home."</em> Ambient agent and conversational agent are separate sessions. Anyone reversing this should say why.</li>
+</ul>
+
+<div class="box warn">
+  <span class="bt">The most ambitious behaviour in any source</span>
+  The launch prototype shows the agent reasoning <strong>across devices</strong> in one turn —
+  rescheduling the vacuum to 5:30am because yesterday's camera footage showed construction workers
+  arriving at 8am, while answering a question about when Maa usually wakes. That is genuinely
+  impressive and is <strong>the hardest thing to deliver under an on-device constraint</strong>
+  (§16). Nothing in the material addresses how.
+</div>
+
+<h4>Unanswered questions this model raises</h4>
+<ul>
+  <li>Where does the accept/reject tally live, and does one rejection reset the promotion counter?</li>
+  <li>What happens when a proposal's window passes un-actioned? "Later" and "Not tonight" exist; <strong>expiry behaviour does not.</strong></li>
+  <li>Can two proposals conflict, and who arbitrates?</li>
+  <li>Is there a declined-consent state?</li>
+</ul>
+</section>
+
+<!-- ============================ 9 ============================ -->
+<section class="pagebreak">
+<h2><span class="num">9</span>The Week One arc</h2>
+<p class="lede">The most specified thing in the material, and the closest it comes to a product spec. Each day names an emotional target, the research finding, and the screen that delivers it.</p>
+
+<table>
+  <thead><tr><th style="width:8mm">D</th><th style="width:26mm">Beat</th><th style="width:34mm">Target emotion</th><th>The study said → so we</th></tr></thead>
+  <tbody>
+    <tr><td class="num-col"><strong>1</strong></td><td><strong>The Reveal</strong></td><td>Quiet shock<br><em>"I didn't know it was this bad."</em></td>
+        <td>AQI data is the #1 return reason — <strong>but only if the first number lands as a gut-punch, not a spec.</strong> → Skip the feature tour. First thing shown is <em>your</em> bedroom air vs the street, colour-coded, already cleaning. First reading: <strong>168 PM2.5 indoors, 211 outside.</strong> Day-0 value is a number about you, not an instruction.</td></tr>
+    <tr><td class="num-col"><strong>2</strong></td><td><strong>The Proof</strong></td><td>Reassured<br><em>protection becomes real</em></td>
+        <td>Silent protection is indistinguishable from a switched-off box; if we don't narrate the overnight win the value evaporates. → Morning <strong>"Air Defended"</strong> card quantifies the night: <strong>Delhi peaked 187, bedroom never past 22 · 6.5 hours clean · 8.6M particles removed.</strong> The ring ties it to the body — SpO₂ held 97%+ <span class="chip b">B</span>.</td></tr>
+    <tr><td class="num-col"><strong>3</strong></td><td><strong>The Habit</strong></td><td>Hands-off<br><em>"It just handles it now."</em></td>
+        <td>Automations and remote control are drivers #2 and #3. Risk: silent automations make the app feel unnecessary — the away-mode trap. → Three routines built from observed use, one-tap accept: <strong>Morning Boost</strong> (6:30am, Turbo 20 min) · <strong>Sleep Mode</strong> (10:30pm, Silent) · <strong>Away Saver</strong> (on exit, Eco). Plus remote start and a geofence that boosts back 20 min before return.</td></tr>
+    <tr><td class="num-col"><strong>4</strong></td><td><strong>The Neighbourhood</strong></td><td>A little proud<br><em>worth talking about</em></td>
+        <td>Comparison and shareability convert a private utility into a daily check-in and an organic acquisition channel — the Spotify-Wrapped lesson. → <strong>"Cleaner than 82% of your street"</strong> (you 18 · Mehta 2F 54 · Indiranagar avg 96 · outdoor 211) and a one-tap share card. <span class="chip h">C-10</span></td></tr>
+    <tr><td class="num-col"><strong>5</strong></td><td><strong>The Worth</strong></td><td>Anxiety resolved<br><em>"It's not eating my bill."</em></td>
+        <td>"Is it spiking my electricity bill?" is a quiet usage-suppressor in Indian homes. → Energy card reframes Auto efficiency as money saved: <strong>₹164 saved vs always-Turbo · ₹0.40/hour, less than your ceiling fan</strong> — then translates it to <strong>3 trees' worth of clean air.</strong> Cost worry becomes a small point of pride.</td></tr>
+    <tr><td class="num-col"><strong>6</strong></td><td><strong>The Gap</strong></td><td>Curious<br><em>"Wait, the rest of the house?"</em></td>
+        <td>The first upsell must feel like help, not a pop-up. Filter health is both a retention signal and the consumable lever — surfaced late it becomes a 1-star "it stopped working" review. → Home air map shows what each room still breathes (<strong>bedroom 20 · living 94 · kids 61 · kitchen 112</strong>; "a Living Room unit would cut it to ~24"). Filter health at <strong>34%, ~22 days left</strong>, with reorder timed to arrive first. <span class="chip h">C-9</span></td></tr>
+    <tr><td class="num-col"><strong>7</strong></td><td><strong>The Score</strong></td><td>Sealed in<br><em>"This is my home's air now."</em></td>
+        <td><strong>Day-7 → Week-2 is the canonical retention chokepoint</strong>, and the weekly recap is the cheapest acquisition channel a product ever gets. → <strong>Air Score 84/100</strong>: 148 hours of clean air · 61M particles removed · cleaner than 82% of Indiranagar · best night Thursday. Shareable, with a Week-2 cliffhanger (pollen / Diwali). <span class="chip h">C-5</span></td></tr>
+  </tbody>
+</table>
+
+<div class="box ok">
+  <span class="bt">The structure to protect</span>
+  <strong>The night-hook → morning-proof pair (D1→D2) is the most important structure in the
+  product.</strong> Night: <em>"Tonight the AQI outside hits 200+. I'm on Auto in your bedroom —
+  wake up and see what I held off."</em> Morning: <em>"While you slept, Delhi hit 187. Your bedroom
+  never went past 22."</em> It is what converts a silent box into something worth checking.
+  <strong>Never ship one without the other.</strong>
+</div>
+
+<div class="box crit">
+  <span class="bt">The arc's single point of failure</span>
+  <strong>The entire seven days are push-dependent.</strong> A notification-permission denial at
+  <code>J-ONBOARD-06</code> silently kills days 1–7 with no other signal changing. This is the
+  highest-leverage thing to measure (§22) — ahead of the retention number it protects — and it
+  needs a designed no-push fallback, which does not exist.
+</div>
+</section>
+
+<!-- ============================ 10 ============================ -->
+<section class="pagebreak">
+<h2><span class="num">10</span>Journeys</h2>
+<p class="lede">Every step below corresponds to a screen that exists in a prototype. IDs are stable; retire rather than renumber. No step carries a persona ID until C-1 closes.</p>
+
+<h3>J-ONBOARD · Account and first device</h3>
+<table class="tight">
+  <thead><tr><th style="width:26mm">ID</th><th style="width:44mm">Step</th><th>Notes</th></tr></thead>
+  <tbody>
+    <tr><td><code>J-ONBOARD-01</code></td><td>Welcome</td><td>"By continuing you agree to our Terms &amp; Privacy Policy"</td></tr>
+    <tr><td><code>J-ONBOARD-02</code></td><td>Value slides (4)</td><td>One App Whole Home · <strong>Privacy First</strong> (on-device AI, DPDP compliant) · Smart Automations · <strong>Home Score</strong></td></tr>
+    <tr><td><code>J-ONBOARD-03</code></td><td>Phone number</td><td>Country selector, India default</td></tr>
+    <tr><td><code>J-ONBOARD-04</code></td><td>OTP verify</td><td>Failure here is a hard acquisition leak</td></tr>
+    <tr><td><code>J-ONBOARD-05</code></td><td>Name the home</td><td></td></tr>
+    <tr><td><code>J-ONBOARD-06</code></td><td><strong>Notification priming</strong></td><td>Pre-permission screen shown before the OS prompt. <strong>The most consequential step in the product.</strong></td></tr>
+    <tr><td><code>J-ONBOARD-07</code></td><td>Pick first device type</td><td>Camera · Lock · Purifier · Vacuum only</td></tr>
+  </tbody>
+</table>
+<p><strong>GAP:</strong> slide 4 promises Home Score before any device exists. No zero-device Score state is designed.</p>
+
+<h3>J-PAIR-PUR · Add a purifier</h3>
+<p>The most carefully-designed flow in the material. Three steps, each removing a known failure — and <strong>every step states its purpose, not just its instruction.</strong> Worth preserving as a rule.</p>
+<table class="tight">
+  <thead><tr><th style="width:26mm">ID</th><th style="width:40mm">Step</th><th>What it does</th></tr></thead>
+  <tbody>
+    <tr><td><code>J-PAIR-PUR-01</code></td><td>Bluetooth discovery</td><td>"Power on the purifier. Hold your phone close — this takes a moment." Sets an expectation of delay instead of appearing stuck.</td></tr>
+    <tr><td><code>J-PAIR-PUR-02</code></td><td>Wi-Fi, 2.4 GHz</td><td><strong>Hides the 5 GHz SSIDs the device cannot join</strong> rather than listing them and failing — removing the single most common smart-home setup failure. Says why: "Live air data and automations need a connection."</td></tr>
+    <tr><td><code>J-PAIR-PUR-03</code></td><td>Name + room</td><td>India-context presets including <strong>Pooja Room</strong>. Names the reason: "Naming the room lets us compare against the right outdoor sensor."</td></tr>
+    <tr><td><code>J-PAIR-PUR-04</code></td><td>First reading</td><td>The gut-punch. 168 PM2.5, indoors.</td></tr>
+  </tbody>
+</table>
+
+<h3>J-AGENT · The proposal loop</h3>
+<table class="tight">
+  <thead><tr><th style="width:26mm">ID</th><th>Step</th></tr></thead>
+  <tbody>
+    <tr><td><code>J-AGENT-01</code></td><td>Proposal surfaces in "Needs your call"</td></tr>
+    <tr><td><code>J-AGENT-02</code></td><td>User expands "Why this?" — Sensed / Decided / Instead of / Obeys rule</td></tr>
+    <tr><td><code>J-AGENT-03</code></td><td>User rehearses the plan as an editable timeline</td></tr>
+    <tr><td><code>J-AGENT-04</code></td><td>Run · Later · Not tonight — <strong>expiry undefined</strong></td></tr>
+    <tr><td><code>J-AGENT-05</code></td><td>Agent reports back; item moves to "Done today" with Undo</td></tr>
+    <tr><td><code>J-AGENT-06</code></td><td>User promotes via "Do this always" → appears in Automation tab</td></tr>
+    <tr><td><code>J-AGENT-07</code></td><td>After repeated accepts, agent offers a capability autonomy upgrade</td></tr>
+  </tbody>
+</table>
+
+<h3>J-REORDER · Consumable reorder</h3>
+<table class="tight">
+  <thead><tr><th style="width:26mm">ID</th><th>Step</th></tr></thead>
+  <tbody>
+    <tr><td><code>J-REORDER-01</code></td><td>Filter health surfaces proactively, not at failure</td></tr>
+    <tr><td><code>J-REORDER-02</code></td><td>Reorder CTA framed by arrival: "Arrives before it runs out"</td></tr>
+    <tr><td><code>J-REORDER-03</code></td><td><strong>Payment · address · confirmation · tracking — DOES NOT EXIST</strong></td></tr>
+  </tbody>
+</table>
+
+<h3>J-SHARE · Invite a household member <span class="chip b">B</span></h3>
+<p>Pick role → select devices → select per-device features → set window/expiry → send invite → review in audit. <strong>Blocked by C-3</strong> — the flow was rebuilt three times in the prototype (<code>SharingFlow</code>, <code>V2</code>, <code>V3</code>), which is itself the evidence it is unsettled.</p>
+
+<h3>GAP — flows referenced but never designed</h3>
+<table class="tight">
+  <thead><tr><th style="width:56mm">Missing flow</th><th>Consequence</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Payment / order</strong></td><td><code>F-SHOP</code> is the recurring-revenue path and stops at a price tag</td></tr>
+    <tr><td><strong>Offline / device unreachable</strong></td><td>No degraded state, despite a notification reading "camera went offline briefly"</td></tr>
+    <tr><td><strong>Filter fully exhausted</strong></td><td>The predictive path is designed; the failure path is not</td></tr>
+    <tr><td><strong>Declined consent</strong></td><td>Face recognition is declinable; nothing shows what a declined camera does</td></tr>
+    <tr><td><strong>Zero-device Home Score</strong></td><td>Promised in onboarding before any device is paired</td></tr>
+    <tr><td><strong>Proposal expiry</strong></td><td>"Later" and "Not tonight" exist; being ignored does not</td></tr>
+    <tr><td><strong>Multi-home</strong></td><td>Data structure exists with no flow — and P1 is <em>defined</em> by managing a second home</td></tr>
+    <tr><td><strong>Account deletion / data export</strong></td><td>A DPDP obligation with no surface</td></tr>
+    <tr><td><strong>Empty, loading, error states</strong></td><td>Absent throughout all four prototypes</td></tr>
+  </tbody>
+</table>
+</section>
+
+<!-- ============================ 11 ============================ -->
+<section class="pagebreak">
+<h2><span class="num">11</span>Feature scope</h2>
+<p class="lede">Thirteen features are registered in <code>src/hardware/feature-map.json</code>. Every one exists as a built prototype screen. <strong>None has a PRD.</strong> "Prototyped" and "specified" are not the same thing.</p>
+
+<h3>In — v1</h3>
+<table>
+  <thead><tr><th style="width:34mm">F-id</th><th style="width:36mm">Feature</th><th>Notes</th></tr></thead>
+  <tbody>
+    <tr><td><code>F-AQI-LIVE</code></td><td>Live air quality, per room</td><td>Driver #1. Everything else sits on it. Appears in all four sources.</td></tr>
+    <tr><td><code>F-AGENT-PROPOSE</code></td><td>Agent proposals + autonomy</td><td>§8. <strong>Ship at "Ask me" only</strong> until C-8 is ruled.</td></tr>
+    <tr><td><code>F-FILTER-HEALTH</code></td><td>AQI-weighted filter health</td><td>Differentiator <em>and</em> revenue. <span class="chip c">C-7 — no formula</span></td></tr>
+    <tr><td><code>F-AUTOMATIONS</code></td><td>Routines, agent- and user-made</td><td>Templates: clean before wake · boost when cooking · pause when out. Triggers: schedule, AQI threshold, geofence, wearable, forecast, device event.</td></tr>
+    <tr><td><code>F-WEEK-RECAP</code></td><td>Air Week recap + share</td><td>Bridges the D7→W2 chokepoint</td></tr>
+    <tr><td><code>F-ENERGY</code></td><td>Running cost as saving</td><td>Answers the bill anxiety that suppresses usage. Depends on an unstated electricity tariff, which varies by state and slab.</td></tr>
+    <tr><td><code>F-AIR-MAP</code></td><td>Home air map</td><td><span class="chip h">C-9 — sensorless rooms</span></td></tr>
+    <tr><td><code>F-SHOP</code></td><td>Filter reorder</td><td>Catalogue and price only — <strong>no transaction anywhere</strong></td></tr>
+  </tbody>
+</table>
+
+<h3>Out — v1</h3>
+<table class="tight">
+  <thead><tr><th style="width:34mm">F-id</th><th style="width:36mm">Feature</th><th>Why deferred</th></tr></thead>
+  <tbody>
+    <tr><td><code>F-FACES</code></td><td>Faces You Trust</td><td><span class="chip b">B</span> Consent flow designed; declined state not</td></tr>
+    <tr><td><code>F-HOME-SCORE</code></td><td>Home Score</td><td><span class="chip b">B</span> <span class="chip h">C-5 — four definitions</span></td></tr>
+    <tr><td><code>F-SHARING</code></td><td>Household sharing</td><td><span class="chip b">B</span> <span class="chip h">C-3 — three role models</span></td></tr>
+    <tr><td><code>F-NEIGHBOURHOOD</code></td><td>Neighbourhood comparison</td><td><span class="chip h">C-10 — privacy</span></td></tr>
+    <tr><td><code>F-WEARABLE-BRIDGE</code></td><td>Wearable bridge</td><td><span class="chip c">C-8 — health-adjacent</span></td></tr>
+  </tbody>
+</table>
+<p>Also out: cameras, locks, vacuums, doorbells, lights, music. And <strong>third-party ecosystems (Alexa / Google / HomeKit / Matter) are absent from all four documents</strong> — for a 2026 connected-home product that is a conspicuous silence. Confirm it is a decision, not an oversight.</p>
+</section>
+
+<!-- ============================ 12 ============================ -->
+<section>
+<h2><span class="num">12</span>The differentiator</h2>
+<p class="lede"><strong>AQI-weighted filter life, not clock-counted hours.</strong> Competitors count runtime, so three months in Delhi's winter smog and three months in Mumbai's monsoon return the same filter score.</p>
+
+<blockquote>Every other purifier tells you your filter is 72% healthy — three months in a row. We don't. Because we actually measure it.<cite>Noise Sanctuary</cite></blockquote>
+
+<table>
+  <thead><tr><th style="width:44mm">Same filter, same hours</th><th class="num-col">Real AQI</th><th class="num-col">Competitor says</th><th class="num-col">NOMA says</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Delhi NCR</strong> · winter</td><td class="num-col">287</td><td class="num-col" style="color:var(--ter)">72%</td><td class="num-col"><strong>38%</strong></td></tr>
+    <tr><td><strong>Mumbai</strong> · monsoon</td><td class="num-col">94</td><td class="num-col" style="color:var(--ter)">72%</td><td class="num-col"><strong>64%</strong></td></tr>
+  </tbody>
+</table>
+<p>Identical hardware, identical runtime, <strong>26 points apart.</strong> That gap is the product. A Delhi filter can exhaust in 4 months what a Mysore filter takes 12 months to use up.</p>
+
+<dl class="kv">
+  <dt>Method</dt><dd>AQI-weighted particulate load, computed hourly</dd>
+  <dt>Inputs</dt><dd>Live outdoor AQI · indoor particle sensor · fan runtime</dd>
+  <dt>Claimed effect</dt><dd>Above AQI 200, a filter absorbs 3–5× more particulate per hour</dd>
+  <dt>Alerting</dt><dd>Predictive — surfaces before failure, reorder timed to arrive before exhaustion</dd>
+  <dt>Spec status</dt><dd><strong>None.</strong> No formula, no coefficients, no validation data</dd>
+</dl>
+
+<div class="box crit">
+  <span class="bt">C-7 — the most serious gap in this document</span>
+  This is a <strong>marketing claim awaiting an engineering model.</strong> It is the one thing that
+  makes the product defensible against Xiaomi at the same price, and it is specified nowhere.
+  Closing it is worth more than any other v1 work.
+</div>
+</section>
+
+<!-- ============================ 13 ============================ -->
+<section class="pagebreak">
+<h2><span class="num">13</span>Hardware and sensing</h2>
+<p class="lede">Canonical: <code>src/hardware/devices.json</code>. All values marked <code>prototype-only</code> — nothing verified against a datasheet or BOM.</p>
+
+<h3>Purifiers — the anchor product</h3>
+<table class="tight">
+  <thead><tr><th style="width:30mm">HW-id</th><th style="width:34mm">Model</th><th class="num-col">Coverage</th><th class="num-col">CADR</th><th>Filtration</th></tr></thead>
+  <tbody>
+    <tr><td><code>HW-PUR-200</code></td><td>Air Pro 200</td><td class="num-col">up to 280 ft²</td><td class="num-col">240 m³/hr</td><td>HEPA H13</td></tr>
+    <tr><td><code>HW-PUR-500</code></td><td>Air Pro 500</td><td class="num-col">up to 550 ft²</td><td class="num-col">400 m³/hr</td><td>HEPA H13 + activated carbon</td></tr>
+    <tr><td><code>HW-PUR-MAX</code></td><td>Air Pro Max</td><td class="num-col">up to 900 ft²</td><td class="num-col">600 m³/hr</td><td>Dual HEPA H13</td></tr>
+  </tbody>
+</table>
+
+<h3>The rest of the ecosystem <span class="chip b">B</span></h3>
+<table class="tight">
+  <thead><tr><th style="width:30mm">HW-id</th><th style="width:36mm">Model</th><th>Spec</th></tr></thead>
+  <tbody>
+    <tr><td><code>HW-CAM-360</code></td><td>Cam 360 2K</td><td>2K · night vision · PTZ · two-way audio · privacy mode · person &amp; pet detection · cloud + SD storage</td></tr>
+    <tr><td><code>HW-BELL-PRO</code></td><td>Bell Pro</td><td>No spec supplied</td></tr>
+    <tr><td><code>HW-LOCK-X1</code></td><td>Smart Lock X1</td><td>Remote unlock · access log</td></tr>
+    <tr><td><code>HW-LOCK-X2</code></td><td>Smart Lock X2</td><td>Appears in the seeded list only. <strong>Difference from X1 unstated.</strong></td></tr>
+    <tr><td><code>HW-VAC-R1</code></td><td>Clean Bot R1</td><td>LiDAR · 5000 Pa · sweep &amp; mop · auto-empty dock</td></tr>
+    <tr><td><code>HW-VAC-R1P</code></td><td>Clean Bot R1 Pro</td><td>LiDAR · 8000 Pa · hot-water mop · self-wash + auto-empty</td></tr>
+  </tbody>
+</table>
+
+<h3>Sensing — the substance behind the core claim</h3>
+<p>Indoor: on-device <strong>QSensAI laser particle sensor.</strong></p>
+<table class="tight">
+  <thead><tr><th style="width:24mm">Measure</th><th class="num-col" style="width:26mm">Example</th><th>Note</th></tr></thead>
+  <tbody>
+    <tr><td><strong>PM2.5</strong></td><td class="num-col">167 µg/m³</td><td>Fine particles — the headline number</td></tr>
+    <tr><td>PM10</td><td class="num-col">210 µg/m³</td><td>Coarse dust</td></tr>
+    <tr><td>NO₂</td><td class="num-col">48 ppb</td><td>Traffic</td></tr>
+    <tr><td>O₃</td><td class="num-col">32 ppb</td><td>Ozone</td></tr>
+    <tr><td>VOC</td><td class="num-col">Low</td><td>Reported qualitatively, never as a number</td></tr>
+    <tr><td>Humidity · Temp</td><td class="num-col">44% · 24°C</td><td></td></tr>
+    <tr><td>CO₂</td><td class="num-col">480 ppm</td><td>Appears in Score factors only. <strong>Which SKU carries a CO₂ sensor is unstated</strong> <span class="chip h">C-9</span></td></tr>
+  </tbody>
+</table>
+<p>Outdoor: nearest <strong>CPCB</strong> (Central Pollution Control Board) station, <em>blended</em> with the on-device reading.</p>
+<div class="box warn">
+  <span class="bt">The blend is specified nowhere</span>
+  Every indoor-vs-outdoor number — the product's core emotional beat, and the basis of the entire
+  Week One arc — depends on an algorithm no document describes.
+</div>
+
+<h3>Connectivity</h3>
+<dl class="kv">
+  <dt>Pairing</dt><dd>Bluetooth LE — device powered on, phone held close</dd>
+  <dt>Network</dt><dd><strong>Wi-Fi 2.4 GHz only</strong></dd>
+  <dt>Notable behaviour</dt><dd>Setup <strong>hides the 5 GHz SSIDs the device cannot join</strong>, rather than listing them and failing. This removes the single most common smart-home setup failure and must be preserved.</dd>
+  <dt>Firmware</dt><dd>OTA; version surfaced in device settings (prototype: v2.4.1)</dd>
+  <dt>Local controls</dt><dd>LED brightness, child lock — must work independent of cloud</dd>
+</dl>
+
+<h3>Modes</h3>
+<div class="box warn">
+  <span class="bt">C-4 · Three incompatible fan-mode vocabularies</span>
+  <table class="tight" style="margin-top:2mm">
+    <thead><tr><th style="width:38mm">Source</th><th>Modes</th></tr></thead>
+    <tbody>
+      <tr><td>Week One doc</td><td>Auto · <strong>Turbo</strong> · Silent · Eco</td></tr>
+      <tr><td>Agent doc</td><td>Auto · Sleep · <strong>Turbo</strong> · Manual</td></tr>
+      <tr><td>Launch app</td><td>Quiet · Standard · <strong>Turbo</strong> · Max</td></tr>
+    </tbody>
+  </table>
+  <p><strong>"Turbo" is the only value present in all three.</strong> No mode UI, automation action or voice copy naming a mode can be finalised until this is ruled.</p>
+</div>
+<p>Distinct and <em>consistent</em> across all sources: whole-home scenes <strong>Home · Away · Night</strong>. Vacuum <span class="chip b">B</span>: clean modes Sweep / Sweep &amp; Mop / Mop; suction Eco / Standard / Max / Turbo Max; targeting Whole Home / Select Room / Custom Area / Point Clean.</p>
+
+<h3>Wearables <span class="chip b">B</span></h3>
+<p>Not NOMA devices — companion hardware, and <strong>signal sources rather than controllable devices.</strong> The integration ties air quality to a body metric, which is the strongest available answer to "why does clean air matter to me tonight?"</p>
+<table class="tight">
+  <thead><tr><th style="width:44mm">Signal</th><th style="width:44mm">Source</th><th>Default action</th></tr></thead>
+  <tbody>
+    <tr><td><code>WEARABLE_SLEEP</code></td><td>low activity + HR in sleep range</td><td>Night mode</td></tr>
+    <tr><td><code>WEARABLE_WAKE</code></td><td>movement spike after sleep</td><td>Morning mode</td></tr>
+    <tr><td><code>WEARABLE_SPO2</code></td><td>blood oxygen below 94%</td><td><strong>Purifier → Turbo</strong> <span class="chip c">C-8</span></td></tr>
+    <tr><td><code>WEARABLE_STEPS</code></td><td>daily steps ≥ 8,000</td><td>user-defined</td></tr>
+    <tr><td><code>WEARABLE_GPS_LEAVE</code></td><td>GPS outside 200 m of home</td><td>Away mode</td></tr>
+    <tr><td><code>WEARABLE_GPS_ARRIVE</code></td><td>GPS within 150 m of home</td><td>Home mode</td></tr>
+  </tbody>
+</table>
+<p>Devices: <strong>Noise Luna Ring 2</strong> (SpO₂, sleep, HR) and a Noise smartwatch (model unspecified).</p>
+
+<h3>Consumables</h3>
+<table class="tight">
+  <thead><tr><th style="width:44mm">Item</th><th class="num-col" style="width:26mm">Price</th><th>Note</th></tr></thead>
+  <tbody>
+    <tr><td><strong>HEPA H13 filter</strong></td><td class="num-col"><strong>₹1,299 or ₹1,499</strong></td><td><span class="chip h">C-6</span> The highest-frequency purchase in the product</td></tr>
+    <tr><td>Mop pads ×4 <span class="chip b">B</span></td><td class="num-col">₹499</td><td></td></tr>
+    <tr><td>Cam wall mount <span class="chip b">B</span></td><td class="num-col">₹299</td><td></td></tr>
+    <tr><td>Main brush · side brush <span class="chip b">B</span></td><td class="num-col">—</td><td>Wear tracked as % (main 72 · side 85 · filter 45 · mop pad 60)</td></tr>
+  </tbody>
+</table>
+</section>
+
+<!-- ============================ 14 ============================ -->
+<section class="pagebreak">
+<h2><span class="num">14</span>Data model</h2>
+<p class="lede">Inferred from the prototypes — no schema, migration or validation exists. Detail: <code>memory/architecture/data-models.md</code>.</p>
+
+<table>
+  <thead><tr><th style="width:32mm">Entity</th><th style="width:58mm">Fields</th><th>Note</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Home</strong></td><td><code>id, name, rooms[], members[], devices[], score, scene(home|away|night)</code></td><td>Multi-home is implied but has no flow. <strong>Whether members, rules and autonomy grants are per-home or per-account is undefined</strong> — and P1 is defined by managing a second household.</td></tr>
+    <tr><td><strong>Room</strong></td><td><code>id, name, icon, devices[], aqi</code></td><td><code>aqi</code> may exist with <strong>no sensor present</strong> <span class="chip h">C-9</span>. Two preset lists exist <span class="chip m">C-12</span>: 8 items, or 11 including <strong>Pooja Room</strong>, Bathroom, Front Door, Garage. The 11-item list is the India-appropriate one.</td></tr>
+    <tr><td><strong>Device</strong></td><td><code>id, model, type, room, name, online, firmware</code> + per-type telemetry</td><td><strong>Device name and room are independent fields.</strong> The prototype contains "Living Room Purifier" assigned to room "Bedroom" — proving they are decoupled, and that any UI showing one while implying the other will mislead.</td></tr>
+    <tr><td><strong>Member</strong></td><td><code>id, name, contact, role, grants[], schedule?, expiresAt?</code></td><td>The most developed model in the set. Guest auto-expiry defaults to 24 h. <span class="chip h">C-3</span></td></tr>
+    <tr><td><strong>Automation</strong></td><td><code>id, name, origin(agent|user), trigger, actions[], enabled</code></td><td><code>origin</code> is surfaced in the UI, so it is a real field — the tab splits agent-created from user-created.</td></tr>
+    <tr><td><strong>Proposal</strong></td><td><code>id, capability, sensed, decided, insteadOf, obeysRule, plan[], state, undoable</code></td><td>All four explanation slots required. <code>plan[].locked</code> marks a rule-derived step. <strong>New in v1: <code>expiresAt</code></strong> — currently undefined behaviour.</td></tr>
+    <tr><td><strong>StandingRule</strong></td><td><code>id, label, value, unit, tradeoffNote</code></td><td>The trade-off copy is part of the model, not decoration.</td></tr>
+    <tr><td><strong>AutonomyGrant</strong></td><td><code>capability, level(ask|tell|silent), consecutiveAccepts</code></td><td><strong>New in v1: <code>safetyClass</code></strong> — its absence is exactly the gap in C-8.</td></tr>
+    <tr><td><strong>Event</strong> <span class="chip b">B</span></td><td><code>id, type, time, location, identity?, badge, clipAvailable, unread</code></td><td>Badges: Known · Verified · Review</td></tr>
+    <tr><td><strong>Face</strong> <span class="chip b">B</span></td><td><code>id, label, embedding, consentGranted</code></td><td><strong>Embedding is on-device only, never uploaded</strong> (DPDP Act 2023). Consent explicit, per-feature, revocable.</td></tr>
+  </tbody>
+</table>
+</section>
+
+<!-- ============================ 15 ============================ -->
+<section>
+<h2><span class="num">15</span>Permissions and sharing <span class="chip b">B</span></h2>
+<p class="lede">Grants are per device type, and the granularity is real. Deferred from v1, documented because it is the most developed model in the source material.</p>
+
+<table class="tight">
+  <thead><tr><th style="width:24mm">Type</th><th class="num-col" style="width:14mm">Grants</th><th>Items</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Camera</strong></td><td class="num-col">7</td><td>Live view · Basic functions (PTZ, two-way audio, privacy mode) · Events · Cloud recordings <em>view</em> · Cloud management <em>delete</em> · Local SD recordings · Device management</td></tr>
+    <tr><td><strong>Lock</strong></td><td class="num-col">2</td><td>Unlock · View access log</td></tr>
+    <tr><td><strong>Purifier</strong></td><td class="num-col">2</td><td>Control (power, fan, modes) · Schedules</td></tr>
+    <tr><td><strong>Vacuum</strong></td><td class="num-col">2</td><td>Control (start, dock, spot) · Schedules</td></tr>
+  </tbody>
+</table>
+
+<div class="box ok">
+  <span class="bt">The asymmetry is deliberate and correct</span>
+  Camera splits <em>viewing</em> cloud clips from <em>deleting</em> them, and lock splits
+  <em>unlocking</em> from <em>seeing who unlocked.</em> A guest may need entry without seeing the
+  household's movements. Preserve this.
+</div>
+
+<div class="box warn">
+  <span class="bt">C-3 · Three role models coexist</span>
+  <table class="tight" style="margin-top:2mm">
+    <thead><tr><th style="width:38mm">Source</th><th>Roles</th></tr></thead>
+    <tbody>
+      <tr><td><code>ROLES</code></td><td>family · <strong>staff</strong> (weekly window) · guest (date range)</td></tr>
+      <tr><td><code>ROLES3</code></td><td>family · guest (staff folded in)</td></tr>
+      <tr><td><code>SHARE_ROLE_BADGE</code></td><td>owner · family · guest</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Do not resolve by picking the newest file.</strong> Only the 3-role version has an explicit <code>staff</code> role — that is persona P3, and collapsing it into <code>guest</code> loses the recurring weekly-window case P3 is defined by.</p>
+</div>
+
+<p><strong>Retention is a billing entitlement, not a storage default:</strong> event history is 30 days on the mid tier, 365 on the top tier.</p>
+</section>
+
+<!-- ============================ 16 ============================ -->
+<section class="pagebreak">
+<h2><span class="num">16</span>Privacy and compliance</h2>
+<p class="lede">Stated repeatedly and specifically across the prototypes. This is India's Digital Personal Data Protection Act 2023 — a legal obligation, not a marketing line.</p>
+
+<h4>What the product claims</h4>
+<ul>
+  <li><strong>On-device AI.</strong> "DPDP compliant. Your data never leaves home."</li>
+  <li>Face data is stored <strong>"only on your device. It is never uploaded to any server."</strong></li>
+  <li>Face tagging is gated by an explicit consent sheet (Decline / Allow &amp; Continue) <strong>citing the DPDP Act 2023 by name.</strong></li>
+  <li>The camera event view is badged <strong>"No cloud · DPDP compliant."</strong></li>
+  <li>The agent is labelled <strong>"On-device · Private"</strong> in the chat header.</li>
+</ul>
+
+<div class="box crit">
+  <span class="bt">C-11 · The unresolved core tension</span>
+  <p>Three shipped features cannot work locally:</p>
+  <ul style="margin-top:1.5mm">
+    <li><strong>Outdoor AQI blending</strong> — requires a CPCB network call</li>
+    <li><strong>Forecast-driven pre-clean</strong> — requires tomorrow's forecast</li>
+    <li><strong>Neighbourhood comparison</strong> — aggregated peer data, server-side by definition</li>
+  </ul>
+  <p><strong>"Never leaves home" and "uses tomorrow's forecast" cannot both be literally true.</strong> The claim most likely means <em>personal and biometric data stays local; ambient public data is fetched</em> — defensible, and still a strong position. It must be narrowed to that before it appears in store copy or a privacy policy.</p>
+</div>
+
+<h4>Three consequences the prototypes do not resolve</h4>
+<ol>
+  <li><strong>On-device inference bounds model size and latency</strong>, and therefore how clever the agent can be — including the cross-device reasoning in §8.6.</li>
+  <li><strong>Consent is per-feature, not per-app.</strong> Declining face recognition must leave a working camera. No declined state is designed anywhere.</li>
+  <li><strong>Telemetry is exfiltration.</strong> Whether analytics is exempt, separately consented, or aggregated on-device before sending is an architecture decision that must be made <em>before the first event is named</em>.</li>
+</ol>
+
+<p>Also required and unaddressed: <strong>account deletion and data export</strong> are DPDP obligations with no surface in any prototype.</p>
+</section>
+
+<!-- ============================ 17 ============================ -->
+<section>
+<h2><span class="num">17</span>Competitive position</h2>
+<p class="lede">Methods quoted from each brand's own manuals and FAQs (June 2026). Pricing from Amazon India.</p>
+
+<table class="tight">
+  <thead><tr><th style="width:32mm">Brand</th><th class="num-col" style="width:22mm">Price</th><th style="width:44mm">Filter score based on</th><th>At AQI 300+</th></tr></thead>
+  <tbody>
+    <tr><td>Xiaomi Smart Air 4</td><td class="num-col">₹8,999</td><td>Hours, speed + sensor</td><td>sensor goes blind</td></tr>
+    <tr><td>Dyson Pure Cool</td><td class="num-col">₹38,900</td><td>Mostly a 12-month clock</td><td>degrades</td></tr>
+    <tr><td>Honeywell Air Touch</td><td class="num-col">₹14,990</td><td>Hours + speed only</td><td>no sensor</td></tr>
+    <tr><td>Philips Series 1000</td><td class="num-col">₹9,995</td><td>WHO regional average</td><td>sensor goes blind</td></tr>
+    <tr style="background:var(--neon-tint)"><td><strong>NOMA · NS Air S1</strong></td><td class="num-col"><strong>₹8,999</strong></td><td><strong>Real particle load, hourly</strong></td><td><strong>AQI-verified</strong></td></tr>
+  </tbody>
+</table>
+
+<p>Independent lab testing (Smart Air, 2026) found Xiaomi and Philips PM2.5 sensors <strong>lose accuracy at high pollution levels — exactly when Delhi's air is most hazardous.</strong> Honeywell's own manual states its indicator "runs on a timer" and may not reflect actual particle load. Philips bases recommended filter life on WHO urban outdoor averages.</p>
+
+<div class="box warn">
+  <span class="bt">The price parity is the whole argument — and it is contested</span>
+  The deck positions NOMA at <strong>₹8,999, matching Xiaomi's entry price</strong>, and the entire
+  competitive case rests on "same price, honest filter score." The launch app prices the same
+  product at <strong>₹4,999</strong> <span class="chip h">C-6</span>. Nearly 2×. One of the two
+  documents is describing a different product; this is not a typo to smooth over.
+</div>
+
+<p>Claimed exclusives beyond filter honesty <span class="chip b">B</span>: full home graph (vs "app only") · family-aware (kids, elders, pets, grandparents) · camera + vacuum integration · a single whole-home Score.</p>
+</section>
+
+<!-- ============================ 18 ============================ -->
+<section class="pagebreak">
+<h2><span class="num">18</span>Monetization</h2>
+
+<h3>Hardware</h3>
+<table class="tight">
+  <thead><tr><th style="width:44mm">SKU</th><th class="num-col" style="width:24mm">Price</th><th>Tag</th></tr></thead>
+  <tbody>
+    <tr><td>Cam 360 2K <span class="chip b">B</span></td><td class="num-col">₹2,999</td><td>Bestseller</td></tr>
+    <tr><td>Bell Pro <span class="chip b">B</span></td><td class="num-col">₹3,499</td><td></td></tr>
+    <tr><td><strong>Air Pro</strong></td><td class="num-col"><strong>₹4,999 or ₹8,999</strong></td><td><span class="chip h">C-6</span></td></tr>
+    <tr><td>Smart Lock X1 <span class="chip b">B</span></td><td class="num-col">₹5,499</td><td>New</td></tr>
+    <tr><td>Clean Bot R1 <span class="chip b">B</span></td><td class="num-col">₹8,999</td><td>Popular</td></tr>
+  </tbody>
+</table>
+
+<h3>Consumables — the recurring line</h3>
+<p>HEPA H13 filter at ₹1,299 or ₹1,499 <span class="chip h">C-6</span>. <strong>Filter health is the strategic centre of the product:</strong> simultaneously the retention signal, the differentiator, and the consumable trigger.</p>
+<blockquote>Surfaced too late it becomes a 1-star "it stopped working" review. Surfaced predictively it becomes a reorder that arrives before it runs out.<cite>the same data, opposite outcomes, decided by when it is shown</cite></blockquote>
+
+<h3>Subscription <span class="chip b">B</span></h3>
+<p>Deck only — <strong>no paywall, upgrade prompt or gated feature exists in any app prototype.</strong></p>
+<table class="tight">
+  <thead><tr><th style="width:30mm">Tier</th><th class="num-col" style="width:32mm">Price</th><th>Includes</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Free</strong></td><td class="num-col">₹0 forever</td><td>Live control &amp; room views · real-time AQI in every room · <strong>real filter health score</strong> · current Score · basic automations</td></tr>
+    <tr><td><strong>Plus</strong><br><span class="chip l">most popular</span></td><td class="num-col">₹699/mo<br>₹6,999/yr</td><td><strong>AQI-weighted filter tracking</strong> · predictive replacement alerts · doorstep filter cleaning (3+ purifiers) · 30-day event history · pet detection · family awareness</td></tr>
+    <tr><td><strong>Family</strong></td><td class="num-col">₹1,199/mo<br>₹11,999/yr</td><td>All Plus · elder monitoring &amp; check-ins · routine intelligence &amp; alerts · 365-day home memory · annual home health report</td></tr>
+  </tbody>
+</table>
+
+<div class="box warn">
+  <span class="bt">C-13 · The tiering contradicts the positioning</span>
+  Free gets "real filter health score"; Plus sells "AQI-weighted filter tracking". <strong>But
+  AQI-weighting <em>is</em> what makes the score real</strong> — it is the entire differentiator
+  versus the competitors the deck names. Selling it as an upsell undercuts the headline claim, and
+  the two tier descriptions cannot both be honest. (Also: annual pricing implies "save 2 months"
+  on Plus but only ~1.6 on Family, stated as if identical.)
+</div>
+
+<h3>Contextual upsell — the designed surfaces</h3>
+<p>Monetisation is <strong>data-triggered, never a standalone pop-up.</strong> The one thing all sources agree on. Maps directly to persona P4.</p>
+<table class="tight">
+  <thead><tr><th style="width:34mm">Surface</th><th style="width:56mm">Trigger</th><th>Ask</th></tr></thead>
+  <tbody>
+    <tr><td>Home air map</td><td>Rooms without a purifier show what they still breathe (living 94, kitchen 112)</td><td>A second device — "a Living Room unit would cut it to ~24"</td></tr>
+    <tr><td>Filter card</td><td>Predicted exhaustion (~22 days)</td><td>Reorder</td></tr>
+    <tr><td>Shop reorder rail</td><td>Device already owned</td><td>Matched consumable</td></tr>
+    <tr><td>Week recap</td><td>Day 7</td><td>Retention, then the Week-2 hook</td></tr>
+  </tbody>
+</table>
+<p><strong>The stated rule: "the first upsell has to feel like help, not a pop-up."</strong></p>
+
+<div class="box warn">
+  <span class="bt">A token-level consequence of a business decision</span>
+  Every upsell surface wants an accent-coloured CTA — and the accent budget is 10% of a screen with
+  <strong>one</strong> primary action (§20). Upsell and primary action therefore compete for the same
+  budget. On the air map the upsell <em>is</em> the primary action; on the filter card it is not.
+  Unresolved anywhere.
+</div>
+
+<h3>Acquisition, treated as a revenue line</h3>
+<ul>
+  <li>"Every share is a billboard on a friend's phone."</li>
+  <li>"The weekly recap is the cheapest acquisition channel a product ever gets."</li>
+  <li><strong>Content rule, learned the hard way:</strong> "Pre-filled brand captions kill shares; emoji + the number travel."</li>
+</ul>
+<p>Gated on C-10 — the share engine depends on neighbourhood comparison, which has an open privacy question.</p>
+
+<div class="box crit">
+  <span class="bt">Nothing exists behind any price</span>
+  No payment gateway, address book, tax handling, invoice, refund, subscription management or order
+  tracking appears in any prototype. <strong>Every number in this section is a price tag with
+  nothing behind it.</strong>
+</div>
+</section>
+
+<!-- ============================ 19 ============================ -->
+<section class="pagebreak">
+<h2><span class="num">19</span>Voice and content</h2>
+
+<h3>The one rule everything follows</h3>
+<p><strong>Observed → acted → what it means for you.</strong> Never a bare status.</p>
+<blockquote>Good morning. While you slept, Delhi hit 187. Your bedroom never went past 22.<cite>the morning-proof notification</cite></blockquote>
+<p>Three moves: what happened outside, what I did, what you got. A status line would have said "Air quality: Good." <strong>The difference is the entire product.</strong></p>
+
+<h3>Voice characteristics, with evidence</h3>
+<table class="tight">
+  <thead><tr><th style="width:52mm">Trait</th><th>Evidence</th></tr></thead>
+  <tbody>
+    <tr><td><strong>First person, owns the action</strong></td><td>"I'm on Auto in your bedroom" — not "purifier switched to Turbo"</td></tr>
+    <tr><td><strong>Pairs a number with a consequence</strong></td><td>"₹0.40/hour — less than your ceiling fan"</td></tr>
+    <tr><td><strong>Anchors units to something human</strong></td><td>"28 dB is about a whisper"; filter life as "~22 days left", never a bare %</td></tr>
+    <tr><td><strong>States the trade-off</strong></td><td>"Lower is quieter but cleans slower"</td></tr>
+    <tr><td><strong>Pre-empts a known anxiety</strong></td><td>The energy card exists because bill worry suppresses usage</td></tr>
+    <tr><td><strong>Asks before autonomy, with evidence</strong></td><td>"You've accepted 7 fan suggestions in a row"</td></tr>
+    <tr><td><strong>Warm without being cute</strong></td><td>"Heading out? I'll stop wasting power." No mascot, no exclamation marks, no apologising.</td></tr>
+  </tbody>
+</table>
+
+<h3>Notification patterns</h3>
+<table class="tight">
+  <thead><tr><th style="width:28mm">Type</th><th style="width:66mm">Example</th><th>Job</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Night hook</strong></td><td>"Tonight the AQI outside hits 200+. I'm on Auto in your bedroom — wake up and see what I held off."</td><td>Creates a reason to open the app tomorrow</td></tr>
+    <tr><td><strong>Morning proof</strong></td><td>"Good morning. While you slept, Delhi hit 187. Your bedroom never went past 22."</td><td>Pays off the hook</td></tr>
+    <tr><td>Explained action</td><td>"Turbo kicked in — outdoor AQI spiked to 167"</td><td>Narrates autonomy so it is not invisible</td></tr>
+    <tr><td>Care</td><td>"Filter at 82% · about 48 days of clean air left"</td><td>Retention + revenue, framed as care</td></tr>
+    <tr><td>Social</td><td>"You've stayed in the cleanest 20% of Indiranagar all week. Share it?"</td><td>Acquisition</td></tr>
+  </tbody>
+</table>
+
+<h3>The share-caption rule</h3>
+<p>The one place brand voice must disappear entirely. A share card speaks as the <strong>user</strong>, not the company:</p>
+<blockquote>Outdoor was 211 today. I'm breathing 12× cleaner air. 🌿<cite>the share card, in the user's voice</cite></blockquote>
+
+<h3>India context is a correctness requirement, not flavour</h3>
+<table class="tight">
+  <thead><tr><th style="width:44mm">Specific</th><th>Why it is load-bearing</th></tr></thead>
+  <tbody>
+    <tr><td>Delhi 287 winter vs Mumbai 94 monsoon</td><td>The contrast <em>is</em> the filter argument</td></tr>
+    <tr><td>₹ and ₹/hour vs a ceiling fan</td><td>The universally understood cost baseline</td></tr>
+    <tr><td><strong>Pooja Room</strong> as a first-class preset</td><td>A room-preset list without it is wrong for this market</td></tr>
+    <tr><td>"Maa" in agent dialogue</td><td>Natural household register</td></tr>
+    <tr><td>Blinkit as a recognised delivery identity</td><td>Camera events read as local life</td></tr>
+    <tr><td>CPCB as the outdoor authority</td><td>Not WHO averages</td></tr>
+    <tr><td>Diwali and pollen season</td><td>Scheduled air events, used as the Week-2 hook</td></tr>
+    <tr><td>2.4 GHz-only routers</td><td>An Indian-router reality the setup flow designs around</td></tr>
+    <tr><td>Household staff as a normal role</td><td>Not an edge case — persona P3</td></tr>
+  </tbody>
+</table>
+
+<div class="box warn">
+  <span class="bt">The assistant has no settled name — C-2</span>
+  Four names for one agent: <strong>Ding</strong> ("🌬️ Ding now" in Week One) · <strong>Noise AI
+  Agent</strong> (launch app) · <strong>Sanctuary Assistant</strong> (deck) · <em>unnamed first
+  person</em> (Air Agent). The product is now NOMA, so none is currently correct.
+  <strong>Every string above is unshippable until this is ruled.</strong>
+</div>
+
+<div class="box warn">
+  <span class="bt">O-5 · A Hindi locale exists and cannot be typeset</span>
+  <code>src/i18n/locales/hi/</code> exists, the primary personas are Indian, and
+  <strong>Google Sans Flex has zero Devanagari coverage</strong> — confirmed by reading its
+  <code>cmap</code>. Every string in this section is English-only. A paired Devanagari face is
+  required before <code>hi</code> ships.
+</div>
+</section>
+
+<!-- ============================ 20 ============================ -->
+<section class="pagebreak">
+<h2><span class="num">20</span>Design system</h2>
+<p class="lede">The one area with no open conflicts. ADR-001…005 are settled. Canonical: <code>src/tokens/design.tokens.js</code>.</p>
+
+<h3>Surfaces — warmth lives in the ground, not the greys</h3>
+<p>Derived from Airbnb iOS (observed at 393×852pt). Two ramps, deliberately separated: <code>neutral</code> carries text and structure, <code>sand</code> carries the warmth. Tinting the text greys too would drift contrast ratios and muddy photography.</p>
+<div class="swatches">
+  <div class="sw"><i style="background:#FFFFFF"></i><b>#FFFFFF</b><span>neutral.0 — canvas, cards</span></div>
+  <div class="sw"><i style="background:#F7F7F7"></i><b>#F7F7F7</b><span>neutral.50 — input fills</span></div>
+  <div class="sw"><i style="background:#EBEBEB"></i><b>#EBEBEB</b><span>neutral.100 — dividers</span></div>
+  <div class="sw"><i style="background:#DDDDDD"></i><b>#DDDDDD</b><span>neutral.200 — hairlines</span></div>
+  <div class="sw"><i style="background:#717171"></i><b>#717171</b><span>neutral.500 — secondary text</span></div>
+  <div class="sw"><i style="background:#222222"></i><b>#222222</b><span>neutral.800 — primary text</span></div>
+  <div class="sw"><i style="background:#FAF9F7"></i><b>#FAF9F7</b><span>sand.50</span></div>
+  <div class="sw"><i style="background:#F5F3EF"></i><b>#F5F3EF</b><span>sand.100 — app ground</span></div>
+  <div class="sw"><i style="background:#F0EEE9"></i><b>#F0EEE9</b><span>sand.200 — sheets (observed)</span></div>
+  <div class="sw"><i style="background:#E8E5DE"></i><b>#E8E5DE</b><span>sand.300</span></div>
+  <div class="sw"><i style="background:#DED9D0"></i><b>#DED9D0</b><span>sand.400</span></div>
+  <div class="sw"><i style="background:#C9C2B6"></i><b>#C9C2B6</b><span>sand.500</span></div>
+</div>
+<p><strong>The ramp stops at <code>#222222</code> for text.</strong> Pure black is reserved for system chrome — it reads harsh against a warm ground. Airbnb's Rausch red was explicitly rejected.</p>
+
+<h3>Accent — two greens, budgeted at 10%</h3>
+<div class="swatches">
+  <div class="sw"><i style="background:#4D6747"></i><b>#4D6747</b><span>moss — primary CTA fill</span></div>
+  <div class="sw"><i style="background:#3B4F36"></i><b>#3B4F36</b><span>mossPressed</span></div>
+  <div class="sw"><i style="background:#EFF2EE"></i><b>#EFF2EE</b><span>mossTint — selected wash</span></div>
+  <div class="sw"><i style="background:#AEC799"></i><b>#AEC799</b><span>neon — status, badges</span></div>
+  <div class="sw"><i style="background:#91B375"></i><b>#91B375</b><span>neonPressed</span></div>
+  <div class="sw"><i style="background:#F2F5F0"></i><b>#F2F5F0</b><span>neonTint — "all good"</span></div>
+</div>
+<p>Green occupies <strong>~10% of any screen, never more.</strong> It marks the one thing that matters; it is never the ground. Emphasis that is <em>not</em> the primary action stays near-black — that is what protects the budget. The pair sits 16° apart in hue (neon 93°, moss 109°), so they read as one green family, light and dark.</p>
+
+<h4>Measured contrast — one pairing is a trap</h4>
+<table class="tight">
+  <thead><tr><th style="width:52mm">Pairing</th><th class="num-col" style="width:22mm">Ratio</th><th>Verdict</th></tr></thead>
+  <tbody>
+    <tr><td><code>accent.solid</code> + white — moss on white</td><td class="num-col">6.27:1</td><td><span class="chip ok">AA</span> correct for a 16pt/600 button label, <strong>but not AAA</strong></td></tr>
+    <tr><td><code>accent.bright</code> + <code>#222222</code> — neon on ink</td><td class="num-col">8.66:1</td><td><span class="chip ok">AAA</span> correct</td></tr>
+    <tr style="background:var(--crit-bg)"><td><strong>neon on white</strong></td><td class="num-col"><strong>1.84:1</strong></td><td><span class="chip c">FAILS</span> <strong>never ship</strong></td></tr>
+  </tbody>
+</table>
+<p><strong>Neon is the trap:</strong> it is light enough to look like a coloured button that should carry white text, and it is unreadable. Always pair a green with the <code>on*</code> token beside it.</p>
+
+<h3>Cards — two anatomies, not alternatives</h3>
+<table class="tight">
+  <thead><tr><th style="width:30mm"></th><th>cardElevated</th><th>cardOutlined</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Sits on</strong></td><td>warm ground (<code>sand.200</code>)</td><td>white canvas</td></tr>
+    <tr><td><strong>Radius</strong></td><td class="num-col">20</td><td class="num-col">12</td></tr>
+    <tr><td><strong>Defined by</strong></td><td>soft two-layer shadow</td><td>1pt hairline</td></tr>
+    <tr><td><strong>Use for</strong></td><td>hero, featured, identity</td><td>dense structured content</td></tr>
+  </tbody>
+</table>
+<p><strong>Never</strong> combine a hairline border with a shadow on the same card. <strong>Never</strong> place an elevated white card directly on white — without the warm ground there is nothing to lift off, and the shadow reads as dirt.</p>
+
+<h3>Shape, spacing, elevation</h3>
+<dl class="kv">
+  <dt>Radius</dt><dd><code>sm</code> 8 · <strong><code>md</code> 12 — default</strong> · <code>lg</code> 16 · <code>xl</code> 20 (elevated cards, sheets) · <code>full</code> 999 (pills)</dd>
+  <dt>Spacing</dt><dd>4pt base — 4 · 8 · 12 · 16 · 20 · <strong>24 (screen gutter)</strong> · <strong>32 (section gap)</strong> · 40 · 48 · 64</dd>
+  <dt>Card padding</dt><dd>16</dd>
+  <dt>Elevation</dt><dd>Every level is <strong>two layers</strong> — a tight contact shadow plus a wide ambient one — at 4–6% opacity. <code>subtle</code> · <code>card</code> (default) · <code>floating</code> · <code>onMedia</code> (20%, for controls over photography). <strong>A single hard drop shadow is never correct.</strong></dd>
+</dl>
+
+<h3>Typeface — Google Sans Flex</h3>
+<p>Variable, SIL Open Font License, owner-supplied. Six axes; NOMA drives <code>wght</code> and <code>opsz</code> and pins <code>wdth</code>, <code>slnt</code>, <code>GRAD</code>, <code>ROND</code>.</p>
+<p><strong><code>opsz</code> is the axis worth wiring up:</strong> optical size should track rendered size — low opsz thickens strokes and opens spacing for small text, high opsz refines them for display. Every step carries its own <code>opsz</code> so this survives into engines without <code>font-optical-sizing: auto</code>.</p>
+<table class="tight">
+  <thead><tr><th style="width:26mm">Step</th><th class="num-col" style="width:26mm">Size / leading</th><th class="num-col" style="width:16mm">Weight</th><th>Use</th></tr></thead>
+  <tbody>
+    <tr><td><code>display</code></td><td class="num-col">32 / 36</td><td class="num-col">700</td><td>Screen title</td></tr>
+    <tr><td><code>title1</code></td><td class="num-col">26 / 31</td><td class="num-col">700</td><td></td></tr>
+    <tr><td><code>title2</code></td><td class="num-col">22 / 27</td><td class="num-col">600</td><td>Section, big figures</td></tr>
+    <tr><td><code>title3</code></td><td class="num-col">18 / 23</td><td class="num-col">600</td><td>Card title</td></tr>
+    <tr><td><code>body</code></td><td class="num-col">16 / 22</td><td class="num-col">400</td><td><strong>P2 accessibility floor</strong></td></tr>
+    <tr><td><code>bodyStrong</code></td><td class="num-col">16 / 22</td><td class="num-col">600</td><td>Buttons</td></tr>
+    <tr><td><code>caption</code></td><td class="num-col">14 / 19</td><td class="num-col">400</td><td>Supporting detail</td></tr>
+    <tr><td><code>micro</code></td><td class="num-col">12 / 16</td><td class="num-col">500</td><td>Badges, timestamps</td></tr>
+  </tbody>
+</table>
+<div class="box quiet">
+  <span class="bt">Open — needs a token decision</span>
+  <strong>The scale has no hero-numeral step.</strong> The device AQI readout needs ~56pt and the
+  scale tops out at 32. Currently used as a flagged one-off; it wants a ratified
+  <code>typography.scale</code> addition.
+</div>
+
+<h4>Open design items</h4>
+<p><strong>O-3</strong> light theme only — tokens are semantic so a dark map can be added without touching UI code, but no dark values exist. <strong>O-5</strong> no Devanagari (§19). <strong>O-6</strong> <strong>no semantic status colours — green cannot carry "bad"</strong>, which blocks any real device-status UI. <strong>O-4</strong> hexes and radii were read optically from captures (cross-origin sampling was blocked); close but re-verify on device before locking a 1.0.</p>
+</section>
+
+<!-- ============================ 21 ============================ -->
+<section class="pagebreak">
+<h2><span class="num">21</span>Motion</h2>
+<p class="lede">ADR-005. Canonical: <code>src/tokens/motion.tokens.js</code>. Gates: <code>.claude/rules/motion.md</code>.</p>
+
+<blockquote>Bounce means "something happened"; stillness means "everything is fine."<cite>the rule that resolves playful-vs-<em>ma</em></cite></blockquote>
+
+<p>Motion is <strong>playful — springy, bouncy, Airbnb-register — on discrete moments</strong> (a tap, an arrival, a confirmation) and <strong>almost perfectly still on ambient ones</strong> (live readings, monitoring, charts). Calm is the ground; bounce is the event. That split is how owner-stated playfulness and the <em>ma</em> philosophy stop fighting.</p>
+
+<table class="tight">
+  <thead><tr><th style="width:32mm">Token</th><th class="num-col" style="width:44mm">Value</th><th>Use</th></tr></thead>
+  <tbody>
+    <tr><td><code>durations</code></td><td class="num-col">80 · 140 · 240 · 360 · 480 ms</td><td>hover → tap → card → expander → sheet</td></tr>
+    <tr><td><code>durations.ambient</code></td><td class="num-col">4000 ms</td><td><strong>The only long value.</strong> Breathing ripples, idle pulses</td></tr>
+    <tr><td><code>easings.spring</code></td><td class="num-col">0.34, 1.56, 0.64, 1</td><td>~10% overshoot — the house spring. Buttons, chips, toggles, cards</td></tr>
+    <tr><td><code>easings.springBold</code></td><td class="num-col">0.22, 1.8, 0.36, 1</td><td>Hero arrivals — sheets, overlays, toasts</td></tr>
+    <tr><td><code>easings.exit</code></td><td class="num-col">0.4, 0, 1, 1</td><td><strong>Every exit.</strong> Never bounces</td></tr>
+    <tr><td><code>stagger</code></td><td class="num-col">45 ms lists · 60 ms grids</td><td>Between siblings entering</td></tr>
+    <tr><td><code>scale</code></td><td class="num-col">press .96 · pop 1.04 · breathe 1.02</td><td><code>breathe</code> is the ambient ceiling</td></tr>
+  </tbody>
+</table>
+
+<h4>Registered patterns</h4>
+<p><code>MO-PRESS</code> press &amp; release · <code>MO-POP</code> arrival pop · <code>MO-STAGGER</code> list entrance · <code>MO-SHEET</code> sheet rise · <code>MO-KNOB</code> toggle thumb · <code>MO-TOAST</code> · <code>MO-PULSE</code> count change · <code>MO-BREATHE</code> ambient (the only looping one).</p>
+
+<h4>Non-negotiable gates</h4>
+<ol>
+  <li><strong>Tokens only</strong> — UI code never contains a raw duration or bezier.</li>
+  <li><strong><code>prefers-reduced-motion</code> is mandatory</strong> on every animation. An accessibility gate, no exceptions.</li>
+  <li><strong>Exits never bounce.</strong> Overshoot on the way out reads as broken, not playful.</li>
+  <li><strong>Ambient never springs.</strong> A live number does not bounce because it changed.</li>
+  <li><strong>Alarm never bounces.</strong> If something is wrong, motion gets out of the way.</li>
+</ol>
+
+<div class="box quiet">
+  <span class="bt">Provenance note</span>
+  The owner referenced a bouncy style defined in an earlier session unavailable to this one. These
+  values are a fresh codification of the stated direction (playful / fun / quirky / bouncy /
+  Airbnb-like). If the earlier values surface, reconcile by revising ADR-005 — not by editing UI code.
+</div>
+</section>
+
+<!-- ============================ 22 ============================ -->
+<section>
+<h2><span class="num">22</span>Analytics and success metrics</h2>
+
+<div class="box crit">
+  <span class="bt">There are zero analytics events</span>
+  All four prototypes were searched for <code>track(</code>, <code>logEvent(</code>,
+  <code>analytics</code>, <code>gtag</code>, <code>amplitude</code>, <code>mixpanel</code> — no
+  matches. <strong>The product has a fully articulated seven-day retention strategy with named
+  chokepoints and stated behavioural mechanisms, and no way to measure any of it.</strong>
+  <br><br>
+  <code>src/analytics/events.schema.json</code> stays empty deliberately: a guessed
+  machine-readable taxonomy looks authoritative and is worse than an empty file.
+  <strong>Blocked by C-11</strong> — the on-device privacy claim must be reconciled with telemetry
+  before the first event is named.
+</div>
+
+<h3>Priority order once unblocked</h3>
+<table>
+  <thead><tr><th style="width:8mm">#</th><th style="width:56mm">Metric</th><th>Why it ranks here</th></tr></thead>
+  <tbody>
+    <tr><td class="num-col"><strong>1</strong></td><td><strong>Notification permission granted / denied</strong> at <code>J-ONBOARD-06</code></td><td>The whole Week One arc is push-dependent. A denial kills D1–D7 invisibly — no other signal changes. <strong>Ranks above the retention number it protects.</strong></td></tr>
+    <tr><td class="num-col"><strong>2</strong></td><td><strong>D7 recap seen → returned in week 2</strong></td><td><em>The</em> retention number. Every other Week One measurement is diagnostic for this one.</td></tr>
+    <tr><td class="num-col"><strong>3</strong></td><td>Agent <strong>accept / defer / decline / undo</strong> per proposal</td><td>Application state that doubles as the best available measure of whether the agent is trusted</td></tr>
+    <tr><td class="num-col"><strong>4</strong></td><td><strong>Undo rate per autonomy level</strong></td><td>The honest signal that "Act silently" was granted too early. <strong>Nobody has asked for this yet.</strong></td></tr>
+    <tr><td class="num-col"><strong>5</strong></td><td>"Why this?" expansion rate</td><td>Whether the explanation contract is load-bearing or ignored</td></tr>
+    <tr><td class="num-col"><strong>6</strong></td><td>Filter surfaced → reorder tapped → <strong>purchased</strong></td><td>The revenue funnel. <strong>Cannot close today</strong> — no payment flow exists.</td></tr>
+    <tr><td class="num-col"><strong>7</strong></td><td>2.4 GHz connect success at <code>J-PAIR-PUR-02</code></td><td>Validates the 5 GHz-hiding decision, which currently rests on an unmeasured claim</td></tr>
+  </tbody>
+</table>
+
+<h4>Hard constraints on any taxonomy</h4>
+<ol>
+  <li><strong>No face, identity or biometric value may ever be an event property</strong> — not a name, not an embedding, not a per-individual known/unknown flag.</li>
+  <li>Neighbourhood comparison must not be instrumented until C-10 resolves.</li>
+  <li>Wearable SpO₂ and sleep are <strong>health data.</strong> Measuring <em>that an automation fired</em> is not the same as transmitting the reading — keep that line explicit.</li>
+  <li>Every registered event must cite a <code>J-*</code> step.</li>
+</ol>
+</section>
+
+<!-- ============================ 23 ============================ -->
+<section class="pagebreak">
+<h2><span class="num">23</span>Risks</h2>
+<table>
+  <thead><tr><th style="width:14mm">Sev</th><th style="width:52mm">Risk</th><th>Mitigation</th></tr></thead>
+  <tbody>
+    <tr><td><span class="chip c">Critical</span></td><td><strong>C-7</strong> — the differentiator has no engineering model</td><td>Get a filter-decay spec before building <code>F-FILTER-HEALTH</code>. Do not ship the claim without it.</td></tr>
+    <tr><td><span class="chip c">Critical</span></td><td><strong>C-11</strong> — privacy claim vs three networked features</td><td>Narrow the claim to personal/biometric data before any store copy or policy. Unblocks analytics.</td></tr>
+    <tr><td><span class="chip c">Critical</span></td><td><strong>C-8</strong> — no safety class for autonomy</td><td>Ship "Ask me" only. Classify capabilities before enabling silent action or unattended purchase.</td></tr>
+    <tr><td><span class="chip c">Critical</span></td><td><strong>C-2</strong> — five product/assistant names</td><td>Rule the name. All copy, i18n, prompts and SKUs are downstream.</td></tr>
+    <tr><td><span class="chip h">High</span></td><td>Push denial silently kills the retention arc</td><td>Measure it first (§22 #1); design a no-push fallback for D1–D7</td></tr>
+    <tr><td><span class="chip h">High</span></td><td>No payment flow</td><td>Recurring revenue is unreachable until it exists</td></tr>
+    <tr><td><span class="chip h">High</span></td><td>Zero error / offline / empty states anywhere</td><td>Specify per feature; the PRD template now requires them</td></tr>
+    <tr><td><span class="chip h">High</span></td><td><strong>O-6</strong> — green cannot signal "bad"</td><td>Add semantic status colours before any device-status UI</td></tr>
+    <tr><td><span class="chip h">High</span></td><td><strong>C-6</strong> — the anchor product has two prices</td><td>Resolve before any pricing surface; the competitive argument depends on ₹8,999 parity</td></tr>
+    <tr><td><span class="chip m">Medium</span></td><td><strong>O-5</strong> — no Devanagari for the <code>hi</code> locale</td><td>Pair a Devanagari face before <code>hi</code> ships</td></tr>
+    <tr><td><span class="chip m">Medium</span></td><td>Prototype specs unverified</td><td>Confirm CADR, coverage and pricing against a datasheet / BOM</td></tr>
+    <tr><td><span class="chip m">Medium</span></td><td>Sources live in <code>~/Downloads</code></td><td>Vendor the prototypes into <code>docs/prototypes/</code></td></tr>
+    <tr><td><span class="chip m">Medium</span></td><td>Cross-device agent reasoning may be undeliverable on-device</td><td>Scope the agent's reach explicitly in the <code>F-AGENT-PROPOSE</code> PRD</td></tr>
+  </tbody>
+</table>
+</section>
+
+<!-- ============================ 24 ============================ -->
+<section>
+<h2><span class="num">24</span>Open conflicts</h2>
+<p class="lede">Nothing here is resolved. Where sources disagree, both readings are recorded with evidence. Full detail: <code>memory/decisions.md</code>.</p>
+<table>
+  <thead><tr><th style="width:14mm">ID</th><th style="width:12mm">Sev</th><th style="width:54mm">Conflict</th><th>Blocks</th></tr></thead>
+  <tbody>
+    <tr><td><strong>C-1</strong></td><td><span class="chip h">High</span></td><td>Two persona sets. Prototypes corroborate Set B four ways.</td><td>personas.json · tone routing · persona IDs on journeys</td></tr>
+    <tr><td><strong>C-2</strong></td><td><span class="chip c">Crit</span></td><td>Product + assistant have <strong>five names</strong></td><td>all copy · i18n · prompts · glossary · SKUs</td></tr>
+    <tr><td><strong>C-3</strong></td><td><span class="chip h">High</span></td><td>Three role models; flow rebuilt three times</td><td><code>F-SHARING</code></td></tr>
+    <tr><td><strong>C-4</strong></td><td><span class="chip m">Med</span></td><td>Three fan-mode vocabularies; only "Turbo" is shared</td><td>mode UI · automation actions · mode copy</td></tr>
+    <tr><td><strong>C-5</strong></td><td><span class="chip h">High</span></td><td>Four Score definitions — only one weighted (Air 25 / Security 25 / Cleanliness 20 / Filter 15 / Energy 15), only one with a Family dimension, one possibly a different feature</td><td><code>F-HOME-SCORE</code></td></tr>
+    <tr><td><strong>C-6</strong></td><td><span class="chip h">High</span></td><td>Purifier ₹4,999 vs ₹8,999; filter ₹1,299 vs ₹1,499</td><td>all pricing · the competitive argument</td></tr>
+    <tr><td><strong>C-7</strong></td><td><span class="chip c">Crit</span></td><td>Differentiator has no formula</td><td><code>F-FILTER-HEALTH</code> — differentiator <em>and</em> revenue</td></tr>
+    <tr><td><strong>C-8</strong></td><td><span class="chip c">Crit</span></td><td>No safety class for autonomy; SpO₂ trigger is health-adjacent</td><td>all autonomy above "Ask me"</td></tr>
+    <tr><td><strong>C-9</strong></td><td><span class="chip h">High</span></td><td>Air map shows AQI for sensorless rooms — and sells hardware on it</td><td><code>F-AIR-MAP</code> credibility</td></tr>
+    <tr><td><strong>C-10</strong></td><td><span class="chip h">High</span></td><td>"Anonymised" comparison shows a surname + floor ("Mehta 2F")</td><td><code>F-NEIGHBOURHOOD</code> · sharing · acquisition</td></tr>
+    <tr><td><strong>C-11</strong></td><td><span class="chip c">Crit</span></td><td>"Data never leaves home" vs three networked features</td><td>analytics taxonomy · store copy · privacy policy</td></tr>
+    <tr><td><strong>C-12</strong></td><td><span class="chip m">Med</span></td><td>Two room-preset lists; only one has Pooja Room</td><td>onboarding · room creation</td></tr>
+    <tr><td><strong>C-13</strong></td><td><span class="chip h">High</span></td><td>Subscription sells the free tier's own claim</td><td>pricing page · tier copy</td></tr>
+  </tbody>
+</table>
+</section>
+
+<!-- ============================ 25 ============================ -->
+<section>
+<h2><span class="num">25</span>Sequencing</h2>
+
+<h3>Before any build — decisions only</h3>
+<ol>
+  <li><strong>The §3 scope question</strong> — which product ships first</li>
+  <li><strong>C-2</strong> — the name</li>
+  <li><strong>C-7</strong> — the filter-decay model</li>
+  <li><strong>C-11</strong> — privacy vs telemetry</li>
+  <li><strong>C-8</strong> — autonomy safety classes</li>
+</ol>
+
+<h3>Then, in order</h3>
+<p><code>F-AQI-LIVE</code> → <code>F-AGENT-PROPOSE</code> at "Ask me" → <code>F-FILTER-HEALTH</code> → <code>F-AUTOMATIONS</code> → the D1/D2 push pair → <code>F-WEEK-RECAP</code> → <code>F-SHOP</code> <em>with a real payment flow</em>.</p>
+
+<h3>In parallel</h3>
+<ul>
+  <li>Per-feature PRDs from <code>templates/feature-prd.md</code> — each requires error, empty and offline states</li>
+  <li>The analytics taxonomy, once C-11 clears</li>
+  <li><strong>O-6</strong> semantic status colours — nothing can report "bad" until these exist</li>
+  <li>A Devanagari pairing for <code>hi</code></li>
+  <li>Vendor the source prototypes into the repo</li>
+  <li>Verify hardware specs against a datasheet</li>
+</ul>
+</section>
+
+<!-- ============================ 26 ============================ -->
+<section>
+<h2><span class="num">26</span>Declares</h2>
+<p class="lede">Mandatory block — this is what makes the PRD machine-checkable against the canonical registries.</p>
+
+<h4>Data</h4>
+<p><code>Home</code> · <code>Room</code> · <code>Device</code> · <code>Automation</code> · <code>Proposal</code> · <code>StandingRule</code> · <code>AutonomyGrant</code>.<br>
+<strong>New fields required by v1:</strong> <code>AutonomyGrant.safetyClass</code> (C-8) and <code>Proposal.expiresAt</code> (currently undefined behaviour). Detail: <code>memory/architecture/data-models.md</code>.</p>
+
+<h4>Events</h4>
+<p><strong>None defined.</strong> Blocked by C-11. Seven required metrics are specified in §22 and deliberately left unnamed so nobody ships them as a taxonomy. Canonical home when unblocked: <code>src/analytics/events.schema.json</code>, each event citing a <code>J-*</code> step.</p>
+
+<h4>Hardware</h4>
+<p><strong>v1:</strong> <code>HW-PUR-200</code> · <code>HW-PUR-500</code> · <code>HW-PUR-MAX</code> · <code>HW-CONS-HEPA</code>.<br>
+<strong>Capabilities required:</strong> <code>indoor-particle-sensor</code> · <code>outdoor-aqi-feed</code> · <code>forecast-feed</code> · <code>standing-rules-engine</code> · <code>audit-log</code> · <code>scheduler</code> · <code>payments</code> <em>(does not exist)</em>.<br>
+<strong>Deferred to <span class="chip b">B</span>:</strong> <code>HW-CAM-360</code> · <code>HW-BELL-PRO</code> · <code>HW-LOCK-X1/X2</code> · <code>HW-VAC-R1/R1P</code> · <code>HW-WEAR-RING2</code> · <code>HW-WEAR-WATCH</code>.</p>
+
+<footer class="doc">
+  NOMA v1 PRD · v0.2 · 2026-08-04 · compiled from all material supplied to date.
+  Canonical values live in <code>src/tokens/</code> and <code>src/hardware/</code>; this document
+  is a mirror and defers to them. Decisions and conflicts: <code>memory/decisions.md</code>.
+</footer>
+</section>
+
+</body>
+</html>
